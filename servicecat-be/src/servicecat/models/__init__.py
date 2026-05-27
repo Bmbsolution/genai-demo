@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from servicecat.models.audit import AuditLog
 from servicecat.models.base import Base
 from servicecat.models.membership import WorkspaceMembership, WorkspaceRole
 from servicecat.models.user import User
@@ -24,6 +25,7 @@ def metadata_for_migrations() -> MetaData:
 
 
 __all__ = [
+    "AuditLog",
     "Base",
     "User",
     "Workspace",

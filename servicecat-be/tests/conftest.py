@@ -84,7 +84,8 @@ async def auth_client(
     app = create_app()
 
     async def _override_db() -> AsyncIterator[AsyncSession]:
-        async with rls_sessionmaker() as session:
+        # Mirror the real get_db: commit on success so audit entries persist.
+        async with rls_sessionmaker() as session, session.begin():
             yield session
 
     app.dependency_overrides[get_db] = _override_db
@@ -167,7 +168,9 @@ async def rls_sessionmaker(
     """A session factory on the test DB, with tables truncated per test."""
     engine = create_async_engine(rls_database_url)
     async with engine.begin() as conn:
-        await conn.execute(text("TRUNCATE workspace_memberships, workspaces, users CASCADE"))
+        await conn.execute(
+            text("TRUNCATE audit_logs, workspace_memberships, workspaces, users CASCADE"),
+        )
     try:
         yield async_sessionmaker(engine, expire_on_commit=False)
     finally:

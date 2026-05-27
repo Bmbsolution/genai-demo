@@ -33,9 +33,10 @@ from servicecat.errors import (
     WorkspaceIsolationError,
 )
 from servicecat.jwt_keys import get_jwt_public_key
-from servicecat.models import User, Workspace, WorkspaceRole
+from servicecat.models import AuditLog, User, Workspace, WorkspaceRole
 from servicecat.rbac import Capability, role_has_capability
 from servicecat.redis_client import get_redis
+from servicecat.repositories.audit import AuditLogRepository
 from servicecat.repositories.memberships import MembershipRepository
 from servicecat.repositories.users import UserRepository
 from servicecat.services.security import TokenType, decode_token
@@ -45,8 +46,12 @@ _bearer = HTTPBearer(auto_error=False)
 
 
 async def get_db() -> AsyncIterator[AsyncSession]:
-    """Yield a single async database session per request."""
-    async with get_sessionmaker()() as session:
+    """Yield a request-scoped session; commit on success, roll back on error.
+
+    The surrounding ``session.begin()`` also opens the transaction that
+    ``set_workspace_context`` (S2) needs for its ``SET LOCAL`` statements.
+    """
+    async with get_sessionmaker()() as session, session.begin():
         yield session
 
 
@@ -143,3 +148,29 @@ def require_capability(capability: Capability) -> Callable[..., Awaitable[None]]
             )
 
     return _require
+
+
+def audit_action(action: str) -> Callable[..., Awaitable[None]]:
+    """S5: record an append-only audit entry for ``action`` (e.g. service.create).
+
+    The entry is written within the request transaction, so it persists only if
+    the request commits (a denied or failed request rolls back, leaving no
+    entry). ``resource_type`` is the part of ``action`` before the first dot.
+    """
+
+    async def _record(
+        request: Request,
+        context: WorkspaceContext = Depends(get_current_workspace),
+        db: AsyncSession = Depends(get_db),
+    ) -> None:
+        entry = AuditLog(
+            workspace_id=context.workspace.id,
+            actor_id=context.user.id,
+            action=action,
+            resource_type=action.split(".", 1)[0],
+            ip=request.client.host if request.client else None,
+            user_agent=request.headers.get("user-agent"),
+        )
+        await AuditLogRepository(db).record(entry)
+
+    return _record

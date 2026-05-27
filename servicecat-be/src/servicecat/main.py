@@ -12,7 +12,7 @@ from servicecat.config import get_settings
 from servicecat.errors import ServiceCatError
 from servicecat.http import close_http_client
 from servicecat.redis_client import close_redis
-from servicecat.routers import auth
+from servicecat.routers import audit, auth
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
@@ -51,6 +51,7 @@ def create_app() -> FastAPI:
         )
 
     app.include_router(auth.router)
+    app.include_router(audit.router)
     return app
 
 
