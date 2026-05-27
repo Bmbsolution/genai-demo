@@ -150,23 +150,7 @@ async def test_run_is_workspace_isolated(
     assert resp.status_code == HTTPStatus.NOT_FOUND
 
 
-async def test_trigger_rate_limited_after_ten(
-    auth_client: AsyncClient,
-    rls_sessionmaker: async_sessionmaker[AsyncSession],
-) -> None:
-    await _seed(rls_sessionmaker)
-    token = await _token(auth_client, MAINT_EMAIL)
-    body = {"target_service_ids": [str(SERVICE)]}
-    for _ in range(10):
-        ok = await auth_client.post(
-            "/api/v1/scorecards/documentation/runs",
-            headers=_headers(token),
-            json=body,
-        )
-        assert ok.status_code == HTTPStatus.ACCEPTED
-    limited = await auth_client.post(
-        "/api/v1/scorecards/documentation/runs",
-        headers=_headers(token),
-        json=body,
-    )
-    assert limited.status_code == HTTPStatus.TOO_MANY_REQUESTS
+# Note: the S4 rate limiter is covered deterministically in test_redis_guards.py
+# (unique key, direct call). An HTTP "11th request -> 429" test here would be
+# flaky because the fixed window is wall-clock-minute-aligned and a burst can
+# straddle a minute boundary.
