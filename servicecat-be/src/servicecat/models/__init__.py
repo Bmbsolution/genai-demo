@@ -16,6 +16,11 @@ from servicecat.models.membership import WorkspaceMembership, WorkspaceRole
 from servicecat.models.scorecard import ScorecardCriterion
 from servicecat.models.scorecard_run import ScorecardRun, ScorecardRunStatus
 from servicecat.models.service import Service
+from servicecat.models.service_dependency import (
+    DependencyCriticality,
+    DependencyDirection,
+    ServiceDependency,
+)
 from servicecat.models.user import User
 from servicecat.models.workspace import Workspace
 
@@ -31,11 +36,14 @@ def metadata_for_migrations() -> MetaData:
 __all__ = [
     "AuditLog",
     "Base",
+    "DependencyCriticality",
+    "DependencyDirection",
     "Finding",
     "ScorecardCriterion",
     "ScorecardRun",
     "ScorecardRunStatus",
     "Service",
+    "ServiceDependency",
     "User",
     "Workspace",
     "WorkspaceMembership",
