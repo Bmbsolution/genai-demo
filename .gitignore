@@ -1,0 +1,40 @@
+# --- Python (servicecat-be) ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# --- Node / Next.js (servicecat-fe) ---
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+.pnpm-store/
+
+# --- Secrets / local config ---
+*.pem
+*.key
+.claude/settings.local.json
+
+# --- Ephemeral repo clones (scorecard analysis) ---
+/tmp/servicecat-clones/
+.repo-cache/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.claude.com/settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(make:*)",
+      "Bash(pnpm:*)",
+      "Bash(npm:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)",
+      "Bash(ruff:*)",
+      "Bash(mypy:*)",
+      "Bash(alembic:*)",
+      "Bash(docker compose:*)",
+      "Bash(curl:*)",
+      "Bash(jq:*)",
+      "Bash(gh:*)",
+      "Bash(rg:*)",
+      "Bash(redis-cli:*)",
+      "Read(./)",
+      "Write(./)",
+      "Edit(./)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:docs.anthropic.com)"
+    ],
+    "deny": [
+      "Bash(rm -rf /:*)",
+      "Bash(sudo rm:*)",
+      "Bash(* --no-verify*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(* --force --hard*)",
+      "Read(/etc/passwd)",
+      "Read(/etc/shadow)",
+      "Read(~/.ssh/*)",
+      "Read(~/.aws/*)",
+      "Write(/etc/*)",
+      "Write(/usr/*)"
+    ]
+  },
+  "hooks": {
+    "session-start": [
+      {
+        "name": "set-git-identity",
+        "command": "git config user.name 'dev-servicecat' && git config user.email 'dev@servicecat.local'"
+      }
+    ]
+  },
+  "memory": {
+    "enabled": true,
+    "scope": "project"
+  }
+}

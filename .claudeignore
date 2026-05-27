@@ -1,0 +1,21 @@
+# Protect secrets and credentials from Claude's context
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.claude/settings.local.json
+
+# Ephemeral read-only repo clones produced by scorecard runs — never load into context
+/tmp/servicecat-clones/
+.repo-cache/
+
+# Build output and dependencies — noise
+node_modules/
+.next/
+.venv/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+htmlcov/
