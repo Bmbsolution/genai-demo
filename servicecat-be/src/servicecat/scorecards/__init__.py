@@ -14,10 +14,12 @@ from servicecat.scorecards.base import (
     Severity,
     get_scorecard,
 )
+from servicecat.scorecards.documentation import DocumentationScorecard
 
 __all__ = [
     "SCORECARD_REGISTRY",
     "BaseScorecard",
+    "DocumentationScorecard",
     "Evidence",
     "Finding",
     "Severity",
