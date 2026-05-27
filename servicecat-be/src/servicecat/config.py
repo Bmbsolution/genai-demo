@@ -21,6 +21,14 @@ class Settings(BaseSettings):
     environment: str = "local"
     api_v1_prefix: str = "/api/v1"
 
+    # JWT (RS256). Keys are PEM files outside version control; generate a local
+    # dev pair into ./secrets/ and never commit real keys (rule S7).
+    jwt_algorithm: str = "RS256"
+    jwt_private_key_path: str = "secrets/jwt_private.pem"
+    jwt_public_key_path: str = "secrets/jwt_public.pem"
+    access_token_ttl_seconds: int = 900  # 15 minutes
+    refresh_token_ttl_seconds: int = 604800  # 7 days
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

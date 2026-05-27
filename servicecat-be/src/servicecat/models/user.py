@@ -20,3 +20,6 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     email: Mapped[str] = mapped_column(Text, unique=True)
     full_name: Mapped[str] = mapped_column(Text)
     is_active: Mapped[bool] = mapped_column(server_default=text("true"))
+    # Nullable: a user may be provisioned before setting a password (or via SSO
+    # later). Password login requires it to be present (checked in AuthService).
+    hashed_password: Mapped[str | None] = mapped_column(Text, default=None)

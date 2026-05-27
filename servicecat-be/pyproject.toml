@@ -14,6 +14,9 @@ dependencies = [
     "pydantic>=2.10",
     "pydantic-settings>=2.7",
     "httpx>=0.28",
+    "pyjwt[crypto]>=2.10",
+    "argon2-cffi>=23.1",
+    "redis>=5.2",
 ]
 
 [project.optional-dependencies]
@@ -43,12 +46,18 @@ extend-exclude = ["migrations/versions"]
 select = ["ALL"]
 # D: docstrings (per CLAUDE.md). ANN101/ANN102 were removed from ruff (no-ops).
 # COM812 conflicts with `ruff format` — ruff itself recommends disabling it.
-ignore = ["D", "COM812"]
+# EM101/EM102/TRY003: we intentionally pass contextual messages to the typed
+# exceptions in servicecat.errors; the message-style rules add ceremony only.
+ignore = ["D", "COM812", "EM101", "EM102", "TRY003"]
 
 [tool.ruff.lint.per-file-ignores]
 # Tests assert (S101), use literals (PLR2004), take fixtures by name, and the
 # DB harness shells out to alembic (S603/S607) with trusted constant SQL (S608).
-"tests/**/*.py" = ["S101", "PLR2004", "ANN001", "ANN201", "ARG001", "S603", "S607", "S608"]
+"tests/**/*.py" = [
+    "S101", "PLR2004", "ANN001", "ANN201", "ARG001",
+    "S603", "S607", "S608",  # subprocess + trusted-constant SQL in the DB harness
+    "S105", "S106",  # hardcoded test passwords/tokens are fine in tests
+]
 # Alembic env runs as a script, not an importable package module.
 "migrations/env.py" = ["INP001", "ERA001"]
 
