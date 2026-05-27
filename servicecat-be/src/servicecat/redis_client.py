@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import cast
 
 from redis.asyncio import Redis
 
@@ -12,7 +13,7 @@ from servicecat.config import get_settings
 @lru_cache(maxsize=1)
 def get_redis() -> Redis:
     """Return the process-wide async Redis client (decoded responses)."""
-    return Redis.from_url(get_settings().redis_url, decode_responses=True)
+    return cast("Redis", Redis.from_url(get_settings().redis_url, decode_responses=True))
 
 
 async def close_redis() -> None:

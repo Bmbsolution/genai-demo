@@ -17,6 +17,8 @@ dependencies = [
     "pyjwt[crypto]>=2.10",
     "argon2-cffi>=23.1",
     "redis>=5.2",
+    "arq>=0.26",
+    "gitpython>=3.1",
 ]
 
 [project.optional-dependencies]
@@ -96,7 +98,7 @@ namespace_packages = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["asyncpg.*"]
+module = ["asyncpg.*", "git.*", "arq.*"]
 ignore_missing_imports = true
 
 # --- Tests ---

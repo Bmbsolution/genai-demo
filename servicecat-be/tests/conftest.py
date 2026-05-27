@@ -24,8 +24,16 @@ from servicecat.deps import get_db
 from servicecat.jwt_keys import get_jwt_private_key, get_jwt_public_key
 from servicecat.main import create_app
 from servicecat.redis_client import get_redis
+from servicecat.workers.scorecard import get_enqueue
+
+
+async def _noop_enqueue(run_id: uuid.UUID, workspace_id: uuid.UUID) -> None:
+    """Stand-in for the Arq enqueue in tests (no real worker/queue)."""
+    del run_id, workspace_id
+
 
 if TYPE_CHECKING:
+    import uuid
     from collections.abc import AsyncIterator, Iterator
 
     from sqlalchemy.engine import URL
@@ -98,6 +106,7 @@ async def auth_client(
     app.dependency_overrides[get_redis] = lambda: redis_client
     app.dependency_overrides[get_jwt_private_key] = lambda: private_pem
     app.dependency_overrides[get_jwt_public_key] = lambda: public_pem
+    app.dependency_overrides[get_enqueue] = lambda: _noop_enqueue
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
