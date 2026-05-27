@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING
 
 import asyncpg
 import pytest
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
 from httpx import ASGITransport, AsyncClient
 from redis.asyncio import Redis
 from sqlalchemy import text
@@ -18,7 +20,10 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from servicecat.config import get_settings
+from servicecat.deps import get_db
+from servicecat.jwt_keys import get_jwt_private_key, get_jwt_public_key
 from servicecat.main import create_app
+from servicecat.redis_client import get_redis
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Iterator
@@ -46,6 +51,50 @@ async def redis_client() -> AsyncIterator[Redis]:
         yield client
     finally:
         await client.aclose()
+
+
+@pytest.fixture(scope="session")
+def jwt_keypair() -> tuple[str, str]:
+    """A throwaway RS256 (private_pem, public_pem) pair for signing test tokens."""
+    key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    private_pem = key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ).decode()
+    public_pem = (
+        key.public_key()
+        .public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo,
+        )
+        .decode()
+    )
+    return private_pem, public_pem
+
+
+@pytest.fixture
+async def auth_client(
+    rls_sessionmaker: async_sessionmaker[AsyncSession],
+    redis_client: Redis,
+    jwt_keypair: tuple[str, str],
+) -> AsyncIterator[AsyncClient]:
+    """An httpx client whose app talks to the test DB, test Redis, and test keys."""
+    private_pem, public_pem = jwt_keypair
+    app = create_app()
+
+    async def _override_db() -> AsyncIterator[AsyncSession]:
+        async with rls_sessionmaker() as session:
+            yield session
+
+    app.dependency_overrides[get_db] = _override_db
+    app.dependency_overrides[get_redis] = lambda: redis_client
+    app.dependency_overrides[get_jwt_private_key] = lambda: private_pem
+    app.dependency_overrides[get_jwt_public_key] = lambda: public_pem
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
 
 
 async def _admin_execute(admin_url: URL, statements: list[str]) -> None:

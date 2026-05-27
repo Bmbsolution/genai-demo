@@ -18,14 +18,20 @@ import time
 from collections.abc import AsyncIterator, Awaitable, Callable
 
 from fastapi import Depends, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from servicecat.db import get_sessionmaker
-from servicecat.errors import RateLimitError
+from servicecat.errors import AuthenticationError, RateLimitError
+from servicecat.jwt_keys import get_jwt_public_key
+from servicecat.models import User
 from servicecat.redis_client import get_redis
+from servicecat.repositories.users import UserRepository
+from servicecat.services.security import TokenType, decode_token
 
 _RATE_LIMIT_WINDOW_SECONDS = 60
+_bearer = HTTPBearer(auto_error=False)
 
 
 async def get_db() -> AsyncIterator[AsyncSession]:
@@ -34,12 +40,39 @@ async def get_db() -> AsyncIterator[AsyncSession]:
         yield session
 
 
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer),
+    db: AsyncSession = Depends(get_db),
+    public_key: str = Depends(get_jwt_public_key),
+) -> User:
+    """S1: resolve the authenticated user from the Bearer access token.
+
+    Raises AuthenticationError (401) when the header is missing, the token is
+    invalid/expired/not an access token, or the user is unknown or inactive.
+    """
+    if credentials is None:
+        raise AuthenticationError("Not authenticated")
+    decoded = decode_token(
+        credentials.credentials,
+        public_key=public_key,
+        expected_type=TokenType.ACCESS,
+    )
+    user = await UserRepository(db).get_by_id(decoded.subject)
+    if user is None or not user.is_active:
+        raise AuthenticationError("User not found or inactive")
+    return user
+
+
 def rate_limit(*, per_minute: int, key: str) -> Callable[..., Awaitable[None]]:
     """S4: fixed-window rate limit, per client IP + ``key``, backed by Redis.
 
     Returns a FastAPI dependency. The first request in a window sets the bucket
     TTL; the ``per_minute + 1``-th request in the same window raises
     ``RateLimitError`` (→ HTTP 429).
+
+    Follow-up hardening (deployment-dependent): behind a reverse proxy the
+    client IP must come from a trusted ``X-Forwarded-For``, and login should
+    additionally throttle per account to resist IP-rotating brute force.
     """
 
     async def _enforce(request: Request, redis: Redis = Depends(get_redis)) -> None:

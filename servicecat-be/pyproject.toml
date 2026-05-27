@@ -74,6 +74,7 @@ extend-immutable-calls = ["fastapi.Depends"]
 # a TYPE_CHECKING block (doing so raises NameError at class-definition time).
 runtime-evaluated-base-classes = [
     "servicecat.models.base.Base",
+    "servicecat.schemas.base.ServiceCatBaseModel",
     "sqlalchemy.orm.DeclarativeBase",
     "pydantic.BaseModel",
     "pydantic_settings.BaseSettings",
