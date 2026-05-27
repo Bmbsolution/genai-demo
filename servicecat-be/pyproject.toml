@@ -65,8 +65,14 @@ ignore = ["D", "COM812", "EM101", "EM102", "TRY003"]
 ban-relative-imports = "parents"
 
 [tool.ruff.lint.flake8-bugbear]
-# FastAPI's dependency-injection idiom legitimately calls Depends() in defaults.
-extend-immutable-calls = ["fastapi.Depends"]
+# FastAPI's dependency-injection idiom legitimately calls these in defaults.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.Header",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Body",
+]
 
 [tool.ruff.lint.flake8-type-checking]
 # SQLAlchemy and Pydantic evaluate annotations at runtime to build mappers and

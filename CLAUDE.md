@@ -71,6 +71,22 @@ workspace:settings        workspace:billing
 audit:read
 ```
 
+### Role → Capability Matrix
+
+Source of truth: `servicecat-be/src/servicecat/rbac.py` (`ROLE_CAPABILITIES`).
+Enforced per request by `require_capability` (S3) after `get_current_workspace`
+(S2) resolves the caller's role in the active workspace.
+
+| Capability | Viewer | Maintainer | Admin |
+|------------|:------:|:----------:|:-----:|
+| `service:read` `scorecard:read` `finding:read` `template:read` `team:read` | ✅ | ✅ | ✅ |
+| `service:write` `scorecard:write` `scorecard:run` `finding:assign` `finding:resolve` `template:write` | — | ✅ | ✅ |
+| `service:delete` `team:manage` `workspace:settings` `workspace:billing` `audit:read` | — | — | ✅ |
+
+Roles nest: Viewer ⊂ Maintainer ⊂ Admin. The active workspace is selected by
+the `X-Workspace-Id` request header; a workspace the caller is not a member of
+is reported as 404 (no existence leak).
+
 ---
 
 ## Security Model — The 5 Guards

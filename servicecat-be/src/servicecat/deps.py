@@ -15,18 +15,28 @@ FastAPI resolves dependency parameter type hints at runtime, so ``Request`` and
 """
 
 import time
+import uuid
 from collections.abc import AsyncIterator, Awaitable, Callable
+from dataclasses import dataclass
+from typing import cast
 
-from fastapi import Depends, Request
+from fastapi import Depends, Header, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from servicecat.db import get_sessionmaker
-from servicecat.errors import AuthenticationError, RateLimitError
+from servicecat.db import get_sessionmaker, set_workspace_context
+from servicecat.errors import (
+    AuthenticationError,
+    AuthorizationError,
+    RateLimitError,
+    WorkspaceIsolationError,
+)
 from servicecat.jwt_keys import get_jwt_public_key
-from servicecat.models import User
+from servicecat.models import User, Workspace, WorkspaceRole
+from servicecat.rbac import Capability, role_has_capability
 from servicecat.redis_client import get_redis
+from servicecat.repositories.memberships import MembershipRepository
 from servicecat.repositories.users import UserRepository
 from servicecat.services.security import TokenType, decode_token
 
@@ -89,3 +99,47 @@ def rate_limit(*, per_minute: int, key: str) -> Callable[..., Awaitable[None]]:
             )
 
     return _enforce
+
+
+@dataclass(frozen=True)
+class WorkspaceContext:
+    """The active workspace and the caller's role within it (the S2 result)."""
+
+    workspace: Workspace
+    role: WorkspaceRole
+    user: User
+
+
+async def get_current_workspace(
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    workspace_id: uuid.UUID = Header(alias="X-Workspace-Id"),
+) -> WorkspaceContext:
+    """S2: resolve + authorize the active workspace and set the RLS context.
+
+    The workspace comes from the ``X-Workspace-Id`` header. We set the RLS
+    context to it, then read the caller's membership *through* RLS — a workspace
+    the user doesn't belong to simply yields no row (404), never revealing
+    whether it exists.
+    """
+    await set_workspace_context(db, workspace_id)
+    role = await MembershipRepository(db).get_role(user.id)
+    if role is None:
+        raise WorkspaceIsolationError("Workspace not found")
+    workspace = cast("Workspace | None", await db.get(Workspace, workspace_id))
+    if workspace is None:  # pragma: no cover - membership implies the workspace exists
+        raise WorkspaceIsolationError("Workspace not found")
+    return WorkspaceContext(workspace=workspace, role=WorkspaceRole(role), user=user)
+
+
+def require_capability(capability: Capability) -> Callable[..., Awaitable[None]]:
+    """S3: dependency factory requiring ``capability`` in the active workspace."""
+
+    async def _require(context: WorkspaceContext = Depends(get_current_workspace)) -> None:
+        if not role_has_capability(context.role, capability):
+            raise AuthorizationError(
+                "Missing required capability",
+                details={"required": capability.value, "role": context.role.value},
+            )
+
+    return _require
