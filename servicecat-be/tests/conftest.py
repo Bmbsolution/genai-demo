@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 import asyncpg
 import pytest
 from httpx import ASGITransport, AsyncClient
+from redis.asyncio import Redis
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
@@ -35,6 +36,16 @@ async def client() -> AsyncIterator[AsyncClient]:
     transport = ASGITransport(app=create_app())
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture
+async def redis_client() -> AsyncIterator[Redis]:
+    """A real Redis connection (the local stack on :6380), closed after the test."""
+    client = Redis.from_url(get_settings().redis_url, decode_responses=True)
+    try:
+        yield client
+    finally:
+        await client.aclose()
 
 
 async def _admin_execute(admin_url: URL, statements: list[str]) -> None:

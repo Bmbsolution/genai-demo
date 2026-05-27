@@ -64,6 +64,10 @@ ignore = ["D", "COM812", "EM101", "EM102", "TRY003"]
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
 
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency-injection idiom legitimately calls Depends() in defaults.
+extend-immutable-calls = ["fastapi.Depends"]
+
 [tool.ruff.lint.flake8-type-checking]
 # SQLAlchemy and Pydantic evaluate annotations at runtime to build mappers and
 # models, so annotation-only imports on their subclasses must NOT be moved into

@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from servicecat.config import get_settings
 from servicecat.errors import ServiceCatError
 from servicecat.http import close_http_client
+from servicecat.redis_client import close_redis
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
@@ -20,9 +21,10 @@ if TYPE_CHECKING:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    """Application lifespan; closes the shared HTTP client on shutdown."""
+    """Application lifespan; releases shared clients on shutdown."""
     yield
     await close_http_client()
+    await close_redis()
 
 
 def create_app() -> FastAPI:
