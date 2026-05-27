@@ -46,13 +46,25 @@ select = ["ALL"]
 ignore = ["D", "COM812"]
 
 [tool.ruff.lint.per-file-ignores]
-# Tests assert (S101), use literals (PLR2004), and take fixtures by name.
-"tests/**/*.py" = ["S101", "PLR2004", "ANN001", "ANN201", "ARG001"]
+# Tests assert (S101), use literals (PLR2004), take fixtures by name, and the
+# DB harness shells out to alembic (S603/S607) with trusted constant SQL (S608).
+"tests/**/*.py" = ["S101", "PLR2004", "ANN001", "ANN201", "ARG001", "S603", "S607", "S608"]
 # Alembic env runs as a script, not an importable package module.
 "migrations/env.py" = ["INP001", "ERA001"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "parents"
+
+[tool.ruff.lint.flake8-type-checking]
+# SQLAlchemy and Pydantic evaluate annotations at runtime to build mappers and
+# models, so annotation-only imports on their subclasses must NOT be moved into
+# a TYPE_CHECKING block (doing so raises NameError at class-definition time).
+runtime-evaluated-base-classes = [
+    "servicecat.models.base.Base",
+    "sqlalchemy.orm.DeclarativeBase",
+    "pydantic.BaseModel",
+    "pydantic_settings.BaseSettings",
+]
 
 # --- Type checking: mypy --strict on src/ ---
 [tool.mypy]

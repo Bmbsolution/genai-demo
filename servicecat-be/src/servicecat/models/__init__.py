@@ -10,6 +10,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from servicecat.models.base import Base
+from servicecat.models.membership import WorkspaceMembership, WorkspaceRole
+from servicecat.models.user import User
+from servicecat.models.workspace import Workspace
 
 if TYPE_CHECKING:
     from sqlalchemy import MetaData
@@ -20,4 +23,11 @@ def metadata_for_migrations() -> MetaData:
     return Base.metadata
 
 
-__all__ = ["Base", "metadata_for_migrations"]
+__all__ = [
+    "Base",
+    "User",
+    "Workspace",
+    "WorkspaceMembership",
+    "WorkspaceRole",
+    "metadata_for_migrations",
+]
