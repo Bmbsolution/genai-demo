@@ -81,6 +81,12 @@ async def auth_client(
 ) -> AsyncIterator[AsyncClient]:
     """An httpx client whose app talks to the test DB, test Redis, and test keys."""
     private_pem, public_pem = jwt_keypair
+    # Per-IP rate-limit and revocation buckets live in the shared Redis; clear
+    # them so state from earlier tests can't trip 429s in this one.
+    for pattern in ("ratelimit:*", "revoked:refresh:*"):
+        stale = await redis_client.keys(pattern)
+        if stale:
+            await redis_client.delete(*stale)
     app = create_app()
 
     async def _override_db() -> AsyncIterator[AsyncSession]:
