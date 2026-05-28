@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -73,6 +74,7 @@ export function AddDependencyDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("detail.dependencies.add")}</DialogTitle>
+          <DialogDescription>{t("detail.dependencies.addDescription")}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="space-y-2">

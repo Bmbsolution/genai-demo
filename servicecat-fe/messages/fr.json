@@ -58,6 +58,7 @@
       "title": "Dépendances",
       "empty": "Aucune dépendance déclarée.",
       "add": "Ajouter une dépendance",
+      "addDescription": "Reliez ce service à un autre dont il dépend.",
       "criticality": "Criticité",
       "direction": "Direction",
       "target": "Dépend de",

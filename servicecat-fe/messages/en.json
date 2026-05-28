@@ -58,6 +58,7 @@
       "title": "Dependencies",
       "empty": "No dependencies declared.",
       "add": "Add dependency",
+      "addDescription": "Link this service to another it depends on.",
       "criticality": "Criticality",
       "direction": "Direction",
       "target": "Depends on",
