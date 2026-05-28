@@ -13,7 +13,7 @@ revision:
 	alembic revision -m "$(m)"
 
 seed:
-	@echo "No seed script yet — added in a later backlog issue."
+	python -m servicecat.scripts.seed
 
 dev:
 	uvicorn servicecat.main:app --reload --port 8000

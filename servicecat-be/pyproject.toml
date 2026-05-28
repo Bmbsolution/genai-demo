@@ -111,6 +111,7 @@ pythonpath = ["src"]
 [tool.coverage.run]
 source = ["src/servicecat"]
 branch = true
+omit = ["*/scripts/*"]  # operational entrypoints, not unit-tested
 # Trace across the asyncio + SQLAlchemy-greenlet boundary so async request
 # handlers invoked via the ASGI transport are attributed correctly.
 concurrency = ["thread", "greenlet"]
