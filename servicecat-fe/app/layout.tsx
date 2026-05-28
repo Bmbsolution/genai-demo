@@ -16,7 +16,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="antialiased">
+      {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject
+          data-gr-ext-* attributes onto <body> before React hydrates. */}
+      <body className="antialiased" suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
