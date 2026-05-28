@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -78,7 +79,11 @@ export default function ServicesPage() {
               <TableBody>
                 {services.map((service) => (
                   <TableRow key={service.id}>
-                    <TableCell className="font-medium">{service.name}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link href={`/services/${service.id}`} className="hover:underline">
+                        {service.name}
+                      </Link>
+                    </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{t("tierLabel", { tier: service.tier })}</Badge>
                     </TableCell>

@@ -32,6 +32,33 @@
       "failed": "Impossible de créer le service."
     }
   },
+  "detail": {
+    "back": "Retour aux services",
+    "notFound": "Service introuvable.",
+    "repo": "Dépôt",
+    "owner": "Équipe responsable",
+    "noOwner": "Aucune",
+    "dependencies": {
+      "title": "Dépendances",
+      "empty": "Aucune dépendance déclarée.",
+      "add": "Ajouter une dépendance",
+      "criticality": "Criticité",
+      "direction": "Direction",
+      "target": "Dépend de",
+      "submit": "Ajouter",
+      "created": "Dépendance ajoutée.",
+      "failed": "Impossible d'ajouter la dépendance (cycle ou doublon ?)."
+    },
+    "scorecard": {
+      "title": "Scorecard de documentation",
+      "subtitle": "Cloner le dépôt et vérifier la documentation de base.",
+      "run": "Lancer la scorecard",
+      "running": "En cours…",
+      "findings": "{count, plural, =0 {Aucun constat} one {# constat} other {# constats}}",
+      "failed": "Échec : {error}",
+      "status": "Statut : {status}"
+    }
+  },
   "common": {
     "cancel": "Annuler",
     "loading": "Chargement…",

@@ -32,6 +32,33 @@
       "failed": "Could not create the service."
     }
   },
+  "detail": {
+    "back": "Back to services",
+    "notFound": "Service not found.",
+    "repo": "Repository",
+    "owner": "Owner team",
+    "noOwner": "None",
+    "dependencies": {
+      "title": "Dependencies",
+      "empty": "No dependencies declared.",
+      "add": "Add dependency",
+      "criticality": "Criticality",
+      "direction": "Direction",
+      "target": "Depends on",
+      "submit": "Add",
+      "created": "Dependency added.",
+      "failed": "Could not add the dependency (cycle or duplicate?)."
+    },
+    "scorecard": {
+      "title": "Documentation scorecard",
+      "subtitle": "Clone the repo and check baseline documentation.",
+      "run": "Run scorecard",
+      "running": "Running…",
+      "findings": "{count, plural, =0 {No findings} one {# finding} other {# findings}}",
+      "failed": "Run failed: {error}",
+      "status": "Status: {status}"
+    }
+  },
   "common": {
     "cancel": "Cancel",
     "loading": "Loading…",
