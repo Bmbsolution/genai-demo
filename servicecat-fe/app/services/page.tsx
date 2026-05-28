@@ -3,8 +3,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 import { AppHeader } from "@/components/app-header";
 import { CreateServiceDialog } from "@/components/create-service-dialog";
@@ -17,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRequireAuth } from "@/hooks/use-require-auth";
 import { apiFetch } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { useAuthStore } from "@/lib/store/auth";
@@ -24,23 +23,18 @@ import { useAuthStore } from "@/lib/store/auth";
 type ServiceList = components["schemas"]["ServiceListResponse"];
 
 export default function ServicesPage() {
-  const router = useRouter();
+  const { ready } = useRequireAuth();
   const t = useTranslations("services");
   const tc = useTranslations("common");
-  const accessToken = useAuthStore((state) => state.accessToken);
   const workspaceId = useAuthStore((state) => state.workspaceId);
-
-  useEffect(() => {
-    if (!accessToken) router.replace("/login");
-  }, [accessToken, router]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["services", workspaceId],
     queryFn: () => apiFetch<ServiceList>("/api/v1/services"),
-    enabled: Boolean(accessToken && workspaceId),
+    enabled: ready && Boolean(workspaceId),
   });
 
-  if (!accessToken) return null;
+  if (!ready) return null;
 
   const services = data?.data ?? [];
 

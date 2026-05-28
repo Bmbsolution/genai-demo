@@ -1,6 +1,22 @@
 {
   "app": { "title": "ServiceCat" },
-  "nav": { "logout": "Se déconnecter" },
+  "nav": { "services": "Services", "findings": "Constats", "logout": "Se déconnecter" },
+  "findings": {
+    "title": "Constats",
+    "subtitle": "Constats ouverts dans votre espace",
+    "onService": "Constats",
+    "empty": "Aucun constat pour l'instant. Lancez une scorecard pour en générer.",
+    "loadError": "Impossible de charger les constats.",
+    "allSeverities": "Toutes les sévérités",
+    "columns": {
+      "severity": "Sévérité",
+      "service": "Service",
+      "criterion": "Critère",
+      "remediation": "Remédiation",
+      "autoFixable": "Auto-correction"
+    },
+    "autoFixable": "Auto-corrigeable"
+  },
   "theme": { "toggle": "Changer de thème" },
   "login": {
     "title": "Connexion à ServiceCat",

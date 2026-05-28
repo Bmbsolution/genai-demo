@@ -4,14 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import { AddDependencyDialog } from "@/components/add-dependency-dialog";
 import { AppHeader } from "@/components/app-header";
+import { FindingsTable } from "@/components/findings-table";
 import { RunScorecardButton } from "@/components/run-scorecard-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRequireAuth } from "@/hooks/use-require-auth";
 import { apiFetch } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { useAuthStore } from "@/lib/store/auth";
@@ -19,20 +20,16 @@ import { useAuthStore } from "@/lib/store/auth";
 type Service = components["schemas"]["ServiceResponse"];
 type ServiceList = components["schemas"]["ServiceListResponse"];
 type Dependency = components["schemas"]["ServiceDependencyResponse"];
+type FindingList = components["schemas"]["FindingListResponse"];
 
 export default function ServiceDetailPage() {
   const params = useParams<{ id: string }>();
   const serviceId = params.id;
-  const router = useRouter();
+  const { ready } = useRequireAuth();
   const t = useTranslations();
-  const accessToken = useAuthStore((state) => state.accessToken);
   const workspaceId = useAuthStore((state) => state.workspaceId);
 
-  useEffect(() => {
-    if (!accessToken) router.replace("/login");
-  }, [accessToken, router]);
-
-  const enabled = Boolean(accessToken && workspaceId);
+  const enabled = ready && Boolean(workspaceId);
   const service = useQuery({
     queryKey: ["service", serviceId],
     queryFn: () => apiFetch<Service>(`/api/v1/services/${serviceId}`),
@@ -48,12 +45,18 @@ export default function ServiceDetailPage() {
     queryFn: () => apiFetch<ServiceList>("/api/v1/services?limit=200"),
     enabled,
   });
+  const findings = useQuery({
+    queryKey: ["findings", workspaceId, serviceId],
+    queryFn: () => apiFetch<FindingList>(`/api/v1/findings?service_id=${serviceId}`),
+    enabled,
+  });
 
-  if (!accessToken) return null;
+  if (!ready) return null;
 
   const nameById = new Map((allServices.data?.data ?? []).map((item) => [item.id, item.name]));
   const candidates = (allServices.data?.data ?? []).filter((item) => item.id !== serviceId);
   const edges = dependencies.data ?? [];
+  const serviceFindings = findings.data?.data ?? [];
 
   return (
     <div className="min-h-screen">
@@ -119,6 +122,23 @@ export default function ServiceDetailPage() {
               </CardHeader>
               <CardContent>
                 <RunScorecardButton serviceId={serviceId} />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">{t("findings.onService")}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {serviceFindings.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t("findings.empty")}</p>
+                ) : (
+                  <FindingsTable
+                    findings={serviceFindings}
+                    nameById={nameById}
+                    showService={false}
+                  />
+                )}
               </CardContent>
             </Card>
           </>

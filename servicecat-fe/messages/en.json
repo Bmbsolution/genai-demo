@@ -1,6 +1,22 @@
 {
   "app": { "title": "ServiceCat" },
-  "nav": { "logout": "Sign out" },
+  "nav": { "services": "Services", "findings": "Findings", "logout": "Sign out" },
+  "findings": {
+    "title": "Findings",
+    "subtitle": "Open findings across your workspace",
+    "onService": "Findings",
+    "empty": "No findings yet. Run a scorecard to populate them.",
+    "loadError": "Could not load findings.",
+    "allSeverities": "All severities",
+    "columns": {
+      "severity": "Severity",
+      "service": "Service",
+      "criterion": "Criterion",
+      "remediation": "Remediation",
+      "autoFixable": "Auto-fix"
+    },
+    "autoFixable": "Auto-fixable"
+  },
   "theme": { "toggle": "Toggle theme" },
   "login": {
     "title": "Sign in to ServiceCat",

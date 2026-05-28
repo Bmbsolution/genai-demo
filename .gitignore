@@ -38,3 +38,5 @@ out/
 Thumbs.db
 .idea/
 .vscode/
+.playwright-mcp/
+findings-dashboard.png
