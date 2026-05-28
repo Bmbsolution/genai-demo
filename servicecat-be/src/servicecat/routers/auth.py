@@ -21,6 +21,7 @@ from servicecat.schemas.auth import (
     TokenPairResponse,
     UserResponse,
 )
+from servicecat.schemas.base import DataResponse
 from servicecat.services.auth_service import AuthService
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
@@ -78,5 +79,5 @@ async def logout(
 async def me(
     user: Annotated[User, Depends(get_current_user)],
     _rl: Annotated[None, Depends(_me_rl)],
-) -> UserResponse:
-    return UserResponse.model_validate(user)
+) -> DataResponse[UserResponse]:
+    return DataResponse(data=UserResponse.model_validate(user))

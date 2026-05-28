@@ -20,6 +20,7 @@ from servicecat.deps import (
     require_capability,
 )
 from servicecat.rbac import Capability
+from servicecat.schemas.base import DataResponse
 from servicecat.schemas.service import (
     PageMeta,
     ServiceCreateRequest,
@@ -50,9 +51,9 @@ async def create_service(
     _cap: Annotated[None, Depends(_write_cap)],
     _rl: Annotated[None, Depends(_rl_write)],
     _audit: Annotated[None, Depends(audit_action("service.create"))],
-) -> ServiceResponse:
+) -> DataResponse[ServiceResponse]:
     service = await ServiceCatalog(db).create(workspace_id=context.workspace.id, payload=payload)
-    return ServiceResponse.model_validate(service)
+    return DataResponse(data=ServiceResponse.model_validate(service))
 
 
 @router.get("")
@@ -85,9 +86,9 @@ async def get_service(
     _cap: Annotated[None, Depends(_read_cap)],
     _rl: Annotated[None, Depends(_rl_read)],
     _audit: Annotated[None, Depends(audit_action("service.read"))],
-) -> ServiceResponse:
+) -> DataResponse[ServiceResponse]:
     service = await ServiceCatalog(db).get(service_id)
-    return ServiceResponse.model_validate(service)
+    return DataResponse(data=ServiceResponse.model_validate(service))
 
 
 @router.patch("/{service_id}")
@@ -98,9 +99,9 @@ async def update_service(
     _cap: Annotated[None, Depends(_write_cap)],
     _rl: Annotated[None, Depends(_rl_write)],
     _audit: Annotated[None, Depends(audit_action("service.update"))],
-) -> ServiceResponse:
+) -> DataResponse[ServiceResponse]:
     service = await ServiceCatalog(db).update(service_id, payload)
-    return ServiceResponse.model_validate(service)
+    return DataResponse(data=ServiceResponse.model_validate(service))
 
 
 @router.delete("/{service_id}", status_code=status.HTTP_204_NO_CONTENT)

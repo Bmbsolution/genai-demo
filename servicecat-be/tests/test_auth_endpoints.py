@@ -86,7 +86,7 @@ async def test_login_then_me_returns_current_user(
         headers={"Authorization": f"Bearer {tokens['access_token']}"},
     )
     assert resp.status_code == HTTPStatus.OK
-    assert resp.json()["email"] == EMAIL
+    assert resp.json()["data"]["email"] == EMAIL
 
 
 async def test_refresh_rotation_invalidates_old_token(

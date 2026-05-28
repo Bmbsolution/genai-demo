@@ -20,6 +20,7 @@ from servicecat.deps import (
 )
 from servicecat.models import ServiceDependency
 from servicecat.rbac import Capability
+from servicecat.schemas.base import DataResponse
 from servicecat.schemas.service_dependency import (
     ServiceDependencyCreateRequest,
     ServiceDependencyResponse,
@@ -57,7 +58,7 @@ async def add_dependency(
     _cap: Annotated[None, Depends(_write_cap)],
     _rl: Annotated[None, Depends(_rl_write)],
     _audit: Annotated[None, Depends(audit_action("service.dependency.create"))],
-) -> ServiceDependencyResponse:
+) -> DataResponse[ServiceDependencyResponse]:
     dependency = await ServiceDependencyService(db).add(
         workspace_id=context.workspace.id,
         service_id=service_id,
@@ -65,7 +66,7 @@ async def add_dependency(
         criticality=payload.criticality,
         direction=payload.direction,
     )
-    return _response(dependency, depth=1)
+    return DataResponse(data=_response(dependency, depth=1))
 
 
 @router.delete(
@@ -91,6 +92,6 @@ async def list_dependencies(
     _rl: Annotated[None, Depends(_rl_read)],
     _audit: Annotated[None, Depends(audit_action("service.dependency.list"))],
     depth: Annotated[int, Query(ge=1, le=2)] = 1,
-) -> list[ServiceDependencyResponse]:
+) -> DataResponse[list[ServiceDependencyResponse]]:
     edges = await ServiceDependencyService(db).list_dependencies(service_id, depth=depth)
-    return [_response(edge.dependency, edge.depth) for edge in edges]
+    return DataResponse(data=[_response(edge.dependency, edge.depth) for edge in edges])

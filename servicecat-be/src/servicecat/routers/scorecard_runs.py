@@ -21,6 +21,7 @@ from servicecat.deps import (
     require_capability,
 )
 from servicecat.rbac import Capability
+from servicecat.schemas.base import DataResponse
 from servicecat.schemas.scorecard_run import ScorecardRunCreateRequest, ScorecardRunResponse
 from servicecat.services.scorecard_runner import ScorecardRunService
 from servicecat.workers.scorecard import get_enqueue
@@ -47,7 +48,7 @@ async def trigger_scorecard_run(
     _cap: Annotated[None, Depends(_run_cap)],
     _rl: Annotated[None, Depends(_run_rl)],
     _audit: Annotated[None, Depends(audit_action("scorecard.run"))],
-) -> ScorecardRunResponse:
+) -> DataResponse[ScorecardRunResponse]:
     run = await ScorecardRunService(db).trigger(
         workspace_id=context.workspace.id,
         scorecard_name=scorecard_name,
@@ -55,7 +56,7 @@ async def trigger_scorecard_run(
         triggered_by=context.user.id,
     )
     await enqueue(run.id, context.workspace.id)
-    return ScorecardRunResponse.model_validate(run)
+    return DataResponse(data=ScorecardRunResponse.model_validate(run))
 
 
 @router.get("/runs/{run_id}")
@@ -65,6 +66,6 @@ async def get_scorecard_run(
     _cap: Annotated[None, Depends(_read_cap)],
     _rl: Annotated[None, Depends(_read_rl)],
     _audit: Annotated[None, Depends(audit_action("scorecard.run.read"))],
-) -> ScorecardRunResponse:
+) -> DataResponse[ScorecardRunResponse]:
     run = await ScorecardRunService(db).get(run_id)
-    return ScorecardRunResponse.model_validate(run)
+    return DataResponse(data=ScorecardRunResponse.model_validate(run))

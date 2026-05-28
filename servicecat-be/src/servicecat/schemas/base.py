@@ -14,3 +14,13 @@ class ServiceCatBaseModel(BaseModel):
         populate_by_name=True,
         str_strip_whitespace=True,
     )
+
+
+class DataResponse[T](BaseModel):
+    """Success envelope for a single resource or a simple list: ``{"data": ...}``.
+
+    Paginated collections use their own ``{data, meta}`` models (e.g.
+    ServiceListResponse); auth token endpoints stay flat (OAuth2 convention).
+    """
+
+    data: T

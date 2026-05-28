@@ -102,7 +102,7 @@ async def test_maintainer_adds_dependency(
     token = await _token(auth_client, MAINT_EMAIL)
     resp = await _add(auth_client, token, SVC_A, SVC_B)
     assert resp.status_code == HTTPStatus.CREATED
-    body = resp.json()
+    body = resp.json()["data"]
     assert body["depends_on_service_id"] == str(SVC_B)
     assert body["depth"] == 1
 
@@ -164,13 +164,16 @@ async def test_list_depth_one_and_two(
         f"/api/v1/services/{SVC_A}/dependencies?depth=1",
         headers=_headers(token),
     )
-    assert {edge["depends_on_service_id"] for edge in depth1.json()} == {str(SVC_B)}
+    assert {edge["depends_on_service_id"] for edge in depth1.json()["data"]} == {str(SVC_B)}
 
     depth2 = await auth_client.get(
         f"/api/v1/services/{SVC_A}/dependencies?depth=2",
         headers=_headers(token),
     )
-    assert {edge["depends_on_service_id"] for edge in depth2.json()} == {str(SVC_B), str(SVC_C)}
+    assert {edge["depends_on_service_id"] for edge in depth2.json()["data"]} == {
+        str(SVC_B),
+        str(SVC_C),
+    }
 
 
 async def test_remove_dependency(
@@ -179,7 +182,7 @@ async def test_remove_dependency(
 ) -> None:
     await _seed(rls_sessionmaker)
     token = await _token(auth_client, MAINT_EMAIL)
-    created = (await _add(auth_client, token, SVC_A, SVC_B)).json()
+    created = (await _add(auth_client, token, SVC_A, SVC_B)).json()["data"]
     deleted = await auth_client.delete(
         f"/api/v1/services/{SVC_A}/dependencies/{created['id']}",
         headers=_headers(token),
@@ -189,7 +192,7 @@ async def test_remove_dependency(
         f"/api/v1/services/{SVC_A}/dependencies",
         headers=_headers(token),
     )
-    assert listed.json() == []
+    assert listed.json()["data"] == []
 
 
 async def test_cross_workspace_add_returns_404(

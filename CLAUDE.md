@@ -332,10 +332,35 @@ POST   /api/v1/scorecards/{id}/runs          # Action-style for non-CRUD
 
 ### Response Format
 
-Success:
+Every success response is wrapped in a `data` envelope. The shape depends on
+the resource kind:
+
+**Single resource** — `{ "data": { ... } }`:
 ```json
-{ "data": { ... }, "meta": { "page": 1, "total": 42 } }
+{ "data": { "id": "…", "name": "payment-svc", "tier": 1 } }
 ```
+
+**Paginated collection** — `{ "data": [ ... ], "meta": { ... } }`:
+```json
+{ "data": [ { "id": "…" } ], "meta": { "limit": 50, "offset": 0, "total": 42 } }
+```
+
+**Simple (non-paginated) collection** — `{ "data": [ ... ] }` (no `meta`):
+```json
+{ "data": [ { "id": "…", "slug": "acme-corp" } ] }
+```
+
+Implemented with the generic `DataResponse[T]` envelope
+(`servicecat-be/src/servicecat/schemas/base.py`) for single resources and
+simple lists; paginated collections use their own `{data, meta}` models (e.g.
+`ServiceListResponse`).
+
+**Exception — auth token endpoints.** `POST /auth/login` and `POST /auth/refresh`
+return the flat OAuth2 token shape, **not** enveloped:
+```json
+{ "access_token": "…", "refresh_token": "…", "token_type": "bearer" }
+```
+This is deliberate (OAuth2 convention; clients read these fields at the top level).
 
 Error:
 ```json

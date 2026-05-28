@@ -60,7 +60,7 @@ async def test_admin_can_list_and_request_is_audited(
     )
     assert resp.status_code == HTTPStatus.OK
     # S5: the read itself was recorded (and is visible read-your-writes).
-    assert any(entry["action"] == "audit.list" for entry in resp.json())
+    assert any(entry["action"] == "audit.list" for entry in resp.json()["data"])
 
 
 async def test_viewer_is_forbidden(

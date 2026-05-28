@@ -51,7 +51,7 @@ async def test_lists_the_users_workspaces(
         headers={"Authorization": f"Bearer {tokens['access_token']}"},
     )
     assert resp.status_code == HTTPStatus.OK
-    body = resp.json()
+    body = resp.json()["data"]
     assert {row["slug"] for row in body} == {"alpha", "beta"}
     assert {row["role"] for row in body} == {"admin", "viewer"}
 

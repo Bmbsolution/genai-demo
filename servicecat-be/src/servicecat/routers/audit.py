@@ -14,6 +14,7 @@ from servicecat.deps import audit_action, get_db, rate_limit, require_capability
 from servicecat.rbac import Capability
 from servicecat.repositories.audit import AuditLogRepository
 from servicecat.schemas.audit import AuditLogResponse
+from servicecat.schemas.base import DataResponse
 
 router = APIRouter(prefix="/api/v1/audit", tags=["audit"])
 
@@ -31,10 +32,10 @@ async def list_audit_logs(
     action: Annotated[str | None, Query()] = None,
     resource_type: Annotated[str | None, Query()] = None,
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
-) -> list[AuditLogResponse]:
+) -> DataResponse[list[AuditLogResponse]]:
     logs = await AuditLogRepository(db).list_for_workspace(
         action=action,
         resource_type=resource_type,
         limit=limit,
     )
-    return [AuditLogResponse.model_validate(log) for log in logs]
+    return DataResponse(data=[AuditLogResponse.model_validate(log) for log in logs])

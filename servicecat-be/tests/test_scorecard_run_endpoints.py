@@ -77,14 +77,14 @@ async def test_maintainer_triggers_run_and_reads_status(
         json={"target_service_ids": [str(SERVICE)]},
     )
     assert resp.status_code == HTTPStatus.ACCEPTED
-    run = resp.json()
+    run = resp.json()["data"]
     assert run["status"] == "queued"
     status_resp = await auth_client.get(
         f"/api/v1/scorecards/runs/{run['id']}",
         headers=_headers(token),
     )
     assert status_resp.status_code == HTTPStatus.OK
-    assert status_resp.json()["finding_count"] == 0
+    assert status_resp.json()["data"]["finding_count"] == 0
 
 
 async def test_viewer_cannot_trigger_run(
@@ -141,7 +141,7 @@ async def test_run_is_workspace_isolated(
             headers=_headers(maint),
             json={"target_service_ids": [str(SERVICE)]},
         )
-    ).json()
+    ).json()["data"]
     other = await _token(auth_client, OTHER_EMAIL)
     resp = await auth_client.get(
         f"/api/v1/scorecards/runs/{created['id']}",

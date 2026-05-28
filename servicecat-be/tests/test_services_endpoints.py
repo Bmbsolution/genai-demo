@@ -83,7 +83,7 @@ async def test_maintainer_creates_service(
     await _seed(rls_sessionmaker)
     resp = await _create(auth_client, await _token(auth_client, MAINT_EMAIL))
     assert resp.status_code == HTTPStatus.CREATED
-    body = resp.json()
+    body = resp.json()["data"]
     assert body["name"] == "payments"
     assert body["tier"] == 1
     assert body["workspace_id"] == str(WS)
@@ -137,14 +137,14 @@ async def test_maintainer_updates_service(
 ) -> None:
     await _seed(rls_sessionmaker)
     token = await _token(auth_client, MAINT_EMAIL)
-    created = (await _create(auth_client, token)).json()
+    created = (await _create(auth_client, token)).json()["data"]
     resp = await auth_client.patch(
         f"/api/v1/services/{created['id']}",
         headers=_headers(token),
         json={"tier": 3},
     )
     assert resp.status_code == HTTPStatus.OK
-    assert resp.json()["tier"] == 3
+    assert resp.json()["data"]["tier"] == 3
 
 
 async def test_admin_soft_deletes_then_404(
@@ -153,7 +153,7 @@ async def test_admin_soft_deletes_then_404(
 ) -> None:
     await _seed(rls_sessionmaker)
     token = await _token(auth_client, ADMIN_EMAIL)
-    created = (await _create(auth_client, token)).json()
+    created = (await _create(auth_client, token)).json()["data"]
     deleted = await auth_client.delete(f"/api/v1/services/{created['id']}", headers=_headers(token))
     assert deleted.status_code == HTTPStatus.NO_CONTENT
     after = await auth_client.get(f"/api/v1/services/{created['id']}", headers=_headers(token))
@@ -166,7 +166,7 @@ async def test_maintainer_cannot_delete(
 ) -> None:
     await _seed(rls_sessionmaker)
     token = await _token(auth_client, MAINT_EMAIL)
-    created = (await _create(auth_client, token)).json()
+    created = (await _create(auth_client, token)).json()["data"]
     resp = await auth_client.delete(f"/api/v1/services/{created['id']}", headers=_headers(token))
     assert resp.status_code == HTTPStatus.FORBIDDEN
 
@@ -176,7 +176,7 @@ async def test_cross_workspace_probe_returns_404(
     rls_sessionmaker: async_sessionmaker[AsyncSession],
 ) -> None:
     await _seed(rls_sessionmaker)
-    created = (await _create(auth_client, await _token(auth_client, ADMIN_EMAIL))).json()
+    created = (await _create(auth_client, await _token(auth_client, ADMIN_EMAIL))).json()["data"]
     other_token = await _token(auth_client, OTHER_EMAIL)
     # Other admin, scoped to WS_OTHER, cannot see WS's service: RLS hides it (404).
     resp = await auth_client.get(
@@ -235,7 +235,7 @@ async def test_rename_to_existing_name_returns_409(
     await _seed(rls_sessionmaker)
     token = await _token(auth_client, MAINT_EMAIL)
     await _create(auth_client, token, name="alpha")
-    beta = (await _create(auth_client, token, name="beta")).json()
+    beta = (await _create(auth_client, token, name="beta")).json()["data"]
     resp = await auth_client.patch(
         f"/api/v1/services/{beta['id']}",
         headers=_headers(token),
