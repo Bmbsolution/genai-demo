@@ -16,6 +16,7 @@ from servicecat.redis_client import close_redis
 from servicecat.routers import (
     audit,
     auth,
+    findings,
     scorecard_runs,
     service_dependencies,
     services,
@@ -73,6 +74,7 @@ def create_app() -> FastAPI:
     app.include_router(services.router)
     app.include_router(service_dependencies.router)
     app.include_router(scorecard_runs.router)
+    app.include_router(findings.router)
     return app
 
 
