@@ -1,0 +1,42 @@
+{
+  "app": { "title": "ServiceCat" },
+  "nav": { "logout": "Se déconnecter" },
+  "theme": { "toggle": "Changer de thème" },
+  "login": {
+    "title": "Connexion à ServiceCat",
+    "subtitle": "Portail développeur interne",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion…",
+    "failed": "Échec de la connexion. Vérifiez vos identifiants."
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Le catalogue de services de votre espace",
+    "new": "Enregistrer un service",
+    "empty": "Aucun service pour l'instant. Enregistrez le premier.",
+    "loadError": "Impossible de charger les services.",
+    "columns": { "name": "Nom", "tier": "Niveau", "repo": "Dépôt", "description": "Description" },
+    "tierLabel": "Niveau {tier}",
+    "dialog": {
+      "title": "Enregistrer un service",
+      "description": "Ajouter un service au catalogue.",
+      "name": "Nom",
+      "repoUrl": "URL du dépôt",
+      "tier": "Niveau (1–3)",
+      "descriptionField": "Description (optionnel)",
+      "submit": "Créer",
+      "submitting": "Création…",
+      "created": "Service enregistré.",
+      "failed": "Impossible de créer le service."
+    }
+  },
+  "common": {
+    "cancel": "Annuler",
+    "loading": "Chargement…",
+    "workspace": "Espace",
+    "error": "Une erreur est survenue.",
+    "retry": "Réessayer"
+  }
+}

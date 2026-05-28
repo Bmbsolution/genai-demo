@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,6 +21,12 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6380/0"
     environment: str = "local"
     api_v1_prefix: str = "/api/v1"
+    cors_allow_origins: list[str] = Field(
+        default_factory=lambda: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    )
+    # Dev convenience: allow any localhost port (the Next dev server may fall
+    # back to 3001+ if 3000 is taken). Tighten for non-local environments.
+    cors_allow_origin_regex: str = r"https?://(localhost|127\.0\.0\.1)(:\d+)?"
 
     # JWT (RS256). Keys are PEM files outside version control; generate a local
     # dev pair into ./secrets/ and never commit real keys (rule S7).

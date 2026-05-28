@@ -1,0 +1,42 @@
+{
+  "app": { "title": "ServiceCat" },
+  "nav": { "logout": "Sign out" },
+  "theme": { "toggle": "Toggle theme" },
+  "login": {
+    "title": "Sign in to ServiceCat",
+    "subtitle": "Internal Developer Portal",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "failed": "Sign in failed. Check your credentials."
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Your workspace's service catalog",
+    "new": "Register service",
+    "empty": "No services yet. Register your first one.",
+    "loadError": "Could not load services.",
+    "columns": { "name": "Name", "tier": "Tier", "repo": "Repository", "description": "Description" },
+    "tierLabel": "Tier {tier}",
+    "dialog": {
+      "title": "Register a service",
+      "description": "Add a service to the catalog.",
+      "name": "Name",
+      "repoUrl": "Repository URL",
+      "tier": "Tier (1–3)",
+      "descriptionField": "Description (optional)",
+      "submit": "Create",
+      "submitting": "Creating…",
+      "created": "Service registered.",
+      "failed": "Could not create the service."
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "workspace": "Workspace",
+    "error": "Something went wrong.",
+    "retry": "Try again"
+  }
+}
