@@ -213,3 +213,33 @@ async def test_list_filters_by_tier_and_owner(
         headers=_headers(token),
     )
     assert [item["name"] for item in by_owner.json()["data"]] == ["owned"]
+
+
+async def test_duplicate_name_returns_409(
+    auth_client: AsyncClient,
+    rls_sessionmaker: async_sessionmaker[AsyncSession],
+) -> None:
+    await _seed(rls_sessionmaker)
+    token = await _token(auth_client, MAINT_EMAIL)
+    first = await _create(auth_client, token, name="dupe")
+    assert first.status_code == HTTPStatus.CREATED
+    again = await _create(auth_client, token, name="dupe")
+    assert again.status_code == HTTPStatus.CONFLICT
+    assert again.json()["error"]["code"] == "CONFLICT"
+
+
+async def test_rename_to_existing_name_returns_409(
+    auth_client: AsyncClient,
+    rls_sessionmaker: async_sessionmaker[AsyncSession],
+) -> None:
+    await _seed(rls_sessionmaker)
+    token = await _token(auth_client, MAINT_EMAIL)
+    await _create(auth_client, token, name="alpha")
+    beta = (await _create(auth_client, token, name="beta")).json()
+    resp = await auth_client.patch(
+        f"/api/v1/services/{beta['id']}",
+        headers=_headers(token),
+        json={"name": "alpha"},
+    )
+    assert resp.status_code == HTTPStatus.CONFLICT
+    assert resp.json()["error"]["code"] == "CONFLICT"

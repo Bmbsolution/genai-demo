@@ -7,7 +7,9 @@ from __future__ import annotations
 import datetime as dt
 from typing import TYPE_CHECKING
 
-from servicecat.errors import NotFoundError
+from sqlalchemy.exc import IntegrityError
+
+from servicecat.errors import ConflictError, NotFoundError
 from servicecat.models import Service
 from servicecat.repositories.services import ServiceRepository
 
@@ -18,6 +20,20 @@ if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
     from servicecat.schemas.service import ServiceCreateRequest, ServiceUpdateRequest
+
+# PostgreSQL SQLSTATE for unique_violation; the services table has a
+# uq_services_workspace_id_name constraint (one name per workspace).
+_PG_UNIQUE_VIOLATION = "23505"
+
+
+def _name_conflict(exc: IntegrityError, name: str) -> ConflictError | None:
+    """Map a unique-constraint violation to a typed 409; return None otherwise."""
+    if getattr(exc.orig, "sqlstate", None) != _PG_UNIQUE_VIOLATION:
+        return None
+    return ConflictError(
+        f"A service named '{name}' already exists in this workspace.",
+        details={"field": "name", "value": name},
+    )
 
 
 class ServiceCatalog:
@@ -36,7 +52,10 @@ class ServiceCatalog:
             tier=payload.tier,
             owner_team_id=payload.owner_team_id,
         )
-        await self._repo.add(service)
+        try:
+            await self._repo.add(service)
+        except IntegrityError as exc:
+            raise _name_conflict(exc, payload.name) or exc from exc
         return service
 
     async def get(self, service_id: uuid.UUID) -> Service:
@@ -64,7 +83,12 @@ class ServiceCatalog:
         service = await self.get(service_id)
         for field, value in payload.model_dump(exclude_unset=True).items():
             setattr(service, field, value)
-        await self._db.flush()
+        try:
+            await self._db.flush()
+        except IntegrityError as exc:
+            # Use payload.name, not service.name: a failed flush expires the ORM
+            # attributes, so reading them here would emit SQL on a dead transaction.
+            raise _name_conflict(exc, payload.name or "service") or exc from exc
         # Reload server-side onupdate values (e.g. updated_at) so the response
         # doesn't lazy-load them in pydantic's sync context (MissingGreenlet).
         await self._db.refresh(service)
