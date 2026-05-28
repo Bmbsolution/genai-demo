@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 
 type Run = components["schemas"]["ScorecardRunResponse"];
@@ -21,17 +21,18 @@ export function RunScorecardButton({ serviceId }: { serviceId: string }) {
 
   const trigger = useMutation({
     mutationFn: () =>
-      apiFetch<Run>("/api/v1/scorecards/documentation/runs", {
+      apiFetch<Data<Run>>("/api/v1/scorecards/documentation/runs", {
         method: "POST",
         body: { target_service_ids: [serviceId] },
-      }),
+      }).then((res) => res.data),
     onSuccess: (run) => setRunId(run.id),
     onError: () => toast.error(t("common.error")),
   });
 
   const { data: run } = useQuery({
     queryKey: ["run", runId],
-    queryFn: () => apiFetch<Run>(`/api/v1/scorecards/runs/${runId}`),
+    queryFn: () =>
+      apiFetch<Data<Run>>(`/api/v1/scorecards/runs/${runId}`).then((res) => res.data),
     enabled: Boolean(runId),
     refetchInterval: (query) => {
       const status = query.state.data?.status;

@@ -287,6 +287,37 @@ export interface components {
              */
             created_at: string;
         };
+        /** DataResponse[ScorecardRunResponse] */
+        DataResponse_ScorecardRunResponse_: {
+            data: components["schemas"]["ScorecardRunResponse"];
+        };
+        /** DataResponse[ServiceDependencyResponse] */
+        DataResponse_ServiceDependencyResponse_: {
+            data: components["schemas"]["ServiceDependencyResponse"];
+        };
+        /** DataResponse[ServiceResponse] */
+        DataResponse_ServiceResponse_: {
+            data: components["schemas"]["ServiceResponse"];
+        };
+        /** DataResponse[UserResponse] */
+        DataResponse_UserResponse_: {
+            data: components["schemas"]["UserResponse"];
+        };
+        /** DataResponse[list[AuditLogResponse]] */
+        DataResponse_list_AuditLogResponse__: {
+            /** Data */
+            data: components["schemas"]["AuditLogResponse"][];
+        };
+        /** DataResponse[list[ServiceDependencyResponse]] */
+        DataResponse_list_ServiceDependencyResponse__: {
+            /** Data */
+            data: components["schemas"]["ServiceDependencyResponse"][];
+        };
+        /** DataResponse[list[WorkspaceResponse]] */
+        DataResponse_list_WorkspaceResponse__: {
+            /** Data */
+            data: components["schemas"]["WorkspaceResponse"][];
+        };
         /**
          * DependencyCriticality
          * @description How critical a dependency is to the dependent service.
@@ -700,7 +731,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UserResponse"];
+                    "application/json": components["schemas"]["DataResponse_UserResponse_"];
                 };
             };
         };
@@ -720,7 +751,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkspaceResponse"][];
+                    "application/json": components["schemas"]["DataResponse_list_WorkspaceResponse__"];
                 };
             };
         };
@@ -746,7 +777,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AuditLogResponse"][];
+                    "application/json": components["schemas"]["DataResponse_list_AuditLogResponse__"];
                 };
             };
             /** @description Validation Error */
@@ -817,7 +848,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceResponse"];
+                    "application/json": components["schemas"]["DataResponse_ServiceResponse_"];
                 };
             };
             /** @description Validation Error */
@@ -850,7 +881,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceResponse"];
+                    "application/json": components["schemas"]["DataResponse_ServiceResponse_"];
                 };
             };
             /** @description Validation Error */
@@ -918,7 +949,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceResponse"];
+                    "application/json": components["schemas"]["DataResponse_ServiceResponse_"];
                 };
             };
             /** @description Validation Error */
@@ -953,7 +984,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceDependencyResponse"][];
+                    "application/json": components["schemas"]["DataResponse_list_ServiceDependencyResponse__"];
                 };
             };
             /** @description Validation Error */
@@ -990,7 +1021,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceDependencyResponse"];
+                    "application/json": components["schemas"]["DataResponse_ServiceDependencyResponse_"];
                 };
             };
             /** @description Validation Error */
@@ -1059,7 +1090,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ScorecardRunResponse"];
+                    "application/json": components["schemas"]["DataResponse_ScorecardRunResponse_"];
                 };
             };
             /** @description Validation Error */
@@ -1092,7 +1123,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ScorecardRunResponse"];
+                    "application/json": components["schemas"]["DataResponse_ScorecardRunResponse_"];
                 };
             };
             /** @description Validation Error */

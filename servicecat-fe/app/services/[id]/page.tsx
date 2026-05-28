@@ -13,7 +13,7 @@ import { RunScorecardButton } from "@/components/run-scorecard-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRequireAuth } from "@/hooks/use-require-auth";
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { useAuthStore } from "@/lib/store/auth";
 
@@ -32,12 +32,16 @@ export default function ServiceDetailPage() {
   const enabled = ready && Boolean(workspaceId);
   const service = useQuery({
     queryKey: ["service", serviceId],
-    queryFn: () => apiFetch<Service>(`/api/v1/services/${serviceId}`),
+    queryFn: () =>
+      apiFetch<Data<Service>>(`/api/v1/services/${serviceId}`).then((res) => res.data),
     enabled,
   });
   const dependencies = useQuery({
     queryKey: ["dependencies", serviceId],
-    queryFn: () => apiFetch<Dependency[]>(`/api/v1/services/${serviceId}/dependencies?depth=2`),
+    queryFn: () =>
+      apiFetch<Data<Dependency[]>>(`/api/v1/services/${serviceId}/dependencies?depth=2`).then(
+        (res) => res.data,
+      ),
     enabled,
   });
   const allServices = useQuery({

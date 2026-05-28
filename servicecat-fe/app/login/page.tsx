@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { useAuthStore } from "@/lib/store/auth";
 
@@ -47,8 +47,10 @@ export default function LoginPage() {
         workspace: false,
       });
       setSession({ accessToken: tokens.access_token, refreshToken: tokens.refresh_token });
-      const workspaces = await apiFetch<Workspace[]>("/api/v1/workspaces", { workspace: false });
-      const first = workspaces.at(0);
+      const workspaces = await apiFetch<Data<Workspace[]>>("/api/v1/workspaces", {
+        workspace: false,
+      });
+      const first = workspaces.data.at(0);
       if (first) setWorkspace({ id: first.id, name: first.name });
       router.push("/services");
     } catch {

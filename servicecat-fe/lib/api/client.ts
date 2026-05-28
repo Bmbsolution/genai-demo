@@ -2,6 +2,11 @@ import { useAuthStore } from "@/lib/store/auth";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
+/** Single-resource / simple-list success envelope returned by the API. */
+export interface Data<T> {
+  data: T;
+}
+
 export class ApiError extends Error {
   readonly status: number;
   readonly code?: string;
