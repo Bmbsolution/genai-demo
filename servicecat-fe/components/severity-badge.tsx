@@ -10,5 +10,9 @@ const SEVERITY_VARIANT: Record<string, Variant> = {
 };
 
 export function SeverityBadge({ severity }: { severity: string }) {
-  return <Badge variant={SEVERITY_VARIANT[severity] ?? "outline"}>{severity}</Badge>;
+  return (
+    <Badge variant={SEVERITY_VARIANT[severity] ?? "outline"} className="capitalize">
+      {severity}
+    </Badge>
+  );
 }

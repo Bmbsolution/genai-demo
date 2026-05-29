@@ -74,7 +74,10 @@ export default function ServicesPage() {
                 {services.map((service) => (
                   <TableRow key={service.id}>
                     <TableCell className="font-medium">
-                      <Link href={`/services/${service.id}`} className="hover:underline">
+                      <Link
+                        href={`/services/${service.id}`}
+                        className="rounded hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
                         {service.name}
                       </Link>
                     </TableCell>

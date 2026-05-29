@@ -30,22 +30,22 @@ export function AppHeader() {
   return (
     <header className="border-b">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-2">
-          <Boxes className="h-6 w-6 text-primary" />
+        <div className="flex min-w-0 items-center gap-2">
+          <Boxes className="h-6 w-6 shrink-0 text-primary" />
           <span className="text-lg font-semibold">{t("app.title")}</span>
           {workspaceName ? (
-            <span className="text-sm text-muted-foreground">/ {workspaceName}</span>
+            <span className="hidden truncate text-sm text-muted-foreground sm:inline">
+              / {workspaceName}
+            </span>
           ) : null}
-          <nav className="ml-6 flex items-center gap-1">
+          <nav className="ml-2 flex items-center gap-1 sm:ml-6">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:text-foreground",
-                  pathname.startsWith(link.href)
-                    ? "text-foreground"
-                    : "text-muted-foreground",
+                  "rounded-md px-2 py-1.5 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-3",
+                  pathname.startsWith(link.href) ? "text-foreground" : "text-muted-foreground",
                 )}
               >
                 {t(link.key)}
@@ -53,11 +53,11 @@ export function AppHeader() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1">
           <ThemeToggle />
           <Button variant="ghost" size="sm" onClick={onLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            {t("nav.logout")}
+            <LogOut className="h-4 w-4 sm:mr-2" />
+            <span className="hidden sm:inline">{t("nav.logout")}</span>
           </Button>
         </div>
       </div>
