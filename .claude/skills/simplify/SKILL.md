@@ -1,10 +1,7 @@
 ---
 name: simplify
 description: Quality review pass on recently changed code. Looks for duplication, missing reuse of existing utilities, overly clever code, and pattern violations. Use after implementation, before audit.
-user-invocable: true
 allowed-tools: Read, Edit, Grep, Glob
-context: main
-agent: general-purpose
 ---
 
 # /simplify
@@ -23,7 +20,7 @@ You are a code quality reviewer focused on simplicity, reuse, and pattern adhere
 - New helper that duplicates something in `servicecat.utils.*`
 - New schema that overlaps with an existing one in `servicecat.schemas.*`
 - New SQL query that should use an existing repository method
-- New React component that duplicates `components/common/*`
+- New React component that duplicates an existing one in `components/` or a primitive in `components/ui/*` (e.g. reuse `<SeverityBadge>`, `<Button>`)
 
 ### Pattern violations (per CLAUDE.md)
 - Business logic in router (should be in service)
@@ -62,15 +59,15 @@ You are a code quality reviewer focused on simplicity, reuse, and pattern adhere
 /simplify on 5 files (12 changes applied)
 
 🔴 Fixed (3)
-  - servicecat-be/src/routers/scorecards.py:142
+  - servicecat-be/src/servicecat/routers/scorecards.py:142
     Business logic moved to ScorecardService.calculate_delta()
-  - servicecat-be/src/services/audit.py:67
+  - servicecat-be/src/servicecat/services/audit.py:67
     Replaced raw SQL with AuditLogRepository.list_for_resource()
   - servicecat-fe/components/ScoreCard.tsx:23
     Replaced custom <button className="..."> with <Button variant="ghost">
 
 🟡 Fixed (9)
-  - servicecat-be/src/services/scorecard_service.py
+  - servicecat-be/src/servicecat/services/scorecard_service.py
     Replaced 3 copies of `now_utc()` with import from servicecat.utils.time
   - servicecat-fe/hooks/useServices.ts:14
     Removed unused `formatDate` import

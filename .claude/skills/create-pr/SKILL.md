@@ -1,13 +1,12 @@
 ---
 name: create-pr
 description: Push the current branch and create a production-ready PR with a complete description (What, Why, How to test). Runs /review-pr first if not already done. Use when implementation is complete.
-user-invocable: true
 allowed-tools: Bash, Read
-context: main
-agent: general-purpose
 ---
 
 # /create-pr
+
+> **Local setup:** requires a GitHub remote + `gh` CLI, which aren't configured here (local-only git). With no remote, run `/review-pr`, leave the work on its feature branch, and hand it to a human for review/merge — never merge yourself.
 
 You ship the current branch as a PR ready for human review. Production-ready means: tests pass, lint passes, audit-security clean, review-pr clean of CRITICAL/HIGH bugs.
 

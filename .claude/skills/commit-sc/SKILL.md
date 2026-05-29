@@ -1,10 +1,7 @@
 ---
 name: commit-sc
 description: Commit changes with the dev-servicecat git identity using Conventional Commits format. Use after every atomic step in the REPL loop.
-user-invocable: true
 allowed-tools: Bash, Read
-context: main
-agent: general-purpose
 ---
 
 # /commit-sc
@@ -34,9 +31,17 @@ You commit the current staged (or unstaged) changes with the project's git ident
 <optional body — explain WHY, not what. Wrap at 80 chars.>
 
 Refs: F-12
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
 
-6. **Commit and verify** — `git commit -m "..."` then show the resulting commit hash.
+The `Co-Authored-By` trailer is required on every commit. The `Refs:`/issue
+trailer is optional in this local-only setup (no GitHub remote/issues).
+
+6. **Commit and verify** — commit, then show the resulting hash. The session-start
+   hook sets the identity; if it didn't run, pass it explicitly:
+   `git -c user.name='dev-servicecat' -c user.email='dev@servicecat.local' commit -F <msgfile>`.
+   Use a `-F` message file (or a here-doc) for multi-line bodies.
 
 ## Examples
 
@@ -47,6 +52,8 @@ Versions are immutable once created. Comparison view shows criterion-level
 deltas across runs, not just total scores. The diff endpoint paginates.
 
 Refs: F-12
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
 
 ```

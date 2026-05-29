@@ -1,13 +1,12 @@
 ---
 name: review-pr
 description: Bug-hunt review of an open PR or the current branch's changes. Produces a severity-ranked bug report and a fix plan. Use after /implement and before /create-pr, or on a teammate's PR.
-user-invocable: true
 allowed-tools: Read, Bash, Grep
-context: fork
-agent: general-purpose
 ---
 
 # /review-pr
+
+> **Local setup:** the no-argument form works fully — it reviews the current branch's diff vs `main`. Reviewing a *numbered* PR (`gh pr diff <num>`) needs a GitHub remote + `gh`, which isn't configured in this local-only repo.
 
 You are a thorough code reviewer hunting for real bugs. You produce a report ranked by severity. You do not nitpick style — `/simplify` covers that. You hunt for things that will hurt in production.
 
@@ -52,7 +51,7 @@ You are a thorough code reviewer hunting for real bugs. You produce a report ran
 
 ## Process
 
-1. **Get the diff.** Use `gh pr diff <num>` or `git diff origin/main...HEAD`.
+1. **Get the diff.** Use `gh pr diff <num>` or `git diff main...HEAD`.
 2. **Read it carefully**, file by file, change by change.
 3. **For each change, ask:**
    - What could go wrong if N concurrent requests hit this?
@@ -76,7 +75,7 @@ Tests: ✅ pass locally
 CRITICAL (1)
 ─────────────
 🐛 Race condition in version creation
-  servicecat-be/src/services/scorecard_service.py:142-167
+  servicecat-be/src/servicecat/services/scorecard_runner.py:142-167
   Issue: create_version() reads max(version_number) then writes version_number+1.
          Two concurrent calls with the same scorecard_id will produce duplicate
          version numbers.
@@ -87,7 +86,7 @@ CRITICAL (1)
 HIGH (2)
 ─────────────
 🐛 Comparison endpoint loads all scores in memory
-  servicecat-be/src/routers/scorecards.py:223
+  servicecat-be/src/servicecat/routers/scorecard_runs.py:223
   Issue: For a scorecard with 50 services x 200 runs = 10K rows, this OOMs.
   Fix:   Use cursor pagination or limit to 2 specific runs at a time.
 

@@ -1,13 +1,12 @@
 ---
 name: write-docs
 description: Write project documentation and publish to Google Drive as Google Docs (or to docs/ as markdown). Use for runbooks, architecture docs, onboarding guides, or feature documentation.
-user-invocable: true
 allowed-tools: Read, Write, Bash, Grep, Glob
-context: main
-agent: general-purpose
 ---
 
 # /write-docs
+
+> **Local setup:** the Google Drive MCP isn't configured here — default to `--output=markdown` writing into `docs/`. The `--output=drive` path requires the Drive MCP.
 
 You produce well-structured, accurate documentation grounded in the actual codebase. No inventions. No vague promises. Every claim backed by code.
 

@@ -1,13 +1,12 @@
 ---
 name: audit-service
 description: Run all (or selected) scorecards against a registered service. Fetches the repo, evaluates criteria, produces findings, routes them to owners. Use when the user asks to audit, score, or check compliance of a service.
-user-invocable: true
 allowed-tools: Read, Bash, Grep, Glob
-context: fork
-agent: general-purpose
 ---
 
 # /audit-service
+
+> **Local setup:** runs fully against the local stack (API on :8000 + the Arq worker). The optional Slack notification step is skipped unless the Slack MCP is configured.
 
 You are running scorecards against a service in the ServiceCat catalog. Your job is to produce a complete, actionable audit report — not a vague summary.
 

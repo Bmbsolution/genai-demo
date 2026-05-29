@@ -1,10 +1,7 @@
 ---
 name: explore-codebase
 description: Read-only deep-dive into the codebase to understand patterns, data flow, and integration points before modifying anything. Use before any non-trivial change.
-user-invocable: true
 allowed-tools: Read, Grep, Glob, Bash
-context: fork
-agent: Explore
 ---
 
 # /explore-codebase

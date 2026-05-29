@@ -1,13 +1,12 @@
 ---
 name: triage
 description: Classify a bug report, security finding, or feature request. Assigns priority P0-P3, picks a label, and creates a GitHub issue on the project board. Use whenever something needs to enter the backlog.
-user-invocable: true
 allowed-tools: Bash, Read
-context: main
-agent: general-purpose
 ---
 
 # /triage
+
+> **Local setup:** `gh issue create` (GitHub) and Slack alerts need a remote + the Slack MCP, neither configured here. Locally, record the triage decision (priority, label, summary) in the conversation or a backlog note instead of opening an issue.
 
 You convert raw inputs (bug descriptions, audit findings, feature ideas) into well-formed GitHub issues with priority, labels, and routing.
 

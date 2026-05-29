@@ -1,10 +1,7 @@
 ---
 name: audit-security
 description: Scan code for security violations S1-S8 (auth, tenant isolation, RBAC, rate limiting, audit logging, raw SQL, secrets, HTTP timeouts). Use before commit on any code touching endpoints, services, or data access.
-user-invocable: true
 allowed-tools: Read, Grep, Glob
-context: fork
-agent: general-purpose
 ---
 
 # /audit-security
@@ -34,7 +31,7 @@ You are a strict security auditor. You scan changed code (or specified files) ag
 
 ## Process
 
-1. **Determine scope.** Default: `git diff --name-only origin/main`. Honor user overrides.
+1. **Determine scope.** Default: changed files vs the trunk — `git diff --name-only main...HEAD` plus `git diff --name-only HEAD` for uncommitted work (this repo is local-only; there's no `origin`). Honor explicit path overrides.
 2. **For each file, scan against ALL rules.** Don't stop at the first violation.
 3. **Classify each finding** by severity:
    - **CRITICAL** — exploitable now (S2 missing tenant filter, S7 hardcoded secret, S6 SQL injection vector)
@@ -54,7 +51,7 @@ VIOLATIONS: 3 files
 CRITICAL (1)
 ─────────────
 S2 — Tenant isolation missing
-  servicecat-be/src/repositories/finding_repository.py:54
+  servicecat-be/src/servicecat/repositories/finding_repository.py:54
   Code:    return await self.db.execute(select(Finding).where(Finding.id == id))
   Issue:   Query does not filter by workspace_id. A user could access findings from other workspaces if they know an ID.
   Fix:     Add .where(Finding.workspace_id == workspace_id) and require workspace_id as a parameter.
@@ -62,14 +59,14 @@ S2 — Tenant isolation missing
 HIGH (2)
 ─────────────
 S3 — RBAC capability missing
-  servicecat-be/src/routers/scorecards.py:142
+  servicecat-be/src/servicecat/routers/scorecards.py:142
   Code:    @router.post("/{scorecard_id}/runs")
            async def trigger_scorecard_run(... user: User = Depends(get_current_user) ...):
   Issue:   The endpoint allows any authenticated user (including viewers) to trigger expensive scorecard runs.
   Fix:     Add `_cap = Depends(require_capability("scorecard:run"))` to the dependency chain.
 
 S5 — Audit log missing
-  servicecat-be/src/routers/scorecards.py:142
+  servicecat-be/src/servicecat/routers/scorecards.py:142
   Issue:   State-changing endpoint has no audit_action dependency.
   Fix:     Add `_audit = Depends(audit_action("scorecard.run.trigger"))`.
 

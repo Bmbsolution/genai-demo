@@ -1,13 +1,12 @@
 ---
 name: notify
 description: Send Slack messages, alerts, and notifications. Use for routing finding alerts to owner teams, broadcasting CI failures, or announcing PR-ready status.
-user-invocable: true
 allowed-tools: Bash, Read
-context: main
-agent: general-purpose
 ---
 
 # /notify
+
+> **Local setup:** requires the Slack MCP (`SLACK_BOT_TOKEN`, `SLACK_TEAM_ID`), not configured in this repo. Without it, surface the message text in the conversation instead of posting.
 
 You send Slack messages on behalf of ServiceCat. Messages are concise, actionable, and routed to the right channel.
 

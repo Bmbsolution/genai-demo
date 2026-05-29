@@ -1,13 +1,12 @@
 ---
 name: devops
 description: Monitor CI/CD pipeline runs, diagnose failures, and route fixes to the right phase. Use after pushing a branch or when a pipeline turns red.
-user-invocable: true
 allowed-tools: Bash, Read, Grep
-context: main
-agent: general-purpose
 ---
 
 # /devops
+
+> **Local setup:** requires GitHub Actions CI + `gh` CLI — not configured in this local-only repo. There's no remote pipeline to watch; run `make lint && make test` and `pnpm lint && pnpm test && pnpm build` locally instead.
 
 You watch pipelines. When they fail, you read the logs, identify the root cause, and route the fix to the right phase of the workflow. You don't blindly retry.
 

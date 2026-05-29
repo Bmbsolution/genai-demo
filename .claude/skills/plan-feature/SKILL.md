@@ -1,10 +1,7 @@
 ---
 name: plan-feature
 description: Design a feature implementation with acceptance criteria AC-1 through AC-6 before any code is written. Use when starting work on a new feature, bug, or refactor.
-user-invocable: true
 allowed-tools: Read, Grep, Glob
-context: fork
-agent: Plan
 ---
 
 # /plan-feature
@@ -65,8 +62,8 @@ You produce a concrete, reviewable plan with explicit acceptance criteria. No co
 - [ ] No orphaned helpers; reuse existing utilities
 
 ### AC-5 — Lint & Build
-- [ ] `make lint` (ruff + mypy) green
-- [ ] `pnpm lint && pnpm build` green
+- [ ] `make lint` (ruff + mypy) and `make test` (or `make test-cov` for the ≥80% gate) green
+- [ ] `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm test`, and `pnpm build` green
 - [ ] No new ignored warnings
 
 ### AC-6 — Frontend

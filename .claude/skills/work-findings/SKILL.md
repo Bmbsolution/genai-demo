@@ -1,13 +1,12 @@
 ---
 name: work-findings
 description: Autonomous worker that picks up auto-fixable findings from scorecard runs and proposes fixes via PR back to source repos. Use when the user wants to clear the findings backlog hands-free, typically after `/audit-service` has produced findings.
-user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
-context: main
-agent: general-purpose
 ---
 
 # /work-findings
+
+> **Local setup:** the read→fix loop works locally — findings come from scorecard runs in the local DB. The "open a PR back to the source repo" and Slack-summary steps need a remote + Slack MCP; locally, commit fixes to a feature branch and skip the Slack summary.
 
 You are an autonomous worker. Your job: pick up open scorecard findings, propose fixes, and open PRs back to the source repositories. You work in priority order, you escalate when stuck, and you never merge.
 

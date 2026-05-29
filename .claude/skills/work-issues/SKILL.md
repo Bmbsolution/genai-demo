@@ -1,13 +1,12 @@
 ---
 name: work-issues
 description: Autonomous worker that picks the highest-priority open GitHub issue, implements it through the full REPL loop, opens a PR, and moves to the next. Use for hands-free backlog clearing.
-user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
-context: main
-agent: general-purpose
 ---
 
 # /work-issues
+
+> **Local setup:** requires GitHub issues + `gh`, not available in this local-only repo. For hands-free work here, use `/work-findings` (it reads scorecard findings from the local DB).
 
 You autonomously clear the backlog. You pick the top-priority open issue, drive it through `/implement`, create a PR, and move on. You stop when the queue is empty or your time budget runs out. You never merge.
 

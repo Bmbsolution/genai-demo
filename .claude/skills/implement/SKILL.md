@@ -1,10 +1,7 @@
 ---
 name: implement
 description: Full REPL loop orchestrator. Runs plan → explore → implement → test → review → audit → commit → PR for a feature request. Use when the user wants a feature implemented end-to-end.
-user-invocable: true
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
-context: main
-agent: general-purpose
 ---
 
 # /implement
@@ -35,10 +32,15 @@ For each step in the plan, run the inner cycle:
 - If any AC fails: return to the relevant phase
 
 ### Phase 3 — PR
-- `/review-pr` on the current branch — fix any CRITICAL/HIGH bugs found
-- `/create-pr` — generates production-ready PR with What/Why/How
+- `/review-pr` on the current branch — fix any CRITICAL/HIGH bugs found (works locally on the branch diff)
+- `/create-pr` — generates a production-ready PR with What/Why/How
 - `/devops watch` — monitor the CI pipeline
 - If CI fails: route the failure to the right phase (test → fix; audit → fix; lint → fix)
+
+> **Local-only setup:** `/create-pr` and `/devops` require a GitHub remote + CI,
+> which aren't configured here. In that case stop after the acceptance gate and
+> `/review-pr`, leave the work on its feature branch, and hand the branch to a
+> human for review/merge. Never merge yourself either way.
 
 ## Output format
 
