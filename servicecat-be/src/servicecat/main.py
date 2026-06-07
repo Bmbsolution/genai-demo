@@ -5,7 +5,9 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -64,6 +66,21 @@ def create_app() -> FastAPI:
                     "code": exc.code,
                     "message": exc.message,
                     "details": exc.details,
+                },
+            },
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def handle_validation_error(_: Request, exc: RequestValidationError) -> JSONResponse:
+        # Re-wrap FastAPI's default {"detail": [...]} 422 body so every error
+        # response matches the documented {error: {code, message, details}} shape.
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            content={
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Request validation failed.",
+                    "details": {"errors": jsonable_encoder(exc.errors())},
                 },
             },
         )

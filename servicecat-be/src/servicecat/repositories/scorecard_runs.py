@@ -4,15 +4,23 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import func, select
+from sqlalchemy import Text, case, cast, func, select
+from sqlalchemy.orm import aliased
 
-from servicecat.models import Finding, ScorecardRun
+from servicecat.models import Finding, ScorecardRun, ScorecardRunStatus
 
 if TYPE_CHECKING:
     import uuid
     from collections.abc import Sequence
 
     from sqlalchemy.ext.asyncio import AsyncSession
+
+# Worst-first display order for the severity Text column.
+_SEVERITY_RANK = case(
+    {"critical": 0, "high": 1, "medium": 2, "low": 3},
+    value=Finding.severity,
+    else_=4,
+)
 
 
 class ScorecardRunRepository:
@@ -31,7 +39,7 @@ class ScorecardRunRepository:
 
 
 class FindingRepository:
-    """Appends and counts findings in the active workspace."""
+    """Appends and lists findings in the active workspace."""
 
     def __init__(self, db: AsyncSession) -> None:
         self._db = db
@@ -39,12 +47,6 @@ class FindingRepository:
     async def add_all(self, findings: Sequence[Finding]) -> None:
         self._db.add_all(findings)
         await self._db.flush()
-
-    async def count_for_run(self, run_id: uuid.UUID) -> int:
-        total = await self._db.scalar(
-            select(func.count()).select_from(Finding).where(Finding.run_id == run_id),
-        )
-        return total or 0
 
     async def list_for_workspace(
         self,
@@ -54,14 +56,41 @@ class FindingRepository:
         limit: int = 50,
         offset: int = 0,
     ) -> tuple[Sequence[Finding], int]:
-        """Return (page of findings in the active workspace, total matching)."""
-        filtered = select(Finding)
+        """Return (page of current findings, total matching).
+
+        "Current" means findings produced by each service's most recent
+        COMPLETED run of a given scorecard. Older runs' findings are
+        superseded — without this, every re-run would pile duplicate rows
+        onto the dashboard. A newer completed run with zero findings
+        correctly hides the previous run's findings (the gap was fixed).
+        """
+        run = aliased(ScorecardRun)
+        newer = aliased(ScorecardRun)
+        superseded = (
+            select(newer.id)
+            .where(
+                newer.status == ScorecardRunStatus.COMPLETED,
+                newer.scorecard == run.scorecard,
+                newer.started_at > run.started_at,
+                newer.target_service_ids.op("@>")(
+                    func.jsonb_build_array(cast(Finding.service_id, Text)),
+                ),
+            )
+            .exists()
+        )
+        filtered = (
+            select(Finding)
+            .join(run, run.id == Finding.run_id)
+            .where(run.status == ScorecardRunStatus.COMPLETED, ~superseded)
+        )
         if service_id is not None:
             filtered = filtered.where(Finding.service_id == service_id)
         if severity is not None:
             filtered = filtered.where(Finding.severity == severity)
         total = await self._db.scalar(select(func.count()).select_from(filtered.subquery()))
         page = await self._db.scalars(
-            filtered.order_by(Finding.created_at.desc()).limit(limit).offset(offset),
+            filtered.order_by(_SEVERITY_RANK, Finding.created_at.desc())
+            .limit(limit)
+            .offset(offset),
         )
         return page.all(), total or 0

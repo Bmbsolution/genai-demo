@@ -84,15 +84,18 @@ async def execute_run(
 
     services = ServiceRepository(db)
     scorecard = get_scorecard(run.scorecard)()
-    total = 0
+    # Buffer findings and persist only on success: a FAILED run must not leave
+    # partial findings behind (they'd show up on dashboards for a run the UI
+    # reports as failed/incomplete).
+    pending: list[Finding] = []
     try:
         for service_id in run.target_service_ids:
             service = await services.get(uuid.UUID(service_id))
             if service is None:
                 continue
             async with clone_factory(service.repo_url) as repo_path:
-                async for result in scorecard.evaluate(service, repo_path):
-                    db.add(
+                pending.extend(
+                    [
                         Finding(
                             workspace_id=run.workspace_id,
                             run_id=run.id,
@@ -102,15 +105,17 @@ async def execute_run(
                             remediation=result.remediation,
                             evidence=asdict(result.evidence) if result.evidence else None,
                             auto_fixable=result.auto_fixable,
-                        ),
-                    )
-                    total += 1
-            await db.flush()
+                        )
+                        async for result in scorecard.evaluate(service, repo_path)
+                    ],
+                )
     except Exception as exc:  # noqa: BLE001 - any failure is captured into the run record
         run.status = ScorecardRunStatus.FAILED
         run.error = str(exc)
+        pending = []
     else:
         run.status = ScorecardRunStatus.COMPLETED
+        db.add_all(pending)
     run.finished_at = dt.datetime.now(dt.UTC)
-    run.finding_count = total
+    run.finding_count = len(pending)
     await db.flush()

@@ -5,6 +5,8 @@ from __future__ import annotations
 import uuid
 from typing import TYPE_CHECKING
 
+from sqlalchemy import func, select
+
 from servicecat.db import set_workspace_context
 from servicecat.models import Finding, ScorecardRun, ScorecardRunStatus, Workspace
 from servicecat.repositories.scorecard_runs import FindingRepository, ScorecardRunRepository
@@ -56,7 +58,9 @@ async def test_run_and_findings_round_trip(
             ],
         )
         fetched = await ScorecardRunRepository(session).get(run.id)
-        count = await FindingRepository(session).count_for_run(run.id)
+        count = await session.scalar(
+            select(func.count()).select_from(Finding).where(Finding.run_id == run.id),
+        )
     assert fetched is not None
     assert fetched.scorecard == "documentation"
     assert count == 1

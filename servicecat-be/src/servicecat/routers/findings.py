@@ -11,6 +11,7 @@ from servicecat.rbac import Capability
 from servicecat.repositories.scorecard_runs import FindingRepository
 from servicecat.schemas.finding import FindingListResponse, FindingResponse
 from servicecat.schemas.service import PageMeta
+from servicecat.scorecards.base import Severity
 
 router = APIRouter(prefix="/api/v1/findings", tags=["findings"])
 
@@ -25,7 +26,8 @@ async def list_findings(
     _rl: Annotated[None, Depends(_read_rl)],
     _audit: Annotated[None, Depends(audit_action("finding.list"))],
     service_id: Annotated[uuid.UUID | None, Query()] = None,
-    severity: Annotated[str | None, Query()] = None,
+    # Typed as the enum so ?severity=bogus is a 422, not a silent empty list.
+    severity: Annotated[Severity | None, Query()] = None,
     limit: Annotated[int, Query(ge=1, le=200)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> FindingListResponse:
