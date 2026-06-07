@@ -8,6 +8,12 @@
     "empty": "No findings yet. Run a scorecard to populate them.",
     "loadError": "Could not load findings.",
     "allSeverities": "All severities",
+    "severity": {
+      "critical": "Critical",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
     "columns": {
       "severity": "Severity",
       "service": "Service",
@@ -57,10 +63,14 @@
     "dependencies": {
       "title": "Dependencies",
       "empty": "No dependencies declared.",
+      "loadError": "Could not load dependencies.",
       "add": "Add dependency",
       "addDescription": "Link this service to another it depends on.",
       "criticality": "Criticality",
+      "criticalityOptions": { "hard": "Hard", "soft": "Soft" },
       "direction": "Direction",
+      "directionOptions": { "consumes": "Consumes", "produces": "Produces" },
+      "depth": "Depth {depth}",
       "target": "Depends on",
       "submit": "Add",
       "created": "Dependency added.",
@@ -73,7 +83,13 @@
       "running": "Running…",
       "findings": "{count, plural, =0 {No findings} one {# finding} other {# findings}}",
       "failed": "Run failed: {error}",
-      "status": "Status: {status}"
+      "status": "Status: {status}",
+      "statusLabel": {
+        "queued": "Queued",
+        "running": "Running",
+        "completed": "Completed",
+        "failed": "Failed"
+      }
     }
   },
   "common": {

@@ -8,6 +8,12 @@
     "empty": "Aucun constat pour l'instant. Lancez une scorecard pour en générer.",
     "loadError": "Impossible de charger les constats.",
     "allSeverities": "Toutes les sévérités",
+    "severity": {
+      "critical": "Critique",
+      "high": "Élevée",
+      "medium": "Moyenne",
+      "low": "Faible"
+    },
     "columns": {
       "severity": "Sévérité",
       "service": "Service",
@@ -57,10 +63,14 @@
     "dependencies": {
       "title": "Dépendances",
       "empty": "Aucune dépendance déclarée.",
+      "loadError": "Impossible de charger les dépendances.",
       "add": "Ajouter une dépendance",
       "addDescription": "Reliez ce service à un autre dont il dépend.",
       "criticality": "Criticité",
+      "criticalityOptions": { "hard": "Forte", "soft": "Faible" },
       "direction": "Direction",
+      "directionOptions": { "consumes": "Consomme", "produces": "Produit" },
+      "depth": "Profondeur {depth}",
       "target": "Dépend de",
       "submit": "Ajouter",
       "created": "Dépendance ajoutée.",
@@ -73,7 +83,13 @@
       "running": "En cours…",
       "findings": "{count, plural, =0 {Aucun constat} one {# constat} other {# constats}}",
       "failed": "Échec : {error}",
-      "status": "Statut : {status}"
+      "status": "Statut : {status}",
+      "statusLabel": {
+        "queued": "En file",
+        "running": "En cours",
+        "completed": "Terminée",
+        "failed": "Échouée"
+      }
     }
   },
   "common": {

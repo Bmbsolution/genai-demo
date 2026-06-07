@@ -44,7 +44,10 @@ export function CreateServiceDialog() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await apiFetch("/api/v1/services", { method: "POST", body: values });
+      // An untouched description field submits "" — omit it so the API stores
+      // NULL (the list view renders its "—" fallback only for null/undefined).
+      const body = { ...values, description: values.description?.trim() || undefined };
+      await apiFetch("/api/v1/services", { method: "POST", body });
       toast.success(t("services.dialog.created"));
       reset({ tier: 2 });
       setOpen(false);

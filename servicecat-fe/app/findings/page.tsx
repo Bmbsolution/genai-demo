@@ -69,7 +69,7 @@ export default function FindingsPage() {
               <SelectItem value="all">{t("allSeverities")}</SelectItem>
               {SEVERITIES.map((s) => (
                 <SelectItem key={s} value={s}>
-                  {s}
+                  {t(`severity.${s}`)}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -99,18 +99,23 @@ export default function ServiceDetailPage() {
                 <AddDependencyDialog serviceId={serviceId} candidates={candidates} />
               </CardHeader>
               <CardContent>
-                {edges.length === 0 ? (
+                {dependencies.isError ? (
+                  <p className="text-sm text-destructive">{t("detail.dependencies.loadError")}</p>
+                ) : edges.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t("detail.dependencies.empty")}</p>
                 ) : (
                   <ul className="space-y-2">
                     {edges.map((edge) => (
                       <li key={edge.id} className="flex items-center gap-2 text-sm">
-                        <Badge variant="outline">depth {edge.depth}</Badge>
+                        <Badge variant="outline">
+                          {t("detail.dependencies.depth", { depth: edge.depth })}
+                        </Badge>
                         <span className="font-medium">
                           {nameById.get(edge.depends_on_service_id) ?? edge.depends_on_service_id}
                         </span>
                         <span className="text-muted-foreground">
-                          · {edge.criticality} · {edge.direction}
+                          · {t(`detail.dependencies.criticalityOptions.${edge.criticality}`)} ·{" "}
+                          {t(`detail.dependencies.directionOptions.${edge.direction}`)}
                         </span>
                       </li>
                     ))}
@@ -134,7 +139,9 @@ export default function ServiceDetailPage() {
                 <CardTitle className="text-base">{t("findings.onService")}</CardTitle>
               </CardHeader>
               <CardContent>
-                {serviceFindings.length === 0 ? (
+                {findings.isError ? (
+                  <p className="text-sm text-destructive">{t("findings.loadError")}</p>
+                ) : serviceFindings.length === 0 ? (
                   <p className="text-sm text-muted-foreground">{t("findings.empty")}</p>
                 ) : (
                   <FindingsTable

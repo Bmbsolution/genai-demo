@@ -1,9 +1,9 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PlayCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,7 @@ const ACTIVE_STATUSES = new Set(["queued", "running"]);
 
 export function RunScorecardButton({ serviceId }: { serviceId: string }) {
   const t = useTranslations();
+  const queryClient = useQueryClient();
   const [runId, setRunId] = useState<string | null>(null);
 
   const trigger = useMutation({
@@ -40,6 +41,15 @@ export function RunScorecardButton({ serviceId }: { serviceId: string }) {
     },
   });
 
+  // A completed run produced (or cleared) findings — refetch every findings
+  // query (detail card + dashboard) so the tables don't go stale.
+  const status = run?.status;
+  useEffect(() => {
+    if (status === "completed") {
+      void queryClient.invalidateQueries({ queryKey: ["findings"] });
+    }
+  }, [status, queryClient]);
+
   const isBusy = trigger.isPending || Boolean(run && ACTIVE_STATUSES.has(run.status));
 
   return (
@@ -49,7 +59,9 @@ export function RunScorecardButton({ serviceId }: { serviceId: string }) {
         {isBusy ? t("detail.scorecard.running") : t("detail.scorecard.run")}
       </Button>
       {run ? (
-        <Badge variant={run.status === "failed" ? "destructive" : "secondary"}>{run.status}</Badge>
+        <Badge variant={run.status === "failed" ? "destructive" : "secondary"}>
+          {t(`detail.scorecard.statusLabel.${run.status}`)}
+        </Badge>
       ) : null}
       {run?.status === "completed" ? (
         <span className="text-sm text-muted-foreground">

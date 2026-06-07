@@ -1,27 +1,39 @@
 import { render, screen } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 
 import { SeverityBadge } from "@/components/severity-badge";
+import messages from "@/messages/en.json";
+
+function renderWithIntl(ui: ReactElement) {
+  return render(
+    <NextIntlClientProvider locale="en" messages={messages}>
+      {ui}
+    </NextIntlClientProvider>,
+  );
+}
 
 describe("SeverityBadge", () => {
-  it("renders the severity label verbatim", () => {
-    render(<SeverityBadge severity="high" />);
-    expect(screen.getByText("high")).toBeInTheDocument();
+  it("renders the translated severity label", () => {
+    renderWithIntl(<SeverityBadge severity="high" />);
+    expect(screen.getByText("High")).toBeInTheDocument();
   });
 
   it.each([
-    ["critical", "bg-destructive"],
-    ["high", "bg-destructive"],
-    ["medium", "bg-secondary"],
-    ["low", "text-foreground"],
-  ])("maps %s to the right badge variant", (severity, expectedClass) => {
-    render(<SeverityBadge severity={severity} />);
-    expect(screen.getByText(severity)).toHaveClass(expectedClass);
+    ["critical", "Critical", "bg-destructive"],
+    ["high", "High", "bg-destructive"],
+    ["medium", "Medium", "bg-secondary"],
+    ["low", "Low", "text-foreground"],
+  ])("maps %s to the right badge variant", (severity, label, expectedClass) => {
+    renderWithIntl(<SeverityBadge severity={severity} />);
+    expect(screen.getByText(label)).toHaveClass(expectedClass);
   });
 
-  it("falls back to the outline variant for an unknown severity", () => {
-    render(<SeverityBadge severity="bogus" />);
-    // outline = text-foreground with no bg-* token.
+  it("falls back to the outline variant and raw label for an unknown severity", () => {
+    renderWithIntl(<SeverityBadge severity="bogus" />);
+    // outline = text-foreground with no bg-* token; unknown severities have no
+    // translation key, so the raw value is shown.
     const badge = screen.getByText("bogus");
     expect(badge).toHaveClass("text-foreground");
     expect(badge.className).not.toContain("bg-destructive");

@@ -99,8 +99,8 @@ export function AddDependencyDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hard">hard</SelectItem>
-                <SelectItem value="soft">soft</SelectItem>
+                <SelectItem value="hard">{t("detail.dependencies.criticalityOptions.hard")}</SelectItem>
+                <SelectItem value="soft">{t("detail.dependencies.criticalityOptions.soft")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -111,8 +111,8 @@ export function AddDependencyDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="consumes">consumes</SelectItem>
-                <SelectItem value="produces">produces</SelectItem>
+                <SelectItem value="consumes">{t("detail.dependencies.directionOptions.consumes")}</SelectItem>
+                <SelectItem value="produces">{t("detail.dependencies.directionOptions.produces")}</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -52,8 +52,8 @@ describe("FindingsTable", () => {
     expect(screen.getByText("doc.readme_present")).toBeInTheDocument();
     expect(screen.getByText("doc.openapi_spec")).toBeInTheDocument();
     expect(screen.getByText("Add a README.md")).toBeInTheDocument();
-    expect(screen.getByText("high")).toBeInTheDocument();
-    expect(screen.getByText("medium")).toBeInTheDocument();
+    expect(screen.getByText("High")).toBeInTheDocument();
+    expect(screen.getByText("Medium")).toBeInTheDocument();
   });
 
   it("resolves the service name from the map and falls back to the id", () => {

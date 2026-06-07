@@ -66,7 +66,10 @@ export default function LoginPage() {
           <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit} className="space-y-4" noValidate>
+          {/* method="post": if the form is submitted before React hydrates,
+              the browser's native fallback must not leak credentials into the
+              URL as GET query params (history, logs). */}
+          <form onSubmit={onSubmit} method="post" className="space-y-4" noValidate>
             <div className="space-y-2">
               <Label htmlFor="email">{t("email")}</Label>
               <Input id="email" type="email" autoComplete="email" {...register("email")} />
