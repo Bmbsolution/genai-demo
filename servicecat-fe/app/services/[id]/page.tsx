@@ -10,6 +10,7 @@ import { AddDependencyDialog } from "@/components/add-dependency-dialog";
 import { AppHeader } from "@/components/app-header";
 import { FindingsTable } from "@/components/findings-table";
 import { RunScorecardButton } from "@/components/run-scorecard-button";
+import { TierBadge } from "@/components/tier-badge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRequireAuth } from "@/hooks/use-require-auth";
@@ -81,15 +82,14 @@ export default function ServiceDetailPage() {
             <div>
               <div className="flex items-center gap-3">
                 <h1 className="text-2xl font-semibold tracking-tight">{service.data.name}</h1>
-                <Badge variant="secondary">
-                  {t("services.tierLabel", { tier: service.data.tier })}
-                </Badge>
+                <TierBadge tier={service.data.tier} />
               </div>
               {service.data.description ? (
                 <p className="mt-1 text-muted-foreground">{service.data.description}</p>
               ) : null}
               <p className="mt-1 text-sm text-muted-foreground">
-                {t("detail.repo")}: {service.data.repo_url}
+                {t("detail.repo")}:{" "}
+                <span className="break-all font-mono text-xs">{service.data.repo_url}</span>
               </p>
             </div>
 

@@ -44,9 +44,12 @@ export function AppHeader() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-md px-2 py-1.5 text-sm font-medium transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-3",
-                  pathname.startsWith(link.href) ? "text-foreground" : "text-muted-foreground",
+                  "rounded-md px-2 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-3",
+                  pathname.startsWith(link.href)
+                    ? "bg-muted text-foreground"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                 )}
+                aria-current={pathname.startsWith(link.href) ? "page" : undefined}
               >
                 {t(link.key)}
               </Link>

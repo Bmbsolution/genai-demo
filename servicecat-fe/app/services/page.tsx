@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { AppHeader } from "@/components/app-header";
 import { CreateServiceDialog } from "@/components/create-service-dialog";
-import { Badge } from "@/components/ui/badge";
+import { TierBadge } from "@/components/tier-badge";
 import {
   Table,
   TableBody,
@@ -82,9 +82,12 @@ export default function ServicesPage() {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="secondary">{t("tierLabel", { tier: service.tier })}</Badge>
+                      <TierBadge tier={service.tier} />
                     </TableCell>
-                    <TableCell className="max-w-xs truncate text-muted-foreground">
+                    <TableCell
+                      className="max-w-xs truncate font-mono text-xs text-muted-foreground"
+                      title={service.repo_url}
+                    >
                       {service.repo_url}
                     </TableCell>
                     <TableCell className="text-muted-foreground">

@@ -22,7 +22,7 @@ describe("SeverityBadge", () => {
 
   it.each([
     ["critical", "Critical", "bg-destructive"],
-    ["high", "High", "bg-destructive"],
+    ["high", "High", "bg-destructive/15"],
     ["medium", "Medium", "bg-secondary"],
     ["low", "Low", "text-foreground"],
   ])("maps %s to the right badge variant", (severity, label, expectedClass) => {

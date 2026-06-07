@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Boxes } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -62,6 +63,9 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
+          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+            <Boxes className="h-5 w-5 text-primary" aria-hidden="true" />
+          </div>
           <CardTitle>{t("title")}</CardTitle>
           <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>

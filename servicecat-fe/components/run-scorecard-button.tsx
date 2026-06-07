@@ -69,7 +69,12 @@ export function RunScorecardButton({ serviceId }: { serviceId: string }) {
         </span>
       ) : null}
       {run?.status === "failed" && run.error ? (
-        <span className="text-sm text-destructive">
+        // Worker errors can be multi-line git/stack dumps — clamp the inline
+        // display and keep the full text reachable via the tooltip.
+        <span
+          className="line-clamp-2 max-w-prose break-words text-sm text-destructive"
+          title={run.error}
+        >
           {t("detail.scorecard.failed", { error: run.error })}
         </span>
       ) : null}
