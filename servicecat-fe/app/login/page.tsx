@@ -60,13 +60,13 @@ export default function LoginPage() {
   });
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
-      <Card className="w-full max-w-sm">
+    <main className="relative flex min-h-screen items-center justify-center bg-grid p-6">
+      <Card className="animate-fade-up relative w-full max-w-sm border-border/70 shadow-xl">
         <CardHeader>
-          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-            <Boxes className="h-5 w-5 text-primary" aria-hidden="true" />
+          <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-primary">
+            <Boxes className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
           </div>
-          <CardTitle>{t("title")}</CardTitle>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>

@@ -2,36 +2,41 @@
 
 import { useTranslations } from "next-intl";
 
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-type Variant = "default" | "secondary" | "destructive" | "outline";
-
 /**
- * Four visually distinct steps using only semantic tokens (dark mode free):
- * critical = solid destructive, high = soft destructive tint, medium =
- * secondary, low = outline. Labels carry the meaning too — color is never
- * the only signal.
+ * Severity as a three-signal token: a colored status dot, a tinted pill, and a
+ * label — so it never relies on color alone. Critical is loudest (solid),
+ * stepping down to a quiet outline for low.
  */
-const SEVERITY_STYLES: Record<string, { variant: Variant; className?: string }> = {
-  critical: { variant: "destructive" },
-  high: {
-    variant: "outline",
-    className: "border-transparent bg-destructive/15 text-destructive",
-  },
-  medium: { variant: "secondary" },
-  low: { variant: "outline" },
+const SEVERITY_STYLES: Record<string, string> = {
+  critical: "border-transparent bg-severity-critical text-white",
+  high: "border-severity-high/30 bg-severity-high/10 text-severity-high",
+  medium: "border-severity-medium/30 bg-severity-medium/10 text-severity-medium",
+  low: "border-border bg-transparent text-muted-foreground",
 };
 
-const KNOWN_SEVERITIES = new Set(Object.keys(SEVERITY_STYLES));
+const DOT: Record<string, string> = {
+  critical: "bg-white",
+  high: "bg-severity-high",
+  medium: "bg-severity-medium",
+  low: "bg-severity-low",
+};
+
+const KNOWN = new Set(Object.keys(SEVERITY_STYLES));
 
 export function SeverityBadge({ severity }: { severity: string }) {
   const t = useTranslations("findings");
-  const label = KNOWN_SEVERITIES.has(severity) ? t(`severity.${severity}`) : severity;
-  const style = SEVERITY_STYLES[severity] ?? { variant: "outline" as const };
+  const label = KNOWN.has(severity) ? t(`severity.${severity}`) : severity;
   return (
-    <Badge variant={style.variant} className={cn("capitalize", style.className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize",
+        SEVERITY_STYLES[severity] ?? SEVERITY_STYLES.low,
+      )}
+    >
+      <span className={cn("h-1.5 w-1.5 rounded-full", DOT[severity] ?? DOT.low)} />
       {label}
-    </Badge>
+    </span>
   );
 }

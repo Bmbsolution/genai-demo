@@ -63,6 +63,19 @@ export default function ServiceDetailPage() {
   const edges = dependencies.data ?? [];
   const serviceFindings = findings.data?.data ?? [];
 
+  // Open-findings breakdown for the header summary strip (worst-first).
+  const SEVERITIES = ["critical", "high", "medium", "low"] as const;
+  const SEV_DOT: Record<string, string> = {
+    critical: "bg-severity-critical",
+    high: "bg-severity-high",
+    medium: "bg-severity-medium",
+    low: "bg-severity-low",
+  };
+  const sevCounts = serviceFindings.reduce<Record<string, number>>((acc, f) => {
+    acc[f.severity] = (acc[f.severity] ?? 0) + 1;
+    return acc;
+  }, {});
+
   return (
     <div className="min-h-screen">
       <AppHeader />
@@ -79,21 +92,45 @@ export default function ServiceDetailPage() {
 
         {service.data ? (
           <>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-semibold tracking-tight">{service.data.name}</h1>
-                <TierBadge tier={service.data.tier} />
+            <div className="animate-fade-up">
+              <div className="flex items-start gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary font-display text-base font-semibold uppercase text-primary-foreground">
+                  {service.data.name.slice(0, 2)}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h1 className="font-display text-3xl font-semibold tracking-tight">
+                      {service.data.name}
+                    </h1>
+                    <TierBadge tier={service.data.tier} />
+                  </div>
+                  {service.data.description ? (
+                    <p className="mt-1 text-muted-foreground">{service.data.description}</p>
+                  ) : null}
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    <span className="break-all font-mono text-xs">{service.data.repo_url}</span>
+                  </p>
+                </div>
               </div>
-              {service.data.description ? (
-                <p className="mt-1 text-muted-foreground">{service.data.description}</p>
+              {serviceFindings.length > 0 ? (
+                <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/60 pt-4 text-sm">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {t("findings.onService")}
+                  </span>
+                  {SEVERITIES.filter((s) => sevCounts[s]).map((s) => (
+                    <span key={s} className="inline-flex items-center gap-1.5">
+                      <span className={`h-2 w-2 rounded-full ${SEV_DOT[s]}`} />
+                      <span className="font-semibold tabular-nums">{sevCounts[s]}</span>
+                      <span className="capitalize text-muted-foreground">
+                        {t(`findings.severity.${s}`)}
+                      </span>
+                    </span>
+                  ))}
+                </div>
               ) : null}
-              <p className="mt-1 text-sm text-muted-foreground">
-                {t("detail.repo")}:{" "}
-                <span className="break-all font-mono text-xs">{service.data.repo_url}</span>
-              </p>
             </div>
 
-            <Card>
+            <Card className="animate-fade-up [animation-delay:60ms]">
               <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base">{t("detail.dependencies.title")}</CardTitle>
                 <AddDependencyDialog serviceId={serviceId} candidates={candidates} />
@@ -124,7 +161,7 @@ export default function ServiceDetailPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="animate-fade-up [animation-delay:120ms]">
               <CardHeader>
                 <CardTitle className="text-base">{t("detail.scorecard.title")}</CardTitle>
                 <p className="text-sm text-muted-foreground">{t("detail.scorecard.subtitle")}</p>
@@ -134,9 +171,14 @@ export default function ServiceDetailPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
+            <Card className="animate-fade-up [animation-delay:180ms]">
+              <CardHeader className="flex-row items-center justify-between space-y-0">
                 <CardTitle className="text-base">{t("findings.onService")}</CardTitle>
+                {serviceFindings.length > 0 ? (
+                  <Badge variant="secondary" className="font-mono">
+                    {serviceFindings.length}
+                  </Badge>
+                ) : null}
               </CardHeader>
               <CardContent>
                 {findings.isError ? (

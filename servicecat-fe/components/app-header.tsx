@@ -28,14 +28,16 @@ export function AppHeader() {
   };
 
   return (
-    <header className="border-b">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <div className="flex min-w-0 items-center gap-2">
-          <Boxes className="h-6 w-6 shrink-0 text-primary" />
-          <span className="text-lg font-semibold">{t("app.title")}</span>
+    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary">
+            <Boxes className="h-[18px] w-[18px] text-primary-foreground" aria-hidden="true" />
+          </span>
+          <span className="font-display text-lg font-semibold tracking-tight">{t("app.title")}</span>
           {workspaceName ? (
-            <span className="hidden truncate text-sm text-muted-foreground sm:inline">
-              / {workspaceName}
+            <span className="hidden truncate border-l border-border pl-2.5 text-sm text-muted-foreground sm:inline">
+              {workspaceName}
             </span>
           ) : null}
           <nav className="ml-2 flex items-center gap-1 sm:ml-6">

@@ -13,8 +13,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { components } from "@/lib/api/schema";
+import { cn } from "@/lib/utils";
 
 type Finding = components["schemas"]["FindingResponse"];
+
+// Left rail color per severity — a quick scan cue beside the badge.
+const RAIL: Record<string, string> = {
+  critical: "border-l-severity-critical",
+  high: "border-l-severity-high",
+  medium: "border-l-severity-medium",
+  low: "border-l-border",
+};
 
 export function FindingsTable({
   findings,
@@ -28,7 +37,7 @@ export function FindingsTable({
   const t = useTranslations("findings");
 
   return (
-    <div className="rounded-lg border">
+    <div className="overflow-hidden rounded-xl border bg-card shadow-card">
       <Table>
         <TableHeader>
           <TableRow>
@@ -42,7 +51,7 @@ export function FindingsTable({
         <TableBody>
           {findings.map((finding) => (
             <TableRow key={finding.id}>
-              <TableCell>
+              <TableCell className={cn("border-l-[3px]", RAIL[finding.severity] ?? RAIL.low)}>
                 <SeverityBadge severity={finding.severity} />
               </TableCell>
               {showService ? (

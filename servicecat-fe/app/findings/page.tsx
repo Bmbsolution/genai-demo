@@ -1,11 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { AppHeader } from "@/components/app-header";
 import { FindingsTable } from "@/components/findings-table";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -56,9 +58,16 @@ export default function FindingsPage() {
     <div className="min-h-screen">
       <AppHeader />
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>
+              {rows.length > 0 ? (
+                <Badge variant="secondary" className="font-mono">
+                  {rows.length}
+                </Badge>
+              ) : null}
+            </div>
             <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
           <Select value={severity} onValueChange={setSeverity}>
@@ -80,12 +89,19 @@ export default function FindingsPage() {
         {findings.isError ? <p className="text-destructive">{t("loadError")}</p> : null}
 
         {!findings.isLoading && !findings.isError && rows.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-            {t("empty")}
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed bg-card/40 p-12 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-success/10 text-success">
+              <ShieldCheck className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <p className="text-sm text-muted-foreground">{t("empty")}</p>
           </div>
         ) : null}
 
-        {rows.length > 0 ? <FindingsTable findings={rows} nameById={nameById} /> : null}
+        {rows.length > 0 ? (
+          <div className="animate-fade-up">
+            <FindingsTable findings={rows} nameById={nameById} />
+          </div>
+        ) : null}
       </main>
     </div>
   );

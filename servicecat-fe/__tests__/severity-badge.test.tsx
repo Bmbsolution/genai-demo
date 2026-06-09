@@ -21,21 +21,21 @@ describe("SeverityBadge", () => {
   });
 
   it.each([
-    ["critical", "Critical", "bg-destructive"],
-    ["high", "High", "bg-destructive/15"],
-    ["medium", "Medium", "bg-secondary"],
-    ["low", "Low", "text-foreground"],
-  ])("maps %s to the right badge variant", (severity, label, expectedClass) => {
+    ["critical", "Critical", "bg-severity-critical"],
+    ["high", "High", "text-severity-high"],
+    ["medium", "Medium", "text-severity-medium"],
+    ["low", "Low", "text-muted-foreground"],
+  ])("maps %s to the right severity token", (severity, label, expectedClass) => {
     renderWithIntl(<SeverityBadge severity={severity} />);
     expect(screen.getByText(label)).toHaveClass(expectedClass);
   });
 
-  it("falls back to the outline variant and raw label for an unknown severity", () => {
+  it("falls back to the quiet low styling and raw label for an unknown severity", () => {
     renderWithIntl(<SeverityBadge severity="bogus" />);
-    // outline = text-foreground with no bg-* token; unknown severities have no
-    // translation key, so the raw value is shown.
+    // Unknown severities have no translation key, so the raw value is shown,
+    // styled like the calm "low" step (muted, no loud fill).
     const badge = screen.getByText("bogus");
-    expect(badge).toHaveClass("text-foreground");
-    expect(badge.className).not.toContain("bg-destructive");
+    expect(badge).toHaveClass("text-muted-foreground");
+    expect(badge.className).not.toContain("bg-severity-critical");
   });
 });

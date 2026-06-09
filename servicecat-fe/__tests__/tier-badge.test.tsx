@@ -21,7 +21,7 @@ describe("TierBadge", () => {
   });
 
   it.each([
-    [1, "bg-primary"],
+    [1, "text-brand"],
     [2, "bg-secondary"],
     [3, "text-foreground"],
   ])("emphasis decreases with the tier: tier %s", (tier, expectedClass) => {
@@ -33,6 +33,6 @@ describe("TierBadge", () => {
     renderWithIntl(<TierBadge tier={9} />);
     const badge = screen.getByText("Tier 9");
     expect(badge).toHaveClass("text-foreground");
-    expect(badge.className).not.toContain("bg-primary");
+    expect(badge.className).not.toContain("text-brand");
   });
 });

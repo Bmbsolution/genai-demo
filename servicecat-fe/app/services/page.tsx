@@ -1,12 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Boxes } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { AppHeader } from "@/components/app-header";
 import { CreateServiceDialog } from "@/components/create-service-dialog";
 import { TierBadge } from "@/components/tier-badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -42,9 +44,16 @@ export default function ServicesPage() {
     <div className="min-h-screen">
       <AppHeader />
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>
+              {services.length > 0 ? (
+                <Badge variant="secondary" className="font-mono">
+                  {services.length}
+                </Badge>
+              ) : null}
+            </div>
             <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
           </div>
           <CreateServiceDialog />
@@ -54,13 +63,17 @@ export default function ServicesPage() {
         {isError ? <p className="text-destructive">{t("loadError")}</p> : null}
 
         {!isLoading && !isError && services.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-10 text-center text-muted-foreground">
-            {t("empty")}
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed bg-card/40 p-12 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+              <Boxes className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <p className="text-sm text-muted-foreground">{t("empty")}</p>
+            <CreateServiceDialog />
           </div>
         ) : null}
 
         {services.length > 0 ? (
-          <div className="rounded-lg border">
+          <div className="animate-fade-up overflow-hidden rounded-xl border bg-card shadow-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -71,14 +84,23 @@ export default function ServicesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {services.map((service) => (
-                  <TableRow key={service.id}>
+                {services.map((service, i) => (
+                  <TableRow
+                    key={service.id}
+                    className="animate-fade-up"
+                    style={{ animationDelay: `${i * 45}ms` }}
+                  >
                     <TableCell className="font-medium">
                       <Link
                         href={`/services/${service.id}`}
-                        className="rounded hover:underline focus-visible:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="group inline-flex items-center gap-2.5 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        {service.name}
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-border bg-muted font-mono text-xs font-semibold uppercase text-muted-foreground transition-colors group-hover:border-brand/40 group-hover:text-brand">
+                          {service.name.slice(0, 2)}
+                        </span>
+                        <span className="group-hover:text-brand group-hover:underline">
+                          {service.name}
+                        </span>
                       </Link>
                     </TableCell>
                     <TableCell>
