@@ -18,6 +18,9 @@ export interface components {
       email: string;
       display_name: string;
       role: string;
+      avatar_url: string | null;
+      timezone: string;
+      auth_provider: string;
     };
     EventResponse: {
       id: string;

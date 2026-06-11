@@ -1,15 +1,64 @@
 {
   "app": { "title": "Gatherly" },
-  "nav": { "events": "Événements", "logout": "Se déconnecter" },
+  "nav": { "events": "Événements", "account": "Compte", "logout": "Se déconnecter" },
   "theme": { "toggle": "Changer de thème" },
   "login": {
-    "title": "Connexion à Gatherly",
-    "subtitle": "Planifiez des événements, invitez vos convives, recueillez les réponses",
+    "title": "Bon retour",
+    "subtitle": "Connectez-vous pour gérer vos événements",
     "email": "Courriel",
     "password": "Mot de passe",
     "submit": "Se connecter",
     "submitting": "Connexion…",
-    "failed": "Échec de la connexion. Vérifiez vos identifiants."
+    "failed": "Échec de la connexion. Vérifiez vos identifiants.",
+    "or": "ou",
+    "google": "Continuer avec Google",
+    "noAccount": "Nouveau sur Gatherly ?",
+    "signupLink": "Créer un compte"
+  },
+  "signup": {
+    "title": "Créez votre compte",
+    "subtitle": "Commencez à organiser en quelques minutes — sans carte de crédit",
+    "name": "Votre nom",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "passwordHint": "Au moins 8 caractères",
+    "submit": "Créer le compte",
+    "submitting": "Création…",
+    "failed": "Impossible de créer votre compte.",
+    "emailTaken": "Un compte existe déjà avec ce courriel.",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signinLink": "Se connecter"
+  },
+  "account": {
+    "title": "Compte",
+    "subtitle": "Gérez votre profil et votre sécurité",
+    "profile": "Profil",
+    "displayName": "Nom affiché",
+    "timezone": "Fuseau horaire",
+    "avatarUrl": "URL de l'avatar",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Profil mis à jour.",
+    "saveFailed": "Impossible d'enregistrer les modifications.",
+    "signedInWith": "Connexion via",
+    "password": {
+      "title": "Mot de passe",
+      "googleNote": "Vous vous connectez avec Google : aucun mot de passe à gérer.",
+      "current": "Mot de passe actuel",
+      "new": "Nouveau mot de passe",
+      "change": "Changer le mot de passe",
+      "changing": "Mise à jour…",
+      "changed": "Mot de passe mis à jour.",
+      "changeFailed": "Impossible de changer le mot de passe."
+    },
+    "danger": {
+      "title": "Supprimer le compte",
+      "warning": "Supprime définitivement votre compte, vos événements et toutes les données des invités. Irréversible.",
+      "delete": "Supprimer mon compte",
+      "deleting": "Suppression…",
+      "confirm": "Cela supprimera définitivement votre compte et tous vos événements. Continuer ?",
+      "failed": "Impossible de supprimer votre compte."
+    }
   },
   "events": {
     "title": "Événements",

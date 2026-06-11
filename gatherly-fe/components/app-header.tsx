@@ -55,8 +55,21 @@ export function AppHeader() {
             ))}
           </nav>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center gap-1.5">
           <ThemeToggle />
+          <Link
+            href="/account"
+            aria-label={t("nav.account")}
+            aria-current={pathname.startsWith("/account") ? "page" : undefined}
+            className={cn(
+              "flex h-8 w-8 items-center justify-center rounded-full border bg-muted font-mono text-xs font-semibold uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              pathname.startsWith("/account")
+                ? "border-brand/40 text-brand"
+                : "text-muted-foreground hover:border-brand/40 hover:text-brand",
+            )}
+          >
+            {(workspaceName ?? "·").slice(0, 2).toUpperCase()}
+          </Link>
           <Button variant="ghost" size="sm" onClick={onLogout}>
             <LogOut className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">{t("nav.logout")}</span>
