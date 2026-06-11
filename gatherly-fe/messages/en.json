@@ -1,0 +1,72 @@
+{
+  "app": { "title": "Gatherly" },
+  "nav": { "events": "Events", "logout": "Sign out" },
+  "theme": { "toggle": "Toggle theme" },
+  "login": {
+    "title": "Sign in to Gatherly",
+    "subtitle": "Plan events, invite guests, collect RSVPs",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "failed": "Sign in failed. Check your credentials."
+  },
+  "events": {
+    "title": "Events",
+    "subtitle": "Events you're hosting",
+    "new": "Create event",
+    "empty": "No events yet. Create your first one.",
+    "loadError": "Could not load events.",
+    "noLocation": "Location TBD",
+    "status": { "draft": "Draft", "published": "Published" },
+    "dialog": {
+      "title": "Create an event",
+      "description": "Add the basics — you can refine it later.",
+      "name": "Title",
+      "startsAt": "Date & time",
+      "location": "Location",
+      "capacity": "Capacity",
+      "descriptionField": "Description (optional)",
+      "submit": "Create",
+      "submitting": "Creating…",
+      "created": "Event created.",
+      "failed": "Could not create the event."
+    }
+  },
+  "detail": {
+    "back": "Back to events",
+    "notFound": "Event not found.",
+    "spots": "{yes} of {capacity} attending",
+    "guests": {
+      "title": "Guest list",
+      "empty": "No guests yet. Invite your first one.",
+      "loadError": "Could not load the guest list.",
+      "invite": "Invite guest",
+      "inviteDescription": "We'll generate a private RSVP link for them.",
+      "name": "Name",
+      "email": "Email",
+      "emailInvalid": "Enter a valid email.",
+      "rsvp": "RSVP",
+      "copyLink": "Copy link",
+      "linkCopied": "Invite link copied.",
+      "invited": "Guest invited.",
+      "failed": "Could not invite the guest.",
+      "submit": "Invite",
+      "submitting": "Inviting…"
+    }
+  },
+  "rsvp": {
+    "invited": "You're invited",
+    "greeting": "Hi {name}, will you come?",
+    "saved": "Your RSVP is saved.",
+    "notFoundTitle": "Invitation not found",
+    "notFound": "This invite link is invalid or has expired.",
+    "status": { "yes": "Yes", "no": "No", "maybe": "Maybe", "pending": "Pending" }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "loading": "Loading…",
+    "error": "Something went wrong.",
+    "retry": "Try again"
+  }
+}

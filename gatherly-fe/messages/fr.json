@@ -1,0 +1,72 @@
+{
+  "app": { "title": "Gatherly" },
+  "nav": { "events": "Événements", "logout": "Se déconnecter" },
+  "theme": { "toggle": "Changer de thème" },
+  "login": {
+    "title": "Connexion à Gatherly",
+    "subtitle": "Planifiez des événements, invitez vos convives, recueillez les réponses",
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion…",
+    "failed": "Échec de la connexion. Vérifiez vos identifiants."
+  },
+  "events": {
+    "title": "Événements",
+    "subtitle": "Les événements que vous organisez",
+    "new": "Créer un événement",
+    "empty": "Aucun événement pour l'instant. Créez le premier.",
+    "loadError": "Impossible de charger les événements.",
+    "noLocation": "Lieu à confirmer",
+    "status": { "draft": "Brouillon", "published": "Publié" },
+    "dialog": {
+      "title": "Créer un événement",
+      "description": "Ajoutez l'essentiel — vous pourrez l'affiner plus tard.",
+      "name": "Titre",
+      "startsAt": "Date et heure",
+      "location": "Lieu",
+      "capacity": "Capacité",
+      "descriptionField": "Description (facultatif)",
+      "submit": "Créer",
+      "submitting": "Création…",
+      "created": "Événement créé.",
+      "failed": "Impossible de créer l'événement."
+    }
+  },
+  "detail": {
+    "back": "Retour aux événements",
+    "notFound": "Événement introuvable.",
+    "spots": "{yes} sur {capacity} présents",
+    "guests": {
+      "title": "Liste des invités",
+      "empty": "Aucun invité pour l'instant. Invitez le premier.",
+      "loadError": "Impossible de charger la liste des invités.",
+      "invite": "Inviter",
+      "inviteDescription": "Nous générerons un lien de réponse privé pour cette personne.",
+      "name": "Nom",
+      "email": "Courriel",
+      "emailInvalid": "Saisissez un courriel valide.",
+      "rsvp": "Réponse",
+      "copyLink": "Copier le lien",
+      "linkCopied": "Lien d'invitation copié.",
+      "invited": "Invité ajouté.",
+      "failed": "Impossible d'inviter cette personne.",
+      "submit": "Inviter",
+      "submitting": "Envoi…"
+    }
+  },
+  "rsvp": {
+    "invited": "Vous êtes invité·e",
+    "greeting": "Bonjour {name}, serez-vous des nôtres ?",
+    "saved": "Votre réponse est enregistrée.",
+    "notFoundTitle": "Invitation introuvable",
+    "notFound": "Ce lien d'invitation est invalide ou expiré.",
+    "status": { "yes": "Oui", "no": "Non", "maybe": "Peut-être", "pending": "En attente" }
+  },
+  "common": {
+    "cancel": "Annuler",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue.",
+    "retry": "Réessayer"
+  }
+}
