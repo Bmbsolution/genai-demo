@@ -68,13 +68,17 @@
     "loadError": "Could not load events.",
     "noLocation": "Location TBD",
     "status": { "draft": "Draft", "published": "Published" },
+    "visibility": { "private": "Private", "unlisted": "Unlisted", "public": "Public" },
     "dialog": {
       "title": "Create an event",
       "description": "Add the basics — you can refine it later.",
       "name": "Title",
       "startsAt": "Date & time",
+      "endsAt": "Ends (optional)",
       "location": "Location",
       "capacity": "Capacity",
+      "coverUrl": "Cover image URL (optional)",
+      "visibility": "Visibility",
       "descriptionField": "Description (optional)",
       "submit": "Create",
       "submitting": "Creating…",
@@ -86,6 +90,7 @@
     "back": "Back to events",
     "notFound": "Event not found.",
     "spots": "{yes} of {capacity} attending",
+    "ends": "Ends",
     "guests": {
       "title": "Guest list",
       "empty": "No guests yet. Invite your first one.",
@@ -96,6 +101,8 @@
       "email": "Email",
       "emailInvalid": "Enter a valid email.",
       "rsvp": "RSVP",
+      "plusOne": "+1",
+      "dietary": "Dietary",
       "copyLink": "Copy link",
       "linkCopied": "Invite link copied.",
       "invited": "Guest invited.",
@@ -108,9 +115,19 @@
     "invited": "You're invited",
     "greeting": "Hi {name}, will you come?",
     "saved": "Your RSVP is saved.",
+    "plusOneLabel": "I'm bringing a +1",
+    "dietaryLabel": "Dietary notes (optional)",
+    "addToCalendar": "Add to calendar",
+    "waitlistedNote": "You're on the waitlist — we'll let you know if a spot opens up.",
     "notFoundTitle": "Invitation not found",
     "notFound": "This invite link is invalid or has expired.",
-    "status": { "yes": "Yes", "no": "No", "maybe": "Maybe", "pending": "Pending" }
+    "status": {
+      "yes": "Yes",
+      "no": "No",
+      "maybe": "Maybe",
+      "pending": "Pending",
+      "waitlisted": "Waitlisted"
+    }
   },
   "common": {
     "cancel": "Cancel",

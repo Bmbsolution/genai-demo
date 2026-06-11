@@ -21,21 +21,33 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { apiFetch } from "@/lib/api/client";
 
 const schema = z.object({
   title: z.string().min(1),
   starts_at: z.string().min(1),
+  ends_at: z.string().optional(),
   location: z.string().optional(),
+  cover_image_url: z.string().optional(),
   capacity: z.number().int().min(1).max(100000).optional(),
   description: z.string().optional(),
 });
 type FormValues = z.infer<typeof schema>;
 
+const VISIBILITIES = ["private", "unlisted", "public"] as const;
+
 export function CreateEventDialog() {
   const t = useTranslations();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [visibility, setVisibility] = useState<string>("private");
   const {
     register,
     handleSubmit,
@@ -47,15 +59,18 @@ export function CreateEventDialog() {
     try {
       const body = {
         title: values.title,
-        // datetime-local has no timezone — interpret as local and send ISO/UTC.
         starts_at: new Date(values.starts_at).toISOString(),
+        ends_at: values.ends_at ? new Date(values.ends_at).toISOString() : undefined,
         location: values.location?.trim() || undefined,
+        cover_image_url: values.cover_image_url?.trim() || undefined,
         capacity: values.capacity ?? undefined,
+        visibility,
         description: values.description?.trim() || undefined,
       };
       await apiFetch("/api/v1/events", { method: "POST", body });
       toast.success(t("events.dialog.created"));
       reset();
+      setVisibility("private");
       setOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["events"] });
     } catch {
@@ -81,9 +96,15 @@ export function CreateEventDialog() {
             <Label htmlFor="title">{t("events.dialog.name")}</Label>
             <Input id="title" placeholder="Team Offsite 2026" {...register("title")} />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="starts_at">{t("events.dialog.startsAt")}</Label>
-            <Input id="starts_at" type="datetime-local" {...register("starts_at")} />
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="starts_at">{t("events.dialog.startsAt")}</Label>
+              <Input id="starts_at" type="datetime-local" {...register("starts_at")} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ends_at">{t("events.dialog.endsAt")}</Label>
+              <Input id="ends_at" type="datetime-local" {...register("ends_at")} />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
@@ -101,8 +122,29 @@ export function CreateEventDialog() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">{t("events.dialog.descriptionField")}</Label>
-            <Input id="description" {...register("description")} />
+            <Label htmlFor="cover_image_url">{t("events.dialog.coverUrl")}</Label>
+            <Input id="cover_image_url" placeholder="https://…" {...register("cover_image_url")} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label>{t("events.dialog.visibility")}</Label>
+              <Select value={visibility} onValueChange={setVisibility}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {VISIBILITIES.map((value) => (
+                    <SelectItem key={value} value={value}>
+                      {t(`events.visibility.${value}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">{t("events.dialog.descriptionField")}</Label>
+              <Input id="description" {...register("description")} />
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

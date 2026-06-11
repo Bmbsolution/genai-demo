@@ -12,6 +12,7 @@ const STYLES: Record<string, string> = {
   yes: "border-success/30 bg-success/15 text-success",
   maybe: "border-warning/30 bg-warning/15 text-warning",
   no: "border-destructive/30 bg-destructive/10 text-destructive",
+  waitlisted: "border-brand/30 bg-brand/10 text-brand",
   pending: "border-border bg-transparent text-muted-foreground",
 };
 
@@ -19,6 +20,7 @@ const DOT: Record<string, string> = {
   yes: "bg-success",
   maybe: "bg-warning",
   no: "bg-destructive",
+  waitlisted: "bg-brand",
   pending: "bg-muted-foreground",
 };
 

@@ -68,13 +68,17 @@
     "loadError": "Impossible de charger les événements.",
     "noLocation": "Lieu à confirmer",
     "status": { "draft": "Brouillon", "published": "Publié" },
+    "visibility": { "private": "Privé", "unlisted": "Non répertorié", "public": "Public" },
     "dialog": {
       "title": "Créer un événement",
       "description": "Ajoutez l'essentiel — vous pourrez l'affiner plus tard.",
       "name": "Titre",
       "startsAt": "Date et heure",
+      "endsAt": "Fin (facultatif)",
       "location": "Lieu",
       "capacity": "Capacité",
+      "coverUrl": "URL de l'image de couverture (facultatif)",
+      "visibility": "Visibilité",
       "descriptionField": "Description (facultatif)",
       "submit": "Créer",
       "submitting": "Création…",
@@ -86,6 +90,7 @@
     "back": "Retour aux événements",
     "notFound": "Événement introuvable.",
     "spots": "{yes} sur {capacity} présents",
+    "ends": "Fin",
     "guests": {
       "title": "Liste des invités",
       "empty": "Aucun invité pour l'instant. Invitez le premier.",
@@ -96,6 +101,8 @@
       "email": "Courriel",
       "emailInvalid": "Saisissez un courriel valide.",
       "rsvp": "Réponse",
+      "plusOne": "+1",
+      "dietary": "Régime",
       "copyLink": "Copier le lien",
       "linkCopied": "Lien d'invitation copié.",
       "invited": "Invité ajouté.",
@@ -108,9 +115,19 @@
     "invited": "Vous êtes invité·e",
     "greeting": "Bonjour {name}, serez-vous des nôtres ?",
     "saved": "Votre réponse est enregistrée.",
+    "plusOneLabel": "Je viens accompagné·e (+1)",
+    "dietaryLabel": "Restrictions alimentaires (facultatif)",
+    "addToCalendar": "Ajouter au calendrier",
+    "waitlistedNote": "Vous êtes sur la liste d'attente — nous vous préviendrons si une place se libère.",
     "notFoundTitle": "Invitation introuvable",
     "notFound": "Ce lien d'invitation est invalide ou expiré.",
-    "status": { "yes": "Oui", "no": "Non", "maybe": "Peut-être", "pending": "En attente" }
+    "status": {
+      "yes": "Oui",
+      "no": "Non",
+      "maybe": "Peut-être",
+      "pending": "En attente",
+      "waitlisted": "Liste d'attente"
+    }
   },
   "common": {
     "cancel": "Annuler",

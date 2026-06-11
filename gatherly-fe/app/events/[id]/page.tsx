@@ -91,12 +91,23 @@ export default function EventDetailPage() {
         {event.data ? (
           <>
             <div className="animate-fade-up">
+              {event.data.cover_image_url ? (
+                <div
+                  className="mb-4 h-44 w-full rounded-xl border bg-muted bg-cover bg-center"
+                  style={{ backgroundImage: `url(${event.data.cover_image_url})` }}
+                  role="img"
+                  aria-label={event.data.title}
+                />
+              ) : null}
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="font-display text-3xl font-semibold tracking-tight">
                   {event.data.title}
                 </h1>
                 <Badge variant={event.data.status === "published" ? "brand" : "outline"}>
                   {t(`events.status.${event.data.status}`)}
+                </Badge>
+                <Badge variant="secondary">
+                  {t(`events.visibility.${event.data.visibility}`)}
                 </Badge>
               </div>
               {event.data.description ? (
@@ -107,6 +118,11 @@ export default function EventDetailPage() {
                   <CalendarDays className="h-4 w-4" />
                   {formatEventDate(event.data.starts_at)}
                 </span>
+                {event.data.ends_at ? (
+                  <span className="inline-flex items-center gap-2">
+                    {t("detail.ends")} {formatEventDate(event.data.ends_at)}
+                  </span>
+                ) : null}
                 <span className="inline-flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
                   {event.data.location ?? t("events.noLocation")}
@@ -152,6 +168,8 @@ export default function EventDetailPage() {
                           <TableHead>{t("detail.guests.name")}</TableHead>
                           <TableHead>{t("detail.guests.email")}</TableHead>
                           <TableHead>{t("detail.guests.rsvp")}</TableHead>
+                          <TableHead>{t("detail.guests.plusOne")}</TableHead>
+                          <TableHead>{t("detail.guests.dietary")}</TableHead>
                           <TableHead className="text-right">{t("detail.guests.invite")}</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -162,6 +180,10 @@ export default function EventDetailPage() {
                             <TableCell className="text-muted-foreground">{guest.email}</TableCell>
                             <TableCell>
                               <RsvpBadge status={guest.rsvp_status} />
+                            </TableCell>
+                            <TableCell className="tabular-nums">{guest.plus_one ? "+1" : "—"}</TableCell>
+                            <TableCell className="max-w-[12rem] truncate text-muted-foreground">
+                              {guest.dietary_notes ?? "—"}
                             </TableCell>
                             <TableCell className="text-right">
                               <Button
