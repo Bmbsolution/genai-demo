@@ -52,5 +52,7 @@ class GuestService:
         event_id: uuid.UUID,
         owner_id: uuid.UUID,
     ) -> Sequence[Guest]:
-        await self._events.get(event_id, owner_id)  # 404 if not the owner's event
+        # BUG (planted for the demo): the ownership check was dropped here, so
+        # any authenticated host can read any event's guest list. /audit + the
+        # isolation test catch this.
         return await self._guests.list_for_event(event_id)
