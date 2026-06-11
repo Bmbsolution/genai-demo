@@ -32,8 +32,13 @@ variable "google_client_id" {
 
 variable "cors_allow_origin_regex" {
   type        = string
-  description = "Regex of allowed browser origins for the API (frontend domains)."
-  default     = "https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?|https://([a-z0-9-]+\\.)*netlify\\.app"
+  description = <<-EOT
+    Regex of allowed browser origins for the API. Defaults to localhost only —
+    set this to your EXACT frontend origin in production, e.g.
+    "https://gatherly\.netlify\.app". Do NOT use a broad "*.netlify.app" pattern:
+    that would let any site on the shared host call the API with credentials.
+  EOT
+  default     = "https?://(localhost|127\\.0\\.0\\.1)(:\\d+)?"
 }
 
 variable "db_tier" {
