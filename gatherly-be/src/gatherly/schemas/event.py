@@ -7,7 +7,7 @@ import uuid
 
 from pydantic import Field
 
-from gatherly.models.event import EventStatus
+from gatherly.models.event import EventStatus, EventVisibility
 from gatherly.schemas.base import GatherlyBaseModel, PageMeta
 
 
@@ -17,8 +17,11 @@ class EventCreateRequest(GatherlyBaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=4000)
     starts_at: dt.datetime
+    ends_at: dt.datetime | None = None
     location: str | None = Field(default=None, max_length=300)
+    cover_image_url: str | None = Field(default=None, max_length=1024)
     capacity: int | None = Field(default=None, ge=1, le=100_000)
+    visibility: EventVisibility = EventVisibility.PRIVATE
 
 
 class EventUpdateRequest(GatherlyBaseModel):
@@ -27,8 +30,11 @@ class EventUpdateRequest(GatherlyBaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = Field(default=None, max_length=4000)
     starts_at: dt.datetime | None = None
+    ends_at: dt.datetime | None = None
     location: str | None = Field(default=None, max_length=300)
+    cover_image_url: str | None = Field(default=None, max_length=1024)
     capacity: int | None = Field(default=None, ge=1, le=100_000)
+    visibility: EventVisibility | None = None
     status: EventStatus | None = None
 
 
@@ -40,8 +46,11 @@ class EventResponse(GatherlyBaseModel):
     title: str
     description: str | None
     starts_at: dt.datetime
+    ends_at: dt.datetime | None
     location: str | None
+    cover_image_url: str | None
     capacity: int | None
+    visibility: str
     status: str
     created_at: dt.datetime
 

@@ -19,6 +19,19 @@ class EventStatus(enum.StrEnum):
     PUBLISHED = "published"
 
 
+class EventVisibility(enum.StrEnum):
+    """Who can see the event's public page.
+
+    private — only invited guests (via their token).
+    unlisted — anyone with the link, but not discoverable.
+    public — discoverable / shareable.
+    """
+
+    PRIVATE = "private"
+    UNLISTED = "unlisted"
+    PUBLIC = "public"
+
+
 class Event(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """A host-owned event. Tenant isolation is by ``owner_id`` (S2)."""
 
@@ -31,7 +44,10 @@ class Event(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str | None] = mapped_column(Text, default=None)
     starts_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True))
+    ends_at: Mapped[dt.datetime | None] = mapped_column(DateTime(timezone=True), default=None)
     location: Mapped[str | None] = mapped_column(String(300), default=None)
+    cover_image_url: Mapped[str | None] = mapped_column(String(1024), default=None)
     capacity: Mapped[int | None] = mapped_column(Integer, default=None)
+    visibility: Mapped[str] = mapped_column(String(20), default=EventVisibility.PRIVATE.value)
     status: Mapped[str] = mapped_column(String(20), default=EventStatus.DRAFT.value)
     deleted_at: Mapped[dt.datetime | None] = mapped_column(DateTime(timezone=True), default=None)

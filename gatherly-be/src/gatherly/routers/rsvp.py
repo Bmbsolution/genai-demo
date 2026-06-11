@@ -28,7 +28,16 @@ def _to_view(guest: Guest, event: Event) -> RsvpView:
     return RsvpView(
         guest_name=guest.name,
         rsvp_status=guest.rsvp_status,
-        event=RsvpEventInfo(title=event.title, starts_at=event.starts_at, location=event.location),
+        plus_one=guest.plus_one,
+        dietary_notes=guest.dietary_notes,
+        event=RsvpEventInfo(
+            title=event.title,
+            description=event.description,
+            starts_at=event.starts_at,
+            ends_at=event.ends_at,
+            location=event.location,
+            cover_image_url=event.cover_image_url,
+        ),
     )
 
 
@@ -49,5 +58,5 @@ async def respond_rsvp(
     db: Annotated[AsyncSession, Depends(get_db)],
     _rl: Annotated[None, Depends(_respond_rl)],
 ) -> DataResponse[RsvpView]:
-    guest, event = await RsvpService(db).respond(invite_token, payload.rsvp_status)
+    guest, event = await RsvpService(db).respond(invite_token, payload)
     return DataResponse(data=_to_view(guest, event))

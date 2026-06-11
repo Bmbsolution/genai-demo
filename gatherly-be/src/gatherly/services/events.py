@@ -32,8 +32,11 @@ class EventService:
             title=payload.title,
             description=payload.description,
             starts_at=payload.starts_at,
+            ends_at=payload.ends_at,
             location=payload.location,
+            cover_image_url=payload.cover_image_url,
             capacity=payload.capacity,
+            visibility=payload.visibility.value,
         )
         await self._repo.add(event)
         return event

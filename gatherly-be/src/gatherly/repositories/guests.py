@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import func, select
 
-from gatherly.models import Guest
+from gatherly.models import Guest, RsvpStatus
 
 if TYPE_CHECKING:
     import uuid
@@ -35,6 +35,17 @@ class GuestRepository:
         return (
             await self._db.scalar(
                 select(func.count()).select_from(Guest).where(Guest.event_id == event_id),
+            )
+            or 0
+        )
+
+    async def count_attending(self, event_id: uuid.UUID) -> int:
+        """Number of guests with a confirmed 'yes' (for capacity / waitlist)."""
+        return (
+            await self._db.scalar(
+                select(func.count())
+                .select_from(Guest)
+                .where(Guest.event_id == event_id, Guest.rsvp_status == RsvpStatus.YES.value),
             )
             or 0
         )
