@@ -81,6 +81,30 @@ export interface components {
     ReminderResponse: {
       sent: number;
     };
+    EventInsightsResponse: {
+      total_guests: number;
+      responded: number;
+      response_rate: number;
+      attending: number;
+      waitlisted: number;
+      plus_ones: number;
+      checked_in: number;
+      dietary_notes: number;
+      capacity: number | null;
+      remaining_capacity: number | null;
+      status_counts: Record<string, number>;
+    };
+    ReadinessCheckResponse: {
+      key: string;
+      passed: boolean;
+      severity: string;
+    };
+    EventReadinessResponse: {
+      ready: boolean;
+      passed: number;
+      total: number;
+      checks: components["schemas"]["ReadinessCheckResponse"][];
+    };
     RsvpView: {
       guest_name: string;
       rsvp_status: string;
