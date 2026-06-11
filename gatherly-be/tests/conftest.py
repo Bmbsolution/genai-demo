@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.pool import StaticPool
 
 from gatherly import rate_limit
+from gatherly.db import enable_sqlite_foreign_keys
 from gatherly.deps import get_db
 from gatherly.main import create_app
 from gatherly.models import Base, User
@@ -34,6 +35,7 @@ async def engine() -> AsyncIterator[AsyncEngine]:
         poolclass=StaticPool,
         connect_args={"check_same_thread": False},
     )
+    enable_sqlite_foreign_keys(eng)
     async with eng.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield eng

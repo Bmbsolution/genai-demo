@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     access_token_ttl_seconds: int = 900  # 15 minutes
     refresh_token_ttl_seconds: int = 604800  # 7 days
 
+    # Google Sign-In (Identity Services / ID-token flow). The client id is not a
+    # secret, but lives in the environment so it's configurable per deployment.
+    # Empty disables the Google button (the dev-mock fallback).
+    google_client_id: str = ""
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
