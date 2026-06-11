@@ -1,0 +1,12 @@
+# Copy to terraform.tfvars and fill in. terraform.tfvars is gitignored.
+
+project_id       = "gatherly-499115"
+region           = "northamerica-northeast1"
+google_client_id = "REPLACE_WITH_YOUR_GOOGLE_WEB_CLIENT_ID"
+
+# Leave `image` unset for the first apply (uses a public placeholder). After you
+# build & push, re-apply with the real image:
+# image = "northamerica-northeast1-docker.pkg.dev/gatherly-499115/gatherly/gatherly-api:latest"
+
+# Restrict the API to your real frontend origin(s) once deployed:
+# cors_allow_origin_regex = "https://gatherly\\.netlify\\.app"
