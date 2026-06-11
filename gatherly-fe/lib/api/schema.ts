@@ -21,6 +21,19 @@ export interface components {
       avatar_url: string | null;
       timezone: string;
       auth_provider: string;
+      plan: string;
+    };
+    BillingOverviewResponse: {
+      plan: string;
+      price_display: string;
+      max_active_events: number | null;
+      max_guests_per_event: number | null;
+      pro_features: string[];
+      active_events: number;
+    };
+    CheckoutResponse: {
+      url: string | null;
+      mock: boolean;
     };
     EventResponse: {
       id: string;

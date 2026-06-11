@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { apiFetch, type Data } from "@/lib/api/client";
+import { ApiError, apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 
 type ImportResult = components["schemas"]["GuestImportResponse"];
@@ -25,6 +25,7 @@ type ImportResult = components["schemas"]["GuestImportResponse"];
 export function ImportGuestsDialog({ eventId }: { eventId: string }) {
   const t = useTranslations("detail.import");
   const tc = useTranslations("common");
+  const tb = useTranslations("billing");
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [csv, setCsv] = useState("");
@@ -50,8 +51,12 @@ export function ImportGuestsDialog({ eventId }: { eventId: string }) {
       setCsv("");
       setOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["guests", eventId] });
-    } catch {
-      toast.error(t("failed"));
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 402) {
+        toast.error(tb("proRequired"));
+      } else {
+        toast.error(t("failed"));
+      }
     } finally {
       setSubmitting(false);
     }

@@ -29,6 +29,29 @@
     "haveAccount": "Vous avez déjà un compte ?",
     "signinLink": "Se connecter"
   },
+  "billing": {
+    "title": "Forfait et facturation",
+    "free": "Gratuit",
+    "pro": "Pro",
+    "currentPlan": "Forfait actuel",
+    "freeBlurb": "Jusqu'à {events} événements actifs et {guests} invités par événement.",
+    "proBlurb": "Événements et invités illimités, plus toutes les fonctions Pro.",
+    "usage": "{active} sur {limit} événements actifs utilisés",
+    "proFeatures": "Pro débloque",
+    "feature": {
+      "import": "Import CSV des invités en lot",
+      "reminders": "Rappels de réponse automatiques",
+      "events": "Événements illimités",
+      "guests": "Invités illimités par événement"
+    },
+    "upgrade": "Passer à Pro — {price}",
+    "upgrading": "Mise à niveau…",
+    "upgraded": "Bienvenue dans Pro ! Toutes les fonctions sont débloquées.",
+    "upgradeFailed": "Impossible de démarrer la mise à niveau.",
+    "onPro": "Vous êtes sur Pro — merci de votre soutien.",
+    "limitReached": "Vous avez atteint une limite du forfait Gratuit. Passez à Pro pour continuer.",
+    "proRequired": "C'est une fonction Pro. Passez à Pro pour la débloquer."
+  },
   "account": {
     "title": "Compte",
     "subtitle": "Gérez votre profil et votre sécurité",

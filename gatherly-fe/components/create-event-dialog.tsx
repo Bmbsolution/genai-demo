@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { apiFetch } from "@/lib/api/client";
+import { ApiError, apiFetch } from "@/lib/api/client";
 
 const schema = z.object({
   title: z.string().min(1),
@@ -73,8 +73,12 @@ export function CreateEventDialog() {
       setVisibility("private");
       setOpen(false);
       await queryClient.invalidateQueries({ queryKey: ["events"] });
-    } catch {
-      toast.error(t("events.dialog.failed"));
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 402) {
+        toast.error(t("billing.limitReached"));
+      } else {
+        toast.error(t("events.dialog.failed"));
+      }
     }
   });
 
