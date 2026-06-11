@@ -41,6 +41,17 @@ class Settings(BaseSettings):
     # Empty disables the Google button (the dev-mock fallback).
     google_client_id: str = ""
 
+    # Billing. Stripe secret stays in the environment (rule S7). Empty selects the
+    # mock provider (instant in-app upgrade) for local/demo; set it to route real
+    # Stripe Checkout. The price id is the Pro plan's recurring price.
+    stripe_secret_key: str = ""  # empty default; real value via env only (rule S7)
+    stripe_price_id: str = ""
+    pro_price_display: str = "$12/mo"
+
+    # Free-tier caps. Pro lifts both and unlocks import/reminders.
+    free_max_active_events: int = 2
+    free_max_guests_per_event: int = 25
+
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:

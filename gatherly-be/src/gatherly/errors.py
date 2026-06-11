@@ -66,3 +66,13 @@ class RateLimitError(GatherlyError):
 
     code = "S4_RATE_LIMITED"
     status_code = 429
+
+
+class PlanLimitError(GatherlyError):
+    """The action exceeds the account's plan (free-tier cap or Pro-only feature).
+
+    402 Payment Required — the client should prompt the host to upgrade.
+    """
+
+    code = "PLAN_LIMIT"
+    status_code = 402

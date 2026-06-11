@@ -67,7 +67,7 @@ async def invite_guest(
     _rl: Annotated[None, Depends(_write_rl)],
     _audit: Annotated[None, Depends(audit_action("guest.invite"))],
 ) -> DataResponse[GuestResponse]:
-    guest = await GuestService(db).invite(event_id=event_id, owner_id=user.id, payload=payload)
+    guest = await GuestService(db).invite(event_id=event_id, user=user, payload=payload)
     return DataResponse(data=GuestResponse.model_validate(guest))
 
 
@@ -83,7 +83,7 @@ async def import_guests(
 ) -> DataResponse[GuestImportResponse]:
     result = await GuestService(db).import_csv(
         event_id=event_id,
-        owner_id=user.id,
+        user=user,
         csv_text=payload.csv,
     )
     return DataResponse(data=GuestImportResponse.model_validate(result))
@@ -135,5 +135,5 @@ async def send_reminders(
     _rl: Annotated[None, Depends(_bulk_rl)],
     _audit: Annotated[None, Depends(audit_action("guest.remind"))],
 ) -> DataResponse[ReminderResponse]:
-    sent = await GuestService(db).send_reminders(event_id=event_id, owner_id=user.id)
+    sent = await GuestService(db).send_reminders(event_id=event_id, user=user)
     return DataResponse(data=ReminderResponse(sent=sent))

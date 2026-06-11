@@ -69,3 +69,4 @@ class UserResponse(GatherlyBaseModel):
     avatar_url: str | None
     timezone: str
     auth_provider: str
+    plan: str

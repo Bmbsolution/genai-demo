@@ -19,6 +19,7 @@ from pydantic import EmailStr, TypeAdapter, ValidationError
 from gatherly.errors import OwnershipError
 from gatherly.models import Guest, RsvpStatus
 from gatherly.repositories.guests import GuestRepository
+from gatherly.services.billing import FEATURE_IMPORT, FEATURE_REMINDERS, PlanService
 from gatherly.services.email import EmailMessage, get_email_sender
 from gatherly.services.events import EventService
 
@@ -28,6 +29,7 @@ if TYPE_CHECKING:
 
     from sqlalchemy.ext.asyncio import AsyncSession
 
+    from gatherly.models import User
     from gatherly.schemas.guest import GuestCreateRequest
 
 _email_adapter: TypeAdapter[str] = TypeAdapter(EmailStr)
@@ -51,16 +53,18 @@ class GuestService:
     def __init__(self, db: AsyncSession) -> None:
         self._guests = GuestRepository(db)
         self._events = EventService(db)
+        self._plan = PlanService(db)
         self._email = get_email_sender()
 
     async def invite(
         self,
         *,
         event_id: uuid.UUID,
-        owner_id: uuid.UUID,
+        user: User,
         payload: GuestCreateRequest,
     ) -> Guest:
-        await self._events.get(event_id, owner_id)  # 404 if not the owner's event
+        await self._events.get(event_id, user.id)  # 404 if not the owner's event
+        await self._plan.assert_can_add_guests(user, event_id, 1)
         guest = Guest(
             event_id=event_id,
             name=payload.name,
@@ -100,15 +104,16 @@ class GuestService:
         self,
         *,
         event_id: uuid.UUID,
-        owner_id: uuid.UUID,
+        user: User,
         csv_text: str,
     ) -> ImportResult:
-        """Add guests from ``name,email`` CSV rows.
+        """Add guests from ``name,email`` CSV rows (Pro feature).
 
         Skips rows that are malformed, have an invalid email, duplicate an email
         already on the event, or duplicate another row in the same upload.
         """
-        await self._events.get(event_id, owner_id)  # 404 if not the owner's event
+        await self._events.get(event_id, user.id)  # 404 if not the owner's event
+        self._plan.assert_pro_feature(user, FEATURE_IMPORT)
         seen = await self._guests.existing_emails(event_id)
 
         created: list[Guest] = []
@@ -174,10 +179,11 @@ class GuestService:
             )
         return buffer.getvalue()
 
-    async def send_reminders(self, *, event_id: uuid.UUID, owner_id: uuid.UUID) -> int:
-        """Email a reminder to every guest who hasn't responded yet. Returns the
-        number sent."""
-        event = await self._events.get(event_id, owner_id)  # 404 if not the owner's event
+    async def send_reminders(self, *, event_id: uuid.UUID, user: User) -> int:
+        """Email a reminder to every guest who hasn't responded yet (Pro feature).
+        Returns the number sent."""
+        event = await self._events.get(event_id, user.id)  # 404 if not the owner's event
+        self._plan.assert_pro_feature(user, FEATURE_REMINDERS)
         pending = await self._guests.list_for_event(event_id, status=RsvpStatus.PENDING.value)
         for guest in pending:
             await self._email.send(
