@@ -4,11 +4,15 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
+type RevealVariant = "up" | "left" | "right" | "scale" | "blur";
+
 interface RevealProps {
   children: React.ReactNode;
   className?: string;
   /** Stagger the entrance, in milliseconds. */
   delay?: number;
+  /** Entrance direction / effect. Defaults to "up". */
+  variant?: RevealVariant;
   /** Render element tag. Defaults to a div. */
   as?: "div" | "section" | "li" | "article";
 }
@@ -18,7 +22,13 @@ interface RevealProps {
  * Pure IntersectionObserver — no animation library. Honors prefers-reduced-motion
  * via the `.reveal` CSS (which collapses to a no-op).
  */
-export function Reveal({ children, className, delay = 0, as = "div" }: RevealProps) {
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  variant = "up",
+  as = "div",
+}: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -44,7 +54,7 @@ export function Reveal({ children, className, delay = 0, as = "div" }: RevealPro
   return (
     <Tag
       ref={ref as never}
-      className={cn("reveal", visible && "is-visible", className)}
+      className={cn("reveal", `v-${variant}`, visible && "is-visible", className)}
       style={delay ? ({ "--reveal-delay": `${delay}ms` } as React.CSSProperties) : undefined}
     >
       {children}

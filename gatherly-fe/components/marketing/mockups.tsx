@@ -1,17 +1,28 @@
 "use client";
 
 import { CalendarDays, Check, MapPin, PartyPopper, Sparkles, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Confetti } from "@/components/confetti";
 import { cn } from "@/lib/utils";
 
 export { Confetti };
 
-/* SVG progress ring for the "response rate" stat. */
+/* SVG progress ring for the "response rate" stat — sweeps from 0 on mount. */
 function StatRing({ value, label }: { value: number; label: string }) {
   const r = 26;
   const circ = 2 * Math.PI * r;
-  const offset = circ * (1 - value / 100);
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      setShown(value);
+      return;
+    }
+    const id = window.setTimeout(() => setShown(value), 250);
+    return () => window.clearTimeout(id);
+  }, [value]);
+  const offset = circ * (1 - shown / 100);
   return (
     <div className="flex items-center gap-3">
       <div className="relative h-16 w-16">
@@ -27,10 +38,11 @@ function StatRing({ value, label }: { value: number; label: string }) {
             strokeLinecap="round"
             strokeDasharray={circ}
             strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 1.3s var(--ease)" }}
           />
         </svg>
         <span className="absolute inset-0 flex items-center justify-center font-display text-base font-semibold tabular-nums">
-          {value}%
+          {Math.round(shown)}%
         </span>
       </div>
       <div>
