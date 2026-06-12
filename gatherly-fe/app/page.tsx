@@ -203,26 +203,34 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Layered, floating product composition with depth */}
-          <div className="relative mx-auto h-[420px] w-full max-w-md animate-fade-up [animation-delay:120ms] lg:h-[460px]">
-            <HeroDecor className="absolute inset-0 h-full w-full scale-[1.35]" />
-            <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2">
+          {/* Layered product composition: the event card sits on top (always
+              fully legible); the insights panel and phone peek out from behind
+              its corners for depth. */}
+          <div className="relative mx-auto h-[500px] w-full max-w-[34rem] animate-fade-up [animation-delay:120ms] lg:h-[540px]">
+            <HeroDecor className="absolute inset-0 -z-10 h-full w-full scale-[1.2]" />
+
+            {/* insights — peeks above & right of the card */}
+            <Parallax speed={0.28} className="absolute right-1 top-0 z-10 hidden w-56 sm:block">
+              <div className="animate-float">
+                <InsightsMock className="w-full" />
+              </div>
+            </Parallax>
+
+            {/* rsvp phone — peeks below & left of the card */}
+            <Parallax speed={0.16} className="absolute bottom-0 left-1 z-10 hidden w-44 sm:block">
+              <div className="animate-float-slow [animation-delay:1s]">
+                <RsvpPhoneMock className="w-full" />
+              </div>
+            </Parallax>
+
+            {/* main event card — centered, on top, always fully legible */}
+            <div className="absolute left-1/2 top-1/2 z-20 w-[18rem] -translate-x-1/2 -translate-y-1/2">
               <div className="animate-float-slow">
                 <Tilt>
-                  <EventCardMock className="mx-auto shadow-lift" />
+                  <EventCardMock className="shadow-lift" />
                 </Tilt>
               </div>
             </div>
-            <Parallax speed={0.32} className="absolute -right-2 -top-2 hidden sm:block">
-              <div className="animate-float">
-                <InsightsMock />
-              </div>
-            </Parallax>
-            <Parallax speed={0.18} className="absolute -bottom-4 -left-2 hidden sm:block">
-              <div className="animate-float-slow [animation-delay:1s]">
-                <RsvpPhoneMock />
-              </div>
-            </Parallax>
           </div>
         </div>
 
