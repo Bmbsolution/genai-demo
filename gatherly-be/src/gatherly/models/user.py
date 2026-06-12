@@ -15,7 +15,14 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "users"
 
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
+    # Null for accounts created via Google (no local password).
     hashed_password: Mapped[str | None] = mapped_column(String(255), default=None)
     display_name: Mapped[str] = mapped_column(String(120))
     role: Mapped[str] = mapped_column(String(20), default=Role.HOST.value)
     is_active: Mapped[bool] = mapped_column(default=True)
+    avatar_url: Mapped[str | None] = mapped_column(String(1024), default=None)
+    timezone: Mapped[str] = mapped_column(String(64), default="UTC")
+    # "password" or "google" — how the account first authenticated.
+    auth_provider: Mapped[str] = mapped_column(String(20), default="password")
+    # Google's stable subject id, set when the account links Google.
+    google_sub: Mapped[str | None] = mapped_column(String(64), unique=True, default=None)

@@ -30,3 +30,12 @@ class UserRepository:
     async def get_by_email(self, email: str) -> User | None:
         result = await self._db.scalar(select(User).where(User.email == email))
         return result if isinstance(result, User) else None
+
+    async def get_by_google_sub(self, sub: str) -> User | None:
+        result = await self._db.scalar(select(User).where(User.google_sub == sub))
+        return result if isinstance(result, User) else None
+
+    async def delete(self, user: User) -> None:
+        """Hard-delete the user; FK cascade removes their events and guests."""
+        await self._db.delete(user)
+        await self._db.flush()

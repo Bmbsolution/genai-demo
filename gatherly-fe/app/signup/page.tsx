@@ -20,16 +20,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCompleteAuth } from "@/hooks/use-complete-auth";
-import { apiFetch } from "@/lib/api/client";
+import { ApiError, apiFetch } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 
 type TokenPair = components["schemas"]["TokenPairResponse"];
 
-const schema = z.object({ email: z.string().email(), password: z.string().min(1) });
+const schema = z.object({
+  display_name: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 type FormValues = z.infer<typeof schema>;
 
-export default function LoginPage() {
-  const t = useTranslations("login");
+export default function SignupPage() {
+  const t = useTranslations("signup");
+  const tl = useTranslations("login");
   const complete = useCompleteAuth();
   const {
     register,
@@ -39,15 +44,16 @@ export default function LoginPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      const tokens = await apiFetch<TokenPair>("/api/v1/auth/login", {
+      const tokens = await apiFetch<TokenPair>("/api/v1/auth/register", {
         method: "POST",
         body: values,
         auth: false,
         workspace: false,
       });
       await complete(tokens);
-    } catch {
-      toast.error(t("failed"));
+    } catch (error) {
+      const message = error instanceof ApiError && error.status === 409 ? t("emailTaken") : t("failed");
+      toast.error(message);
     }
   });
 
@@ -67,6 +73,13 @@ export default function LoginPage() {
         <CardContent className="space-y-4">
           <form onSubmit={onSubmit} method="post" className="space-y-4" noValidate>
             <div className="space-y-2">
+              <Label htmlFor="display_name">{t("name")}</Label>
+              <Input id="display_name" autoComplete="name" {...register("display_name")} />
+              {errors.display_name ? (
+                <p className="text-sm text-destructive">{errors.display_name.message}</p>
+              ) : null}
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">{t("email")}</Label>
               <Input id="email" type="email" autoComplete="email" {...register("email")} />
               {errors.email ? (
@@ -78,12 +91,10 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 {...register("password")}
               />
-              {errors.password ? (
-                <p className="text-sm text-destructive">{errors.password.message}</p>
-              ) : null}
+              <p className="text-xs text-muted-foreground">{t("passwordHint")}</p>
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? t("submitting") : t("submit")}
@@ -92,15 +103,15 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" />
-            {t("or")}
+            {tl("or")}
             <span className="h-px flex-1 bg-border" />
           </div>
           <GoogleSignInButton />
 
           <p className="text-center text-sm text-muted-foreground">
-            {t("noAccount")}{" "}
-            <Link href="/signup" className="font-medium text-brand hover:underline">
-              {t("signupLink")}
+            {t("haveAccount")}{" "}
+            <Link href="/login" className="font-medium text-brand hover:underline">
+              {t("signinLink")}
             </Link>
           </p>
         </CardContent>

@@ -7,8 +7,11 @@ import secrets
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from sqlalchemy.exc import IntegrityError
+
 from gatherly.config import get_settings
-from gatherly.errors import AuthenticationError
+from gatherly.errors import AuthenticationError, ConflictError
+from gatherly.models import User
 from gatherly.repositories.users import UserRepository
 from gatherly.security import (
     TokenType,
@@ -38,6 +41,24 @@ class TokenPair:
     refresh_token: str
 
 
+def issue_token_pair(subject: uuid.UUID) -> TokenPair:
+    """Mint an access + refresh pair for ``subject`` (shared by all login paths)."""
+    settings = get_settings()
+    access, _ = create_token(
+        subject=subject,
+        token_type=TokenType.ACCESS,
+        ttl_seconds=settings.access_token_ttl_seconds,
+        secret=settings.jwt_secret,
+    )
+    refresh, _ = create_token(
+        subject=subject,
+        token_type=TokenType.REFRESH,
+        ttl_seconds=settings.refresh_token_ttl_seconds,
+        secret=settings.jwt_secret,
+    )
+    return TokenPair(access_token=access, refresh_token=refresh)
+
+
 class AuthService:
     """Password login and refresh-token lifecycle (rotation + revocation)."""
 
@@ -45,6 +66,28 @@ class AuthService:
         self._users = UserRepository(db)
         self._revocations = revocations
         self._settings = get_settings()
+
+    async def register(self, *, email: str, password: str, display_name: str) -> TokenPair:
+        """Create a password account and issue a token pair, or 409 if taken."""
+        if await self._users.get_by_email(email) is not None:
+            raise ConflictError(
+                "An account with this email already exists.",
+                details={"field": "email"},
+            )
+        user = User(
+            email=email,
+            display_name=display_name,
+            hashed_password=hash_password(password),
+            auth_provider="password",
+        )
+        try:
+            await self._users.add(user)
+        except IntegrityError as exc:  # unique email — lost the check/insert race
+            raise ConflictError(
+                "An account with this email already exists.",
+                details={"field": "email"},
+            ) from exc
+        return self._issue_pair(user.id)
 
     async def login(self, email: str, password: str) -> TokenPair:
         """Verify credentials and issue a token pair, or raise 401."""
@@ -81,19 +124,7 @@ class AuthService:
         self._revocations.revoke(decoded.jti, self._remaining(decoded.expires_at))
 
     def _issue_pair(self, subject: uuid.UUID) -> TokenPair:
-        access, _ = create_token(
-            subject=subject,
-            token_type=TokenType.ACCESS,
-            ttl_seconds=self._settings.access_token_ttl_seconds,
-            secret=self._settings.jwt_secret,
-        )
-        refresh, _ = create_token(
-            subject=subject,
-            token_type=TokenType.REFRESH,
-            ttl_seconds=self._settings.refresh_token_ttl_seconds,
-            secret=self._settings.jwt_secret,
-        )
-        return TokenPair(access_token=access, refresh_token=refresh)
+        return issue_token_pair(subject)
 
     @staticmethod
     def _remaining(expires_at: dt.datetime) -> int:
