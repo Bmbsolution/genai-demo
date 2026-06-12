@@ -12,6 +12,7 @@ from gatherly.errors import NotFoundError
 from gatherly.models import RsvpStatus
 from gatherly.repositories.events import EventRepository
 from gatherly.repositories.guests import GuestRepository
+from gatherly.services.email import EmailMessage, get_email_sender
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,6 +28,7 @@ class RsvpService:
         self._db = db
         self._guests = GuestRepository(db)
         self._events = EventRepository(db)
+        self._email = get_email_sender()
 
     async def view(self, invite_token: str) -> tuple[Guest, Event]:
         guest = await self._guests.get_by_token(invite_token)
@@ -39,12 +41,13 @@ class RsvpService:
 
     async def respond(self, invite_token: str, payload: RsvpUpdateRequest) -> tuple[Guest, Event]:
         guest, event = await self.view(invite_token)
+        was_attending = guest.rsvp_status == RsvpStatus.YES.value
         status = payload.rsvp_status
 
         # If the event is at capacity, a new "yes" lands on the waitlist instead.
         if status is RsvpStatus.YES and event.capacity is not None:
             attending = await self._guests.count_attending(event.id)
-            already_counted = 1 if guest.rsvp_status == RsvpStatus.YES.value else 0
+            already_counted = 1 if was_attending else 0
             if attending - already_counted >= event.capacity:
                 status = RsvpStatus.WAITLISTED
 
@@ -52,5 +55,36 @@ class RsvpService:
         guest.plus_one = payload.plus_one
         guest.dietary_notes = payload.dietary_notes
         await self._db.flush()
+
+        # A confirmed guest just gave up their seat — promote the next in line.
+        if was_attending and status is not RsvpStatus.YES:
+            await self._promote_from_waitlist(event)
+
         await self._db.refresh(guest)
         return guest, event
+
+    async def _promote_from_waitlist(self, event: Event) -> None:
+        """Move the longest-waiting guest off the waitlist when a seat frees up.
+
+        Only promotes for capped events that now have room, and emails the
+        promoted guest the good news. No-op when nobody is waiting.
+        """
+        if event.capacity is None:
+            return
+        if await self._guests.count_attending(event.id) >= event.capacity:
+            return
+        promoted = await self._guests.oldest_waitlisted(event.id)
+        if promoted is None:
+            return
+        promoted.rsvp_status = RsvpStatus.YES.value
+        await self._db.flush()
+        await self._email.send(
+            EmailMessage(
+                to=promoted.email,
+                subject=f"You're in! A spot opened up for {event.title}",
+                body=(
+                    f"Hi {promoted.name}, great news — a spot just opened for "
+                    f"{event.title} and you're confirmed off the waitlist."
+                ),
+            ),
+        )
