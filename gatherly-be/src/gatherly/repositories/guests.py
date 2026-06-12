@@ -93,6 +93,19 @@ class GuestRepository:
             or 0
         )
 
+    async def oldest_waitlisted(self, event_id: uuid.UUID) -> Guest | None:
+        """The longest-waiting guest on the waitlist — promoted first (FIFO)."""
+        result = await self._db.scalar(
+            select(Guest)
+            .where(
+                Guest.event_id == event_id,
+                Guest.rsvp_status == RsvpStatus.WAITLISTED.value,
+            )
+            .order_by(Guest.created_at.asc())
+            .limit(1),
+        )
+        return result if isinstance(result, Guest) else None
+
     async def get_by_token(self, invite_token: str) -> Guest | None:
         """Resolve a guest by their per-invite secret (the public RSVP key)."""
         result = await self._db.scalar(select(Guest).where(Guest.invite_token == invite_token))
