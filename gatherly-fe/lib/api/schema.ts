@@ -28,8 +28,11 @@ export interface components {
       title: string;
       description: string | null;
       starts_at: string;
+      ends_at: string | null;
       location: string | null;
+      cover_image_url: string | null;
       capacity: number | null;
+      visibility: string;
       status: string;
       created_at: string;
     };
@@ -41,8 +44,11 @@ export interface components {
       title: string;
       description?: string | null;
       starts_at: string;
+      ends_at?: string | null;
       location?: string | null;
+      cover_image_url?: string | null;
       capacity?: number | null;
+      visibility?: string;
     };
     GuestResponse: {
       id: string;
@@ -50,6 +56,8 @@ export interface components {
       name: string;
       email: string;
       rsvp_status: string;
+      plus_one: boolean;
+      dietary_notes: string | null;
       invite_token: string;
       created_at: string;
     };
@@ -60,14 +68,21 @@ export interface components {
     RsvpView: {
       guest_name: string;
       rsvp_status: string;
+      plus_one: boolean;
+      dietary_notes: string | null;
       event: {
         title: string;
+        description: string | null;
         starts_at: string;
+        ends_at: string | null;
         location: string | null;
+        cover_image_url: string | null;
       };
     };
     RsvpUpdateRequest: {
       rsvp_status: string;
+      plus_one?: boolean;
+      dietary_notes?: string | null;
     };
   };
 }

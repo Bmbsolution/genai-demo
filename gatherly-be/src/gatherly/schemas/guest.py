@@ -25,5 +25,7 @@ class GuestResponse(GatherlyBaseModel):
     name: str
     email: EmailStr
     rsvp_status: str
+    plus_one: bool
+    dietary_notes: str | None
     invite_token: str
     created_at: dt.datetime

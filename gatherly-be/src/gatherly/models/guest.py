@@ -1,8 +1,7 @@
 """Guest — an invitee on an event, with their RSVP.
 
-NOTE: ``plus_one`` and ``dietary_notes`` are intentionally ABSENT here. They are
-the feature built live during the conference demo ("add a +1 / dietary field"),
-so the baseline guest carries only name, email, and an RSVP status.
+Carries the guest's RSVP plus the details a host needs to plan: whether they're
+bringing a +1 and any dietary notes.
 """
 
 from __future__ import annotations
@@ -10,7 +9,7 @@ from __future__ import annotations
 import enum
 import uuid
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import Boolean, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from gatherly.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -23,6 +22,7 @@ class RsvpStatus(enum.StrEnum):
     YES = "yes"
     NO = "no"
     MAYBE = "maybe"
+    WAITLISTED = "waitlisted"
 
 
 class Guest(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -39,3 +39,5 @@ class Guest(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     email: Mapped[str] = mapped_column(String(320))
     rsvp_status: Mapped[str] = mapped_column(String(20), default=RsvpStatus.PENDING.value)
     invite_token: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    plus_one: Mapped[bool] = mapped_column(Boolean, default=False)
+    dietary_notes: Mapped[str | None] = mapped_column(Text, default=None)

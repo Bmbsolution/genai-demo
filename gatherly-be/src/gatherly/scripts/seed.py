@@ -13,7 +13,7 @@ import secrets
 from sqlalchemy import select
 
 from gatherly.db import get_sessionmaker, init_db
-from gatherly.models import Event, EventStatus, Guest, RsvpStatus, User
+from gatherly.models import Event, EventStatus, EventVisibility, Guest, RsvpStatus, User
 from gatherly.rbac import Role
 from gatherly.security import hash_password
 
@@ -51,8 +51,11 @@ async def seed() -> None:
                 title="Team Offsite 2026",
                 description="Two days in the mountains: planning, hiking, and a long dinner.",
                 starts_at=now + dt.timedelta(days=21),
+                ends_at=now + dt.timedelta(days=23),
                 location="Mont-Tremblant, QC",
+                cover_image_url="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200",
                 capacity=40,
+                visibility=EventVisibility.PUBLIC.value,
                 status=EventStatus.PUBLISHED.value,
             )
             # Intentionally missing a location → an "event readiness" gap to fix.
