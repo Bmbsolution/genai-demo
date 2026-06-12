@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { AuthShell } from "@/components/auth-shell";
 import { GoogleSignInButton } from "@/components/google-signin-button";
 import { Button } from "@/components/ui/button";
 import {
@@ -58,8 +59,8 @@ export default function SignupPage() {
   });
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-grid p-6">
-      <Card className="animate-fade-up relative w-full max-w-sm border-border/70 shadow-xl">
+    <AuthShell>
+      <Card className="animate-fade-up relative w-full border-border/60 shadow-lift">
         <CardHeader>
           <Link
             href="/"
@@ -116,6 +117,6 @@ export default function SignupPage() {
           </p>
         </CardContent>
       </Card>
-    </main>
+    </AuthShell>
   );
 }

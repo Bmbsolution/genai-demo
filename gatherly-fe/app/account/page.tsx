@@ -124,7 +124,7 @@ export default function AccountPage() {
     <div className="min-h-screen">
       <AppHeader />
       <main className="mx-auto max-w-2xl space-y-6 px-6 py-8">
-        <div>
+        <div className="animate-fade-up">
           <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
@@ -133,7 +133,7 @@ export default function AccountPage() {
 
         {user ? (
           <>
-            <Card>
+            <Card className="animate-fade-up [animation-delay:60ms]">
               <CardHeader>
                 <CardTitle className="text-base">{t("profile")}</CardTitle>
               </CardHeader>
@@ -183,9 +183,11 @@ export default function AccountPage() {
               </CardContent>
             </Card>
 
-            <BillingCard enabled={ready} />
+            <div className="animate-fade-up [animation-delay:120ms]">
+              <BillingCard enabled={ready} />
+            </div>
 
-            <Card>
+            <Card className="animate-fade-up [animation-delay:180ms]">
               <CardHeader>
                 <CardTitle className="text-base">{t("password.title")}</CardTitle>
               </CardHeader>
@@ -223,7 +225,7 @@ export default function AccountPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-destructive/40">
+            <Card className="animate-fade-up border-destructive/40 [animation-delay:240ms]">
               <CardHeader>
                 <CardTitle className="text-base text-destructive">{t("danger.title")}</CardTitle>
               </CardHeader>
