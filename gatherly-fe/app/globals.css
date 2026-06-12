@@ -82,6 +82,10 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "cv02", "cv11", "ss01";
@@ -260,6 +264,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .animate-fade-up,
   .animate-fade-in,
   .animate-float,

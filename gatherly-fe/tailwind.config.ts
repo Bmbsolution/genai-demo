@@ -10,6 +10,9 @@ const config: Config = {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        // Corporate marketing pairing (landing only)
+        "corp-display": ["var(--font-corp-display)", "var(--font-sans)", "sans-serif"],
+        "corp-body": ["var(--font-corp-body)", "var(--font-sans)", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -50,6 +53,12 @@ const config: Config = {
           ink: "hsl(var(--brand-ink))",
         },
         gold: "hsl(var(--gold))",
+        // Static deep-navy for corporate dark bands (theme-independent).
+        navy: {
+          DEFAULT: "#0f1729",
+          soft: "#1b2640",
+          line: "#2a3854",
+        },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         severity: {

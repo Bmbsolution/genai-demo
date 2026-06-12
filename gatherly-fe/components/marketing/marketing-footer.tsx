@@ -36,7 +36,7 @@ export function MarketingFooter() {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <PartyPopper className="h-[18px] w-[18px] text-primary-foreground" aria-hidden="true" />
             </span>
-            <span className="font-display text-lg font-semibold tracking-tight">Gatherly</span>
+            <span className="font-corp-display text-lg font-bold tracking-tight">Gatherly</span>
           </Link>
           <p className="max-w-xs text-sm text-muted-foreground">
             Beautiful RSVPs for hosts who sweat the details.

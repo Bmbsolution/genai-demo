@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Hanken_Grotesk,
+  Inter,
+  JetBrains_Mono,
+  Montserrat,
+} from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
@@ -23,6 +29,19 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
   display: "swap",
 });
+// Corporate marketing pairing (landing page): Montserrat display + Inter body.
+const corpDisplay = Montserrat({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-corp-display",
+  display: "swap",
+});
+const corpBody = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-corp-body",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Gatherly",
@@ -37,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${mono.variable}`}
+      className={`${display.variable} ${sans.variable} ${mono.variable} ${corpDisplay.variable} ${corpBody.variable}`}
     >
       {/* suppressHydrationWarning: browser extensions (e.g. Grammarly) inject
           data-gr-ext-* attributes onto <body> before React hydrates. */}
