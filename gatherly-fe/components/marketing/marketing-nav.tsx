@@ -2,9 +2,11 @@
 
 import { PartyPopper } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/store/auth";
 
 const LINKS = [
@@ -18,9 +20,24 @@ export function MarketingNav() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const hydrated = useAuthStore((state) => state.hydrated);
   const signedIn = hydrated && Boolean(accessToken);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/80 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b transition-colors duration-300",
+        scrolled
+          ? "border-border/70 bg-background/85 shadow-soft backdrop-blur-md"
+          : "border-transparent bg-background/40 backdrop-blur",
+      )}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
         <Link href="/" className="flex items-center gap-2.5">
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
