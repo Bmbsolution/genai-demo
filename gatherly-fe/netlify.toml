@@ -1,0 +1,14 @@
+# Netlify config for the Gatherly frontend (Next.js 14, App Router).
+# Netlify auto-detects Next.js and applies its runtime (SSR for the dynamic
+# /events/[id] and /rsvp/[token] routes). Build from this directory.
+#
+# Required environment variables (set in the Netlify UI or `netlify env:set`):
+#   NEXT_PUBLIC_API_URL        = https://<your-cloud-run-url>   (the GCP backend)
+#   NEXT_PUBLIC_GOOGLE_CLIENT_ID = <your Google OAuth web client id>
+# These are inlined at build time, so changing them needs a redeploy.
+
+[build]
+  command = "pnpm build"
+
+[build.environment]
+  NODE_VERSION = "20"
