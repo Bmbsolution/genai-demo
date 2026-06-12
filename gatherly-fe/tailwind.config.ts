@@ -50,6 +50,12 @@ const config: Config = {
           ink: "hsl(var(--brand-ink))",
         },
         gold: "hsl(var(--gold))",
+        // Static deep-navy for corporate dark bands (theme-independent).
+        navy: {
+          DEFAULT: "#0f1729",
+          soft: "#1b2640",
+          line: "#2a3854",
+        },
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         severity: {

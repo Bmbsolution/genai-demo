@@ -1,20 +1,22 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Montserrat } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 
 import { Providers } from "./providers";
 import "./globals.css";
 
-// Display: characterful grotesque for headings + brand. Body: refined,
-// readable Hanken Grotesk. Mono: JetBrains for repo URLs, criterion ids, code.
-const display = Bricolage_Grotesque({
+// Modern Corporate pairing, used app-wide: Montserrat (assertive, geometric)
+// for display/headings, Inter for body/UI, JetBrains Mono for code/ids.
+const display = Montserrat({
   subsets: ["latin"],
+  weight: ["600", "700"],
   variable: "--font-display",
   display: "swap",
 });
-const sans = Hanken_Grotesk({
+const sans = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   variable: "--font-sans",
   display: "swap",
 });

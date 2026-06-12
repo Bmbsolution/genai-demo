@@ -43,10 +43,10 @@ export function MarketingNav() {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
             <PartyPopper className="h-[18px] w-[18px] text-primary-foreground" aria-hidden="true" />
           </span>
-          <span className="font-display text-lg font-semibold tracking-tight">Gatherly</span>
+          <span className="font-display text-lg font-bold tracking-tight">Gatherly</span>
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-7 font-sans md:flex">
           {LINKS.map((link) => (
             <a
               key={link.href}
