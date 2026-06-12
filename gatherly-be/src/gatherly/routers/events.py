@@ -20,7 +20,9 @@ from gatherly.schemas.event import (
     EventResponse,
     EventUpdateRequest,
 )
+from gatherly.schemas.insights import EventInsightsResponse, EventReadinessResponse
 from gatherly.services.events import EventService
+from gatherly.services.insights import InsightsService
 
 router = APIRouter(prefix="/api/v1/events", tags=["events"])
 
@@ -96,3 +98,27 @@ async def delete_event(
     _audit: Annotated[None, Depends(audit_action("event.delete"))],
 ) -> None:
     await EventService(db).soft_delete(event_id, user.id)
+
+
+@router.get("/{event_id}/insights")
+async def get_event_insights(
+    event_id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+    _cap: Annotated[None, Depends(_read)],
+    _rl: Annotated[None, Depends(_read_rl)],
+) -> DataResponse[EventInsightsResponse]:
+    insights = await InsightsService(db).get_insights(event_id=event_id, owner_id=user.id)
+    return DataResponse(data=EventInsightsResponse.model_validate(insights))
+
+
+@router.get("/{event_id}/readiness")
+async def get_event_readiness(
+    event_id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+    _cap: Annotated[None, Depends(_read)],
+    _rl: Annotated[None, Depends(_read_rl)],
+) -> DataResponse[EventReadinessResponse]:
+    readiness = await InsightsService(db).get_readiness(event_id=event_id, owner_id=user.id)
+    return DataResponse(data=EventReadinessResponse.model_validate(readiness))

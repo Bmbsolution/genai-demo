@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/app-header";
+import { EventInsights } from "@/components/event-insights";
 import { ImportGuestsDialog } from "@/components/import-guests-dialog";
 import { InviteGuestDialog } from "@/components/invite-guest-dialog";
 import { RsvpBadge } from "@/components/rsvp-badge";
@@ -213,6 +214,8 @@ export default function EventDetailPage() {
                 ) : null}
               </div>
             </div>
+
+            <EventInsights eventId={eventId} enabled={enabled} />
 
             <Card className="animate-fade-up [animation-delay:60ms]">
               <CardHeader className="flex-row flex-wrap items-center justify-between gap-2 space-y-0">

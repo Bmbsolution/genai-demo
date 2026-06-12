@@ -100,6 +100,36 @@
     "reminding": "Envoi…",
     "remindResult": "{sent, plural, =0 {Aucun invité en attente à relancer} one {Rappel envoyé à # invité} other {Rappels envoyés à # invités}}",
     "remindFailed": "Impossible d'envoyer les rappels.",
+    "insights": {
+      "title": "Aperçu",
+      "responseRate": "Taux de réponse",
+      "attending": "Présents",
+      "checkedIn": "Enregistré·e·s",
+      "plusOnes": "Accompagnateurs",
+      "ofCapacity": "sur {capacity}",
+      "uncapped": "sans limite"
+    },
+    "readiness": {
+      "title": "Préparation de l'événement",
+      "ready": "Prêt",
+      "notReady": "À compléter",
+      "score": "{passed} vérifications sur {total} réussies",
+      "severity": {
+        "high": "Important",
+        "medium": "Recommandé",
+        "low": "Optionnel"
+      },
+      "checks": {
+        "has_guests": "Invités ajoutés",
+        "within_capacity": "Dans la capacité",
+        "has_location": "Lieu défini",
+        "published": "Événement publié",
+        "healthy_response_rate": "Bon taux de réponse",
+        "has_description": "Description ajoutée",
+        "has_cover_image": "Image de couverture ajoutée",
+        "has_end_time": "Heure de fin définie"
+      }
+    },
     "import": {
       "trigger": "Importer un CSV",
       "title": "Importer des invités",

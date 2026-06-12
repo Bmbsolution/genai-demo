@@ -100,6 +100,36 @@
     "reminding": "Sending…",
     "remindResult": "{sent, plural, =0 {No pending guests to remind} one {Reminder sent to # guest} other {Reminders sent to # guests}}",
     "remindFailed": "Could not send reminders.",
+    "insights": {
+      "title": "Insights",
+      "responseRate": "Response rate",
+      "attending": "Attending",
+      "checkedIn": "Checked in",
+      "plusOnes": "Plus-ones",
+      "ofCapacity": "of {capacity}",
+      "uncapped": "no limit"
+    },
+    "readiness": {
+      "title": "Event readiness",
+      "ready": "Ready to go",
+      "notReady": "Needs attention",
+      "score": "{passed} of {total} checks pass",
+      "severity": {
+        "high": "Important",
+        "medium": "Recommended",
+        "low": "Nice to have"
+      },
+      "checks": {
+        "has_guests": "Guests invited",
+        "within_capacity": "Within capacity",
+        "has_location": "Location set",
+        "published": "Event published",
+        "healthy_response_rate": "Healthy response rate",
+        "has_description": "Description added",
+        "has_cover_image": "Cover image added",
+        "has_end_time": "End time set"
+      }
+    },
     "import": {
       "trigger": "Import CSV",
       "title": "Import guests",
