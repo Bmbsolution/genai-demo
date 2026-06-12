@@ -1,0 +1,9 @@
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+# Never commit real var files (may contain ids/regex you tune per env).
+*.tfvars
+!*.tfvars.example
