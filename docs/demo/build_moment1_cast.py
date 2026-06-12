@@ -26,15 +26,16 @@ WHT = "\x1b[97m"
 
 WIDTH, HEIGHT = 100, 34
 TIMESTAMP = 1_781_000_000  # fixed (June 2026); cosmetic only
+SPEED = 1.8  # stretch every pause by this factor for an easier-to-narrate replay
 
 events: list[list[object]] = []
 clock = 0.0
 
 
 def emit(text: str, gap: float = 0.0) -> None:
-    """Advance the clock by ``gap`` then write one output event."""
+    """Advance the clock by ``gap`` (scaled by SPEED) then write one output event."""
     global clock
-    clock = round(clock + gap, 3)
+    clock = round(clock + gap * SPEED, 3)
     events.append([clock, "o", text])
 
 
@@ -43,9 +44,11 @@ def line(text: str = "", gap: float = 0.35) -> None:
 
 
 def typed(text: str, gap: float = 0.045) -> None:
-    """Type a string out character-by-character, then newline."""
+    """Type a string out character-by-character (keystroke speed kept crisp,
+    independent of the global SPEED stretch), then newline."""
+    per_char = gap / SPEED
     for ch in text:
-        emit(ch, gap)
+        emit(ch, per_char)
     emit("\r\n", 0.25)
 
 

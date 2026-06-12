@@ -24,13 +24,16 @@ Press space to pause, `.` to step — handy when narrating live.
 
 ## Put it on a slide / screen
 
-- **Full-screen terminal:** run an `asciinema play` in a maximized terminal and
+- **`moment-1-waitlist-promote.svg`** — a **pre-rendered animated SVG** (crisp at
+  any size, plays on loop in any browser or slide that accepts SVG). Drop it
+  straight onto the Moment 1 slide. Regenerate with:
+  `npx svg-term-cli --in moment-1-waitlist-promote.cast --out moment-1-waitlist-promote.svg --window --padding 18`
+- **Full-screen terminal:** run `asciinema play` in a maximized terminal and
   screen-share that window during Moment 1.
 - **GIF** (for embedding): `agg moment-1-waitlist-promote.cast moment-1.gif`
   ([agg](https://github.com/asciinema/agg)).
-- **SVG** (crisp, scalable): `svg-term --in moment-1-waitlist-promote.cast --out moment-1.svg`
-  ([svg-term-cli](https://github.com/marionebl/svg-term-cli)).
 - **Web embed:** host the `.cast` and use
   [asciinema-player](https://github.com/asciinema/asciinema-player).
 
-The replay is ~30s on purpose — Moment 1 is narrated, not watched in silence.
+The replay is ~50s — long enough to narrate, short enough to keep moving. Adjust
+`SPEED` in `build_moment1_cast.py` and regenerate to taste.
