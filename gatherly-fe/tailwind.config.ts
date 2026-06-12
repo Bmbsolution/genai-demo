@@ -45,7 +45,11 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        brand: "hsl(var(--brand))",
+        brand: {
+          DEFAULT: "hsl(var(--brand))",
+          ink: "hsl(var(--brand-ink))",
+        },
+        gold: "hsl(var(--gold))",
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         severity: {
@@ -57,6 +61,9 @@ const config: Config = {
       },
       boxShadow: {
         card: "0 1px 2px 0 hsl(222 47% 11% / 0.04), 0 1px 3px 0 hsl(222 47% 11% / 0.06)",
+        soft: "0 1px 2px hsl(222 47% 11% / 0.04), 0 6px 20px -4px hsl(222 47% 11% / 0.08)",
+        lift: "0 2px 4px hsl(222 47% 11% / 0.04), 0 16px 40px -8px hsl(222 47% 11% / 0.14)",
+        glow: "0 0 0 1px hsl(var(--brand) / 0.12), 0 18px 50px -12px hsl(var(--brand) / 0.30)",
       },
       borderRadius: {
         lg: "var(--radius)",

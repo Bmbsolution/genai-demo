@@ -3,37 +3,40 @@
 @tailwind utilities;
 
 /*
- * ServiceCat — "Instrument" design language.
- * Cool-slate canvas, cobalt→cyan signal-beam brand accent, severity rails.
- * All color is token-driven (HSL channels) so dark mode is near-free.
+ * Gatherly — premium, editorial design language.
+ * Clean cool paper, deep ink, one confident cobalt accent (no gradients, no
+ * purple). Hairline borders, layered shadows, generous radius. All color is
+ * token-driven (HSL channels) so dark mode and theming stay near-free.
  */
 @layer base {
   :root {
-    --background: 210 40% 99%;
-    --foreground: 222 47% 11%;
+    --background: 220 33% 99%;
+    --foreground: 222 47% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 47% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 214 84% 46%;
+    --popover-foreground: 222 47% 9%;
+    --primary: 216 92% 48%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 220 30% 95%;
-    --secondary-foreground: 222 40% 20%;
-    --muted: 220 30% 96%;
-    --muted-foreground: 220 12% 45%;
-    --accent: 220 32% 94%;
-    --accent-foreground: 222 40% 20%;
-    --destructive: 350 84% 56%;
+    --secondary: 220 28% 95.5%;
+    --secondary-foreground: 222 40% 18%;
+    --muted: 220 28% 96.5%;
+    --muted-foreground: 220 13% 42%;
+    --accent: 220 30% 94%;
+    --accent-foreground: 222 40% 18%;
+    --destructive: 350 80% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 24% 90%;
-    --input: 220 24% 87%;
-    --ring: 214 84% 46%;
-    --radius: 0.75rem;
+    --border: 220 22% 91%;
+    --input: 220 22% 88%;
+    --ring: 216 92% 48%;
+    --radius: 0.85rem;
 
-    /* Solid brand blue + status scale (not part of shadcn defaults). */
-    --brand: 214 84% 46%;
-    --success: 152 58% 40%;
-    --warning: 40 92% 50%;
+    /* Solid brand cobalt + a restrained gold for premium / Pro accents. */
+    --brand: 216 92% 48%;
+    --brand-ink: 218 70% 32%;
+    --gold: 38 92% 50%;
+    --success: 152 56% 38%;
+    --warning: 38 92% 48%;
     --sev-critical: 350 84% 55%;
     --sev-high: 22 90% 53%;
     --sev-medium: 40 92% 50%;
@@ -41,29 +44,31 @@
   }
 
   .dark {
-    --background: 224 47% 7%;
+    --background: 224 46% 6%;
     --foreground: 210 40% 98%;
-    --card: 223 44% 10%;
+    --card: 223 42% 9%;
     --card-foreground: 210 40% 98%;
-    --popover: 223 46% 9%;
+    --popover: 223 44% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 213 86% 56%;
+    --primary: 214 92% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 222 30% 16%;
+    --secondary: 222 30% 15%;
     --secondary-foreground: 210 40% 96%;
-    --muted: 222 28% 15%;
-    --muted-foreground: 218 16% 64%;
-    --accent: 222 32% 19%;
+    --muted: 222 28% 14%;
+    --muted-foreground: 218 16% 65%;
+    --accent: 222 32% 18%;
     --accent-foreground: 210 40% 98%;
-    --destructive: 350 78% 58%;
+    --destructive: 350 78% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 220 26% 18%;
-    --input: 220 24% 22%;
-    --ring: 213 86% 56%;
+    --border: 220 26% 17%;
+    --input: 220 24% 21%;
+    --ring: 214 92% 60%;
 
-    --brand: 213 86% 56%;
+    --brand: 214 92% 60%;
+    --brand-ink: 213 90% 74%;
+    --gold: 40 92% 60%;
     --success: 152 56% 50%;
-    --warning: 40 92% 56%;
+    --warning: 40 92% 58%;
     --sev-critical: 350 82% 62%;
     --sev-high: 24 92% 60%;
     --sev-medium: 40 92% 58%;
@@ -86,13 +91,33 @@
   h3 {
     @apply font-display tracking-tight;
   }
+  ::selection {
+    background-color: hsl(var(--brand) / 0.18);
+  }
 }
 
 @layer components {
-  /* Faint engineering dot-grid texture for app shells (not a color gradient). */
+  /* Faint engineering dot-grid texture for app shells. */
   .bg-grid {
     background-image: radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px);
     background-size: 22px 22px;
+  }
+  /* Larger dot field for marketing canvases — masked to fade at the edges. */
+  .bg-dots {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  /* Soft ambient halo: a single solid blurred disc, NOT a color gradient. */
+  .halo {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(64px);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  /* Hairline-framed premium surface with layered depth. */
+  .surface {
+    @apply rounded-2xl border bg-card shadow-soft;
   }
 }
 
@@ -102,6 +127,32 @@
   }
   .animate-fade-in {
     animation: fade-in 0.4s ease-out both;
+  }
+  .animate-float {
+    animation: float 6.5s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: float 9s ease-in-out infinite;
+  }
+  .animate-marquee {
+    animation: marquee 32s linear infinite;
+  }
+  /* Scroll-reveal: hidden until JS toggles .is-visible when in view. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
@@ -123,6 +174,23 @@
     opacity: 1;
   }
 }
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -134,7 +202,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
-  .animate-fade-in {
+  .animate-fade-in,
+  .animate-float,
+  .animate-float-slow,
+  .animate-marquee {
     animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
