@@ -30,6 +30,8 @@
     --input: 220 22% 88%;
     --ring: 216 92% 48%;
     --radius: 0.85rem;
+    /* Premium ease-out-expo curve shared by all entrance/hover motion. */
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
     /* Solid brand cobalt + a restrained gold for premium / Pro accents. */
     --brand: 216 92% 48%;
@@ -135,21 +137,67 @@
     animation: float 9s ease-in-out infinite;
   }
   .animate-marquee {
-    animation: marquee 32s linear infinite;
+    animation: marquee 36s linear infinite;
   }
-  /* Scroll-reveal: hidden until JS toggles .is-visible when in view. */
+  .marquee:hover .animate-marquee {
+    animation-play-state: paused;
+  }
+  /* Scroll-reveal: hidden until JS toggles .is-visible when in view.
+   * Variant classes (v-*) set the entrance direction/effect. */
   .reveal {
     opacity: 0;
-    transform: translateY(18px);
     transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 0.8s var(--ease),
+      transform 0.8s var(--ease),
+      filter 0.8s var(--ease);
     transition-delay: var(--reveal-delay, 0ms);
     will-change: opacity, transform;
+  }
+  .reveal.v-up {
+    transform: translateY(24px);
+  }
+  .reveal.v-left {
+    transform: translateX(-34px);
+  }
+  .reveal.v-right {
+    transform: translateX(34px);
+  }
+  .reveal.v-scale {
+    transform: scale(0.92);
+  }
+  .reveal.v-blur {
+    transform: translateY(18px);
+    filter: blur(12px);
   }
   .reveal.is-visible {
     opacity: 1;
     transform: none;
+    filter: none;
+  }
+  /* 3D tilt host — the Tilt component drives the transform inline. */
+  .tilt {
+    transform: perspective(900px) rotateX(0) rotateY(0);
+    transition: transform 0.4s var(--ease);
+    transform-style: preserve-3d;
+  }
+  /* SVG draw-in: strokes draw and fills pop once the host is in view. */
+  .draw .draw-line {
+    stroke-dasharray: 280;
+    stroke-dashoffset: 280;
+  }
+  .draw.is-visible .draw-line {
+    animation: draw 1.1s var(--ease) forwards;
+    animation-delay: var(--draw-delay, 0ms);
+  }
+  .draw .pop {
+    opacity: 0;
+    transform: scale(0.4);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .draw.is-visible .pop {
+    animation: pop 0.55s var(--ease) forwards;
+    animation-delay: var(--pop-delay, 0ms);
   }
   .text-balance {
     text-wrap: balance;
@@ -199,6 +247,17 @@
     background-position: 200% 0;
   }
 }
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
@@ -211,6 +270,17 @@
   .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
     transition: none;
+  }
+  .draw .draw-line {
+    stroke-dashoffset: 0;
+  }
+  .draw .pop {
+    opacity: 1;
+    transform: none;
+  }
+  .tilt {
+    transform: none !important;
   }
 }

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import { CreateArt, ShareArt, TrackArt } from "@/components/marketing/illustrations";
+import { CreateArt, HeroDecor, ShareArt, TrackArt } from "@/components/marketing/illustrations";
 import { MarketingFooter } from "@/components/marketing/marketing-footer";
 import { MarketingNav } from "@/components/marketing/marketing-nav";
 import {
@@ -25,14 +25,28 @@ import {
   InsightsMock,
   RsvpPhoneMock,
 } from "@/components/marketing/mockups";
+import { Counter, Parallax, Tilt } from "@/components/marketing/motion";
 import { Reveal } from "@/components/marketing/reveal";
 import { Button } from "@/components/ui/button";
 
 const STATS = [
-  { value: "12k+", label: "events hosted" },
-  { value: "480k", label: "RSVPs collected" },
-  { value: "78%", label: "avg. response rate" },
-  { value: "4.9★", label: "host rating" },
+  { to: 12, suffix: "k+", decimals: 0, label: "events hosted" },
+  { to: 480, suffix: "k", decimals: 0, label: "RSVPs collected" },
+  { to: 78, suffix: "%", decimals: 0, label: "avg. response rate" },
+  { to: 4.9, suffix: "★", decimals: 1, label: "host rating" },
+];
+
+const OCCASIONS = [
+  "Birthdays",
+  "Weddings",
+  "Team offsites",
+  "Meetups",
+  "Conferences",
+  "Dinner parties",
+  "Launch parties",
+  "Fundraisers",
+  "Reunions",
+  "Workshops",
 ];
 
 const FEATURES = [
@@ -189,34 +203,61 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Layered, floating product composition */}
+          {/* Layered, floating product composition with depth */}
           <div className="relative mx-auto h-[420px] w-full max-w-md animate-fade-up [animation-delay:120ms] lg:h-[460px]">
-            <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 animate-float-slow">
-              <EventCardMock className="mx-auto shadow-lift" />
+            <HeroDecor className="absolute inset-0 h-full w-full scale-[1.35]" />
+            <div className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2">
+              <div className="animate-float-slow">
+                <Tilt>
+                  <EventCardMock className="mx-auto shadow-lift" />
+                </Tilt>
+              </div>
             </div>
-            <div className="absolute -right-2 -top-2 hidden animate-float sm:block">
-              <InsightsMock />
-            </div>
-            <div className="absolute -bottom-4 -left-2 hidden animate-float-slow [animation-delay:1s] sm:block">
-              <RsvpPhoneMock />
-            </div>
+            <Parallax speed={0.32} className="absolute -right-2 -top-2 hidden sm:block">
+              <div className="animate-float">
+                <InsightsMock />
+              </div>
+            </Parallax>
+            <Parallax speed={0.18} className="absolute -bottom-4 -left-2 hidden sm:block">
+              <div className="animate-float-slow [animation-delay:1s]">
+                <RsvpPhoneMock />
+              </div>
+            </Parallax>
           </div>
         </div>
 
-        {/* Stats strip */}
+        {/* Stats strip with counting numbers */}
         <div className="relative border-y border-border/70 bg-card/40 backdrop-blur">
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px px-6 py-6 sm:grid-cols-4">
             {STATS.map((s, i) => (
               <Reveal key={s.label} delay={i * 80} className="text-center">
-                <p className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-                  {s.value}
-                </p>
+                <Counter
+                  to={s.to}
+                  decimals={s.decimals}
+                  suffix={s.suffix}
+                  className="font-display text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl"
+                />
                 <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">{s.label}</p>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
+
+      {/* ── Occasions marquee ────────────────────────────────── */}
+      <div className="marquee relative overflow-hidden border-b border-border/70 py-4 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+        <div className="flex w-max animate-marquee gap-3">
+          {[...OCCASIONS, ...OCCASIONS].map((occ, i) => (
+            <span
+              key={`${occ}-${i}`}
+              className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border bg-card px-4 py-1.5 text-sm font-medium text-muted-foreground"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+              {occ}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ── Feature bento ────────────────────────────────────── */}
       <section id="features" className="mx-auto max-w-6xl px-6 py-20">
@@ -230,25 +271,29 @@ export default function LandingPage() {
         </Reveal>
 
         <div className="mt-12 grid gap-4 md:grid-cols-3">
-          <Reveal as="article" className="surface flex flex-col p-6 md:col-span-2 md:row-span-2">
-            <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                <Users className="h-5 w-5" />
-              </span>
-              <h3 className="font-display text-xl font-semibold tracking-tight">
-                See every reply, live
-              </h3>
-            </div>
-            <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              Yes, no, maybe, +1s and dietary needs — updating the moment a guest taps. An automatic
-              waitlist kicks in the instant you hit capacity.
-            </p>
-            <div className="mt-5 grow">
-              <GuestBoardMock />
-            </div>
+          <Reveal variant="left" className="md:col-span-2 md:row-span-2">
+            <Tilt max={4} className="h-full">
+              <article className="surface flex h-full flex-col p-6">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                    <Users className="h-5 w-5" />
+                  </span>
+                  <h3 className="font-display text-xl font-semibold tracking-tight">
+                    See every reply, live
+                  </h3>
+                </div>
+                <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                  Yes, no, maybe, +1s and dietary needs — updating the moment a guest taps. An
+                  automatic waitlist kicks in the instant you hit capacity.
+                </p>
+                <div className="mt-5 grow">
+                  <GuestBoardMock />
+                </div>
+              </article>
+            </Tilt>
           </Reveal>
 
-          <Reveal as="article" delay={80} className="surface p-6">
+          <Reveal as="article" variant="right" delay={80} className="surface p-6">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
               <Bell className="h-5 w-5" />
             </span>
@@ -260,7 +305,7 @@ export default function LandingPage() {
             </p>
           </Reveal>
 
-          <Reveal as="article" delay={160} className="surface p-6">
+          <Reveal as="article" variant="right" delay={160} className="surface p-6">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand/10 text-brand">
               <ClipboardCheck className="h-5 w-5" />
             </span>
@@ -277,7 +322,7 @@ export default function LandingPage() {
       {/* ── Showcase: invite ─────────────────────────────────── */}
       <section className="border-y border-border/70 bg-muted/30">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
-          <Reveal>
+          <Reveal variant="left">
             <span className="text-xs font-semibold uppercase tracking-wider text-brand">
               The guest experience
             </span>
@@ -298,19 +343,21 @@ export default function LandingPage() {
               )}
             </ul>
           </Reveal>
-          <Reveal delay={120} className="flex justify-center">
+          <Reveal variant="right" className="flex justify-center">
             <div className="relative">
               <span
                 className="halo bg-brand/20"
                 style={{ width: 260, height: 260, top: 20, left: 20 }}
               />
-              <RsvpPhoneMock className="relative w-64 animate-float-slow" />
+              <Tilt max={8}>
+                <RsvpPhoneMock className="relative w-64 animate-float-slow" />
+              </Tilt>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ── How it works ─────────────────────────────────────── */}
+      {/* ── How it works (illustrated, draws in) ─────────────── */}
       <section id="how" className="mx-auto max-w-6xl px-6 py-20">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -320,7 +367,7 @@ export default function LandingPage() {
         </Reveal>
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {STEPS.map((step, i) => (
-            <Reveal key={step.n} delay={i * 120} as="article" className="surface p-6 text-center">
+            <Reveal key={step.n} delay={i * 140} as="article" className="draw surface p-6 text-center">
               <div className="rounded-xl bg-muted/40 p-3">
                 <step.Art />
               </div>
@@ -351,9 +398,10 @@ export default function LandingPage() {
             {FEATURES.map((feature, i) => (
               <Reveal
                 key={feature.title}
-                delay={(i % 3) * 80}
+                delay={(i % 3) * 90}
+                variant="up"
                 as="article"
-                className="surface group p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lift hover:border-brand/30"
+                className="surface group p-6 transition-all duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-lift"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand/10 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
                   <feature.icon className="h-5 w-5" />
@@ -380,7 +428,12 @@ export default function LandingPage() {
         </Reveal>
         <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
           {GALLERY.map((g, i) => (
-            <Reveal key={g.label} delay={i * 80} className="group relative overflow-hidden rounded-2xl">
+            <Reveal
+              key={g.label}
+              variant="scale"
+              delay={i * 80}
+              className="group relative overflow-hidden rounded-2xl"
+            >
               {/* eslint-disable-next-line @next/next/no-img-element -- decorative Unsplash imagery, no domain allowlist needed */}
               <img
                 src={unsplash(g.src)}
@@ -401,7 +454,7 @@ export default function LandingPage() {
       {/* ── Testimonial ──────────────────────────────────────── */}
       <section className="border-y border-border/70 bg-muted/30">
         <div className="mx-auto max-w-3xl px-6 py-20 text-center">
-          <Reveal>
+          <Reveal variant="blur">
             <Quote className="mx-auto h-9 w-9 text-brand/30" />
             <p className="mt-5 text-balance font-display text-2xl font-medium leading-snug tracking-tight sm:text-3xl">
               “We ran our 250-person launch on Gatherly. Real-time RSVPs, an automatic waitlist, and
@@ -434,7 +487,7 @@ export default function LandingPage() {
           <p className="mt-3 text-muted-foreground">Simple pricing, no surprises.</p>
         </Reveal>
         <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
-          <Reveal className="surface p-7">
+          <Reveal variant="left" className="surface p-7">
             <p className="font-display text-lg font-semibold">Free</p>
             <p className="mt-2">
               <span className="font-display text-4xl font-semibold tracking-tight">$0</span>
@@ -452,7 +505,11 @@ export default function LandingPage() {
               <Link href="/signup">Start free</Link>
             </Button>
           </Reveal>
-          <Reveal delay={100} className="relative rounded-2xl border-2 border-brand bg-card p-7 shadow-glow">
+          <Reveal
+            variant="right"
+            delay={100}
+            className="relative rounded-2xl border-2 border-brand bg-card p-7 shadow-glow"
+          >
             <span className="absolute -top-3 left-7 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
               <Sparkles className="h-3 w-3" /> Most popular
             </span>
@@ -502,7 +559,7 @@ export default function LandingPage() {
 
       {/* ── Final CTA ────────────────────────────────────────── */}
       <section className="mx-auto max-w-6xl px-6 py-20">
-        <Reveal className="relative overflow-hidden rounded-3xl border bg-card px-8 py-16 text-center shadow-soft">
+        <Reveal variant="scale" className="relative overflow-hidden rounded-3xl border bg-card px-8 py-16 text-center shadow-soft">
           <div className="bg-dots pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_60%_80%_at_50%_50%,black,transparent)]" />
           <Confetti className="opacity-40" />
           <span className="halo bg-brand/20" style={{ width: 300, height: 300, top: -80, left: "30%" }} />
