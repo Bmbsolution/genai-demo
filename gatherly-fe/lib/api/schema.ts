@@ -58,12 +58,28 @@ export interface components {
       rsvp_status: string;
       plus_one: boolean;
       dietary_notes: string | null;
+      checked_in_at: string | null;
       invite_token: string;
       created_at: string;
     };
     GuestCreateRequest: {
       name: string;
       email: string;
+    };
+    GuestImportRequest: {
+      csv: string;
+    };
+    GuestImportResponse: {
+      created: number;
+      skipped_duplicate: number;
+      skipped_invalid: number;
+      errors: string[];
+    };
+    CheckInRequest: {
+      checked_in: boolean;
+    };
+    ReminderResponse: {
+      sent: number;
     };
     RsvpView: {
       guest_name: string;

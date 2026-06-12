@@ -6,10 +6,11 @@ bringing a +1 and any dietary notes.
 
 from __future__ import annotations
 
+import datetime as dt
 import enum
 import uuid
 
-from sqlalchemy import Boolean, ForeignKey, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from gatherly.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -41,3 +42,8 @@ class Guest(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     invite_token: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     plus_one: Mapped[bool] = mapped_column(Boolean, default=False)
     dietary_notes: Mapped[str | None] = mapped_column(Text, default=None)
+    # Set when the host marks the guest as arrived at the door; null = not yet.
+    checked_in_at: Mapped[dt.datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        default=None,
+    )
