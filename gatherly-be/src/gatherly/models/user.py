@@ -2,11 +2,21 @@
 
 from __future__ import annotations
 
+import enum
+
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from gatherly.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 from gatherly.rbac import Role
+
+
+class UserPlan(enum.StrEnum):
+    """A host's billing plan. Pro lifts the free-tier caps and unlocks
+    import/reminders."""
+
+    FREE = "free"
+    PRO = "pro"
 
 
 class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -26,3 +36,5 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     auth_provider: Mapped[str] = mapped_column(String(20), default="password")
     # Google's stable subject id, set when the account links Google.
     google_sub: Mapped[str | None] = mapped_column(String(64), unique=True, default=None)
+    # Billing plan — "free" or "pro". New accounts start free.
+    plan: Mapped[str] = mapped_column(String(20), default=UserPlan.FREE.value)

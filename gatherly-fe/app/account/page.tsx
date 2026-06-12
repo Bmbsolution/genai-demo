@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/app-header";
+import { BillingCard } from "@/components/billing-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -181,6 +182,8 @@ export default function AccountPage() {
                 </form>
               </CardContent>
             </Card>
+
+            <BillingCard enabled={ready} />
 
             <Card>
               <CardHeader>

@@ -29,6 +29,29 @@
     "haveAccount": "Already have an account?",
     "signinLink": "Sign in"
   },
+  "billing": {
+    "title": "Plan & billing",
+    "free": "Free",
+    "pro": "Pro",
+    "currentPlan": "Current plan",
+    "freeBlurb": "Up to {events} active events and {guests} guests per event.",
+    "proBlurb": "Unlimited events and guests, plus every Pro feature.",
+    "usage": "{active} of {limit} active events used",
+    "proFeatures": "Pro unlocks",
+    "feature": {
+      "import": "Bulk CSV guest import",
+      "reminders": "Automated RSVP reminders",
+      "events": "Unlimited events",
+      "guests": "Unlimited guests per event"
+    },
+    "upgrade": "Upgrade to Pro — {price}",
+    "upgrading": "Upgrading…",
+    "upgraded": "Welcome to Pro! Every feature is unlocked.",
+    "upgradeFailed": "Could not start the upgrade.",
+    "onPro": "You're on Pro — thanks for your support.",
+    "limitReached": "You've hit a Free plan limit. Upgrade to Pro to continue.",
+    "proRequired": "That's a Pro feature. Upgrade to unlock it."
+  },
   "account": {
     "title": "Account",
     "subtitle": "Manage your profile and security",

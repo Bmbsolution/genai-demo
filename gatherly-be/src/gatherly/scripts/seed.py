@@ -13,7 +13,7 @@ import secrets
 from sqlalchemy import select
 
 from gatherly.db import get_sessionmaker, init_db
-from gatherly.models import Event, EventStatus, EventVisibility, Guest, RsvpStatus, User
+from gatherly.models import Event, EventStatus, EventVisibility, Guest, RsvpStatus, User, UserPlan
 from gatherly.rbac import Role
 from gatherly.security import hash_password
 
@@ -39,6 +39,7 @@ async def seed() -> None:
                 display_name="Alex Rivera",
                 role=Role.ADMIN.value,
                 hashed_password=hash_password(HOST_PASSWORD),
+                plan=UserPlan.PRO.value,  # established demo customer — Pro features on
             )
             session.add(host)
             await session.flush()

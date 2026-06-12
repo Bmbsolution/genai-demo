@@ -36,7 +36,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRequireAuth } from "@/hooks/use-require-auth";
-import { API_BASE, apiFetch, type Data } from "@/lib/api/client";
+import { API_BASE, ApiError, apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { formatEventDate } from "@/lib/format-date";
 import { useAuthStore } from "@/lib/store/auth";
@@ -93,7 +93,12 @@ export default function EventDetailPage() {
     mutationFn: () =>
       apiFetch<Data<ReminderResult>>(`/api/v1/events/${eventId}/reminders`, { method: "POST" }),
     onSuccess: (res) => toast.success(t("detail.remindResult", { sent: res.data.sent })),
-    onError: () => toast.error(t("detail.remindFailed")),
+    onError: (error) =>
+      toast.error(
+        error instanceof ApiError && error.status === 402
+          ? t("billing.proRequired")
+          : t("detail.remindFailed"),
+      ),
   });
 
   const rows = useMemo(() => guests.data ?? [], [guests.data]);

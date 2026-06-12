@@ -21,6 +21,7 @@ from gatherly.schemas.event import (
     EventUpdateRequest,
 )
 from gatherly.schemas.insights import EventInsightsResponse, EventReadinessResponse
+from gatherly.services.billing import PlanService
 from gatherly.services.events import EventService
 from gatherly.services.insights import InsightsService
 
@@ -58,6 +59,7 @@ async def create_event(
     _rl: Annotated[None, Depends(_write_rl)],
     _audit: Annotated[None, Depends(audit_action("event.create"))],
 ) -> DataResponse[EventResponse]:
+    await PlanService(db).assert_can_create_event(user)
     event = await EventService(db).create(owner_id=user.id, payload=payload)
     return DataResponse(data=EventResponse.model_validate(event))
 

@@ -14,7 +14,7 @@ from gatherly import rate_limit
 from gatherly.db import enable_sqlite_foreign_keys
 from gatherly.deps import get_db
 from gatherly.main import create_app
-from gatherly.models import Base, User
+from gatherly.models import Base, User, UserPlan
 from gatherly.rbac import Role
 from gatherly.security import hash_password
 from gatherly.token_store import get_revocation_store
@@ -75,13 +75,19 @@ async def create_host(
     email: str,
     password: str = DEFAULT_PASSWORD,
     role: Role = Role.ADMIN,
+    plan: UserPlan = UserPlan.PRO,
 ) -> User:
-    """Insert a host directly so tests can then log in through the real flow."""
+    """Insert a host directly so tests can then log in through the real flow.
+
+    Defaults to Pro so feature tests aren't tripped by free-tier caps; billing
+    tests pass ``plan=UserPlan.FREE`` to exercise the limits.
+    """
     user = User(
         email=email,
         display_name="Test Host",
         role=role.value,
         hashed_password=hash_password(password),
+        plan=plan.value,
     )
     async with sessions() as session, session.begin():
         session.add(user)
