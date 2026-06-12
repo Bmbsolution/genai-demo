@@ -29,7 +29,7 @@
     --border: 220 22% 91%;
     --input: 220 22% 88%;
     --ring: 216 92% 48%;
-    --radius: 0.85rem;
+    --radius: 0.5rem; /* soft-square: crisp, professional corners */
     /* Premium ease-out-expo curve shared by all entrance/hover motion. */
     --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -123,7 +123,7 @@
   }
   /* Hairline-framed premium surface with layered depth. */
   .surface {
-    @apply rounded-2xl border bg-card shadow-soft;
+    @apply rounded-xl border bg-card shadow-soft;
   }
 }
 

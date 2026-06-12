@@ -74,7 +74,7 @@ export function HeroDashboard({ className }: { className?: string }) {
       </div>
 
       <div className="p-6">
-        <h3 className="font-corp-display text-xl font-bold tracking-tight text-foreground">
+        <h3 className="font-display text-xl font-bold tracking-tight text-foreground">
           Summer Rooftop Party
         </h3>
         <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
