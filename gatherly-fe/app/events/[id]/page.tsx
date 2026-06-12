@@ -177,7 +177,7 @@ export default function EventDetailPage() {
             <div className="animate-fade-up">
               {event.data.cover_image_url ? (
                 <div
-                  className="mb-4 h-44 w-full rounded-xl border bg-muted bg-cover bg-center"
+                  className="mb-4 h-44 w-full overflow-hidden rounded-2xl border bg-muted bg-cover bg-center"
                   style={{ backgroundImage: `url(${event.data.cover_image_url})` }}
                   role="img"
                   aria-label={event.data.title}

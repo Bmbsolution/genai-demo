@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
+import { Confetti } from "@/components/confetti";
 import { RsvpBadge } from "@/components/rsvp-badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -99,18 +100,34 @@ export default function RsvpPage() {
   const view = rsvp.data;
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center bg-grid p-6">
-      <div className="absolute right-4 top-4">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden p-6">
+      <div className="bg-dots pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,black,transparent)]" />
+      <span className="halo bg-brand/20" style={{ width: 360, height: 360, top: -120, left: -80 }} />
+      <span className="halo bg-gold/10" style={{ width: 280, height: 280, bottom: -80, right: -50 }} />
+      <div className="absolute right-4 top-4 z-10">
         <ThemeToggle />
       </div>
-      <Card className="animate-fade-up w-full max-w-md overflow-hidden border-border/70 shadow-xl">
-        {view?.event.cover_image_url ? (
+      <Card className="animate-fade-up relative z-10 w-full max-w-md overflow-hidden border-border/60 shadow-lift">
+        {view ? (
           <div
-            className="h-36 w-full bg-muted bg-cover bg-center"
-            style={{ backgroundImage: `url(${view.event.cover_image_url})` }}
+            className="relative h-28 w-full bg-brand bg-cover bg-center"
+            style={
+              view.event.cover_image_url
+                ? { backgroundImage: `url(${view.event.cover_image_url})` }
+                : undefined
+            }
             role="img"
             aria-label={view.event.title}
-          />
+          >
+            {view.event.cover_image_url ? null : (
+              <>
+                <Confetti />
+                <span className="absolute bottom-3 left-6 flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
+                  <PartyPopper className="h-5 w-5 text-white" aria-hidden="true" />
+                </span>
+              </>
+            )}
+          </div>
         ) : null}
         <CardContent className="space-y-6 p-8">
           {rsvp.isLoading ? <p className="text-muted-foreground">{tc("loading")}</p> : null}
@@ -124,11 +141,6 @@ export default function RsvpPage() {
           {view ? (
             <>
               <div className="space-y-3">
-                {view.event.cover_image_url ? null : (
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary">
-                    <PartyPopper className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
-                  </span>
-                )}
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wider text-brand">
                     {t("invited")}
