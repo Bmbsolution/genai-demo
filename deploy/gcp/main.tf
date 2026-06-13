@@ -137,6 +137,17 @@ resource "google_cloud_run_v2_service" "api" {
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
 
+  # After the first apply, CI (`gcloud run deploy --image`) owns the running
+  # image + client metadata. Ignore them so re-applying infra doesn't roll back
+  # the deployed version.
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+      client,
+      client_version,
+    ]
+  }
+
   template {
     service_account = google_service_account.run.email
 
