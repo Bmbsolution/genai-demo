@@ -1,36 +1,57 @@
 # CI/CD
 
-Two GitHub Actions workflows:
+**Split ownership:** GitHub Actions runs CI for both apps + deploys the
+**backend**; **Netlify** builds and deploys the **frontend** from GitHub directly.
 
 - **`.github/workflows/ci.yml`** — on every PR to `main`: backend `ruff` + `mypy`
   + `pytest`, frontend `lint` + `tsc` + `vitest` + `build`. Path-filtered (a job
   runs only when its app changed).
-- **`.github/workflows/deploy.yml`** — on every merge to `main`: backend →
-  Cloud Run, frontend → Netlify. Path-filtered. Infra is provisioned once by
-  Terraform (`deploy/gcp`); this pipeline only rolls new images/builds.
+- **`.github/workflows/deploy.yml`** — on every merge to `main` touching
+  `gatherly-be/**`: build the image → Cloud Run. Infra is provisioned once by
+  Terraform (`deploy/gcp`); this pipeline only rolls new images.
+- **Netlify Git integration** — on every push to `main`, Netlify builds
+  `gatherly-fe` on its own buildbot and publishes (SSR via the Next.js runtime).
+  No GitHub Actions job is involved.
 
-## Already configured (in the repo)
+> **Why not deploy the frontend from Actions?** `netlify deploy --build` run on a
+> GitHub-hosted runner reliably hangs in the upload phase after a clean build
+> (16+ min, no output). Netlify's own buildbot doesn't, so the frontend is
+> deployed by Netlify's Git integration instead. The `NETLIFY_*` secrets below
+> are no longer used by Actions and can be deleted.
+
+## Frontend — Netlify Git integration (one-time)
+
+In the Netlify UI for the **gatherly-events-app** site (team `fsawadogo`):
+
+1. **Site configuration → Build & deploy → Continuous deployment → Link
+   repository** → GitHub → `Bmbsolution/genai-demo`. Authorize the Netlify
+   GitHub App for the repo if prompted.
+2. Build settings (Netlify also reads `gatherly-fe/netlify.toml`):
+   - **Base directory:** `gatherly-fe`
+   - **Build command:** `pnpm build`
+   - **Publish directory:** `gatherly-fe/.next` (auto-detected by the Next.js runtime)
+   - **Production branch:** `main`
+3. **Environment variables** (Site configuration → Environment variables):
+   - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — already set ✅
+   - `NEXT_PUBLIC_API_URL` — add once the backend is live (the Cloud Run URL)
+4. Trigger a deploy (push to `main`, or **Deploys → Trigger deploy**) to confirm.
+
+That's it — every later merge to `main` auto-builds and publishes the frontend.
+
+## Already configured (in the repo) — backend CD
 
 | Kind | Name | Value |
 |---|---|---|
 | variable | `GCP_PROJECT` | `gatherly-499115` |
 | variable | `GCP_REGION` | `northamerica-northeast1` |
 | variable | `GCP_DEPLOY_SA` | `gatherly-deployer@gatherly-499115.iam.gserviceaccount.com` |
-| variable | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | (set) |
-| secret | `NETLIFY_AUTH_TOKEN` | (set) |
-| secret | `NETLIFY_SITE_ID` | `534fda63-…` |
-
-→ **Frontend CD is ready.** Merging a change under `gatherly-fe/**` auto-deploys to Netlify.
+| variable | `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | (set — also mirror it in Netlify env) |
+| secret | `NETLIFY_AUTH_TOKEN` | (unused now — safe to delete) |
+| secret | `NETLIFY_SITE_ID` | (unused now — safe to delete) |
 
 ## You must add (one-time) for backend CD
 
-### 1. `NEXT_PUBLIC_API_URL` (variable) — after the backend is live
-```bash
-gh variable set NEXT_PUBLIC_API_URL --repo Bmbsolution/genai-demo --body "<cloud-run-url>"
-```
-(Or paste me the URL and I'll set it.) Frontend reads this at build time.
-
-### 2. GCP Workload Identity Federation — keyless auth for the deploy job
+### GCP Workload Identity Federation — keyless auth for the deploy job
 Run once (needs `gcloud`, project owner). Creates a deployer SA and lets **only
 this repo** impersonate it — no long-lived JSON key.
 

@@ -41,14 +41,15 @@ or seed a demo host via the Cloud SQL Auth Proxy.
 
 ## 2 · Point the live frontend at the backend
 
-The frontend is already deployed — just give it the API URL and redeploy
-(`NEXT_PUBLIC_*` is inlined at build, so it needs a rebuild):
+The frontend deploys from GitHub via Netlify's Git integration (see
+`deploy/CICD.md`). Set the API URL as a Netlify env var, then trigger a rebuild
+(`NEXT_PUBLIC_*` is inlined at build time):
 
 ```bash
-cd gatherly-fe
 netlify env:set NEXT_PUBLIC_API_URL "$API_URL"   # the Cloud Run URL from step 1
-netlify deploy --build --prod
 ```
+Then trigger a rebuild so it gets inlined: push any commit to `main`, or hit
+**Deploys → Trigger deploy** in the Netlify UI.
 
 `NEXT_PUBLIC_GOOGLE_CLIENT_ID` is already set on the Netlify site.
 
