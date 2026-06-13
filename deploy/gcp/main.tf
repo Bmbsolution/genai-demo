@@ -79,7 +79,9 @@ resource "google_sql_user" "user" {
 
 resource "google_secret_manager_secret" "jwt" {
   secret_id  = "gatherly-jwt-secret"
-  replication { auto {} }
+  replication {
+    auto {}
+  }
   depends_on = [google_project_service.apis]
 }
 
@@ -90,7 +92,9 @@ resource "google_secret_manager_secret_version" "jwt" {
 
 resource "google_secret_manager_secret" "database_url" {
   secret_id  = "gatherly-database-url"
-  replication { auto {} }
+  replication {
+    auto {}
+  }
   depends_on = [google_project_service.apis]
 }
 
@@ -132,6 +136,17 @@ resource "google_cloud_run_v2_service" "api" {
   location            = var.region
   deletion_protection = false
   ingress             = "INGRESS_TRAFFIC_ALL"
+
+  # After the first apply, CI (`gcloud run deploy --image`) owns the running
+  # image + client metadata. Ignore them so re-applying infra doesn't roll back
+  # the deployed version.
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+      client,
+      client_version,
+    ]
+  }
 
   template {
     service_account = google_service_account.run.email
