@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Keep SHA-pinned GitHub Actions current (bumps the pin + the # vN comment).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: pip
+    directory: /gatherly-be
+    schedule:
+      interval: weekly
+  - package-ecosystem: npm
+    directory: /gatherly-fe
+    schedule:
+      interval: weekly

@@ -55,7 +55,7 @@ gcloud iam workload-identity-pools providers create-oidc github \
   --project=$PROJECT --location=global --workload-identity-pool=github \
   --display-name="GitHub OIDC" \
   --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
-  --attribute-condition="assertion.repository=='$REPO'" \
+  --attribute-condition="assertion.repository=='$REPO' && assertion.ref=='refs/heads/main'" \
   --issuer-uri="https://token.actions.githubusercontent.com"
 
 gcloud iam service-accounts add-iam-policy-binding $SA --project=$PROJECT \
@@ -73,6 +73,14 @@ image (`lifecycle.ignore_changes`), so re-applying infra won't roll it back.
 
 ## Notes
 
+- **Action pinning:** every third-party action is pinned to a commit SHA (with a
+  `# vN` comment) — mutable tags can be re-pointed to malicious code, which is
+  acute for the backend job (`id-token: write` + GCP SA). Keep them current with
+  Dependabot digest updates (`.github/dependabot.yml`, package-ecosystem
+  `github-actions`).
+- **WIF scope:** the trust policy's `attribute-condition` pins both the repo and
+  `refs/heads/main`, so only this repo's `main`-branch runs can mint a token —
+  a malicious PR can't impersonate the deployer SA.
 - The deployer SA needs `iam.serviceAccountUser` so it can deploy a service that
   runs as the `gatherly-run` runtime SA (granted project-wide above).
 - To rotate the Netlify token, replace the `NETLIFY_AUTH_TOKEN` secret (currently
