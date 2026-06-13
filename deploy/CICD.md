@@ -81,6 +81,14 @@ image (`lifecycle.ignore_changes`), so re-applying infra won't roll it back.
 - **WIF scope:** the trust policy's `attribute-condition` pins both the repo and
   `refs/heads/main`, so only this repo's `main`-branch runs can mint a token —
   a malicious PR can't impersonate the deployer SA.
+- **Deploy ref guard:** every deploy job is gated on `github.ref == 'refs/heads/main'`,
+  so `workflow_dispatch` (or anything else) can only deploy from `main` — not from
+  an arbitrary branch where prod secrets would otherwise be exposed.
+- **Optional gate:** to require a human approval before each prod deploy, put the
+  deploy jobs in a GitHub **Environment** (`production`) with required reviewers
+  and move the secrets there. Not enabled here because it would block the
+  "deploy automatically on every merge" behaviour you asked for — opt in if you
+  want a manual approval step instead.
 - The deployer SA needs `iam.serviceAccountUser` so it can deploy a service that
   runs as the `gatherly-run` runtime SA (granted project-wide above).
 - To rotate the Netlify token, replace the `NETLIFY_AUTH_TOKEN` secret (currently
