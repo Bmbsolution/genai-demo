@@ -6,7 +6,13 @@ name: Deploy
 on:
   push:
     branches: [main]
-  workflow_dispatch: # manual full deploy (bypasses the path filter)
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Which app to deploy
+        type: choice
+        options: [frontend, backend, both]
+        default: frontend
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -14,6 +20,9 @@ concurrency:
 
 jobs:
   changes:
+    # Hard ref guard: deploy logic only ever runs against main, so a dispatch
+    # from any other branch can't expose deploy secrets.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
@@ -32,7 +41,11 @@ jobs:
   # --- Backend → GCP Cloud Run -----------------------------------------------
   deploy-backend:
     needs: changes
-    if: needs.changes.outputs.backend == 'true'
+    # push: deploy when gatherly-be changed. dispatch: only if target selects it.
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'push' && needs.changes.outputs.backend == 'true') ||
+       (github.event_name == 'workflow_dispatch' && (inputs.target == 'backend' || inputs.target == 'both')))
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -72,7 +85,10 @@ jobs:
   # --- Frontend → Netlify ----------------------------------------------------
   deploy-frontend:
     needs: changes
-    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      ((github.event_name == 'push' && needs.changes.outputs.frontend == 'true') ||
+       (github.event_name == 'workflow_dispatch' && (inputs.target == 'frontend' || inputs.target == 'both')))
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -93,7 +109,6 @@ jobs:
           cache: pnpm
           cache-dependency-path: gatherly-fe/pnpm-lock.yaml
       # `--build` lets Netlify run the build + apply its Next.js SSR runtime
-      # (turning the app into serverless functions) before publishing.
+      # before publishing. netlify-cli ships two bins (netlify, ntl) — name one.
       - name: Deploy to Netlify
-        # netlify-cli ships two bins (netlify, ntl) — name the one to run.
-        run: pnpm --package=netlify-cli@17 dlx netlify deploy --build --prod
+        run: pnpm --package=netlify-cli@17 dlx netlify deploy --build --prod --site "$NETLIFY_SITE_ID"
