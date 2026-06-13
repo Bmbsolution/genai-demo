@@ -6,6 +6,7 @@ name: Deploy
 on:
   push:
     branches: [main]
+  workflow_dispatch: # manual full deploy (bypasses the path filter)
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -71,7 +72,7 @@ jobs:
   # --- Frontend → Netlify ----------------------------------------------------
   deploy-frontend:
     needs: changes
-    if: needs.changes.outputs.frontend == 'true'
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -94,4 +95,5 @@ jobs:
       # `--build` lets Netlify run the build + apply its Next.js SSR runtime
       # (turning the app into serverless functions) before publishing.
       - name: Deploy to Netlify
-        run: pnpm dlx netlify-cli@17 deploy --build --prod
+        # netlify-cli ships two bins (netlify, ntl) — name the one to run.
+        run: pnpm --package=netlify-cli@17 dlx netlify deploy --build --prod
