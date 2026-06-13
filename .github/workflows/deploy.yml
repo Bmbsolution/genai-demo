@@ -108,6 +108,11 @@ jobs:
           node-version: 20
           cache: pnpm
           cache-dependency-path: gatherly-fe/pnpm-lock.yaml
+      # `netlify deploy --build` from our own CI does NOT auto-install deps (that
+      # step only runs in Netlify's hosted buildbot), so install them ourselves
+      # first — otherwise `pnpm build` hits "next: not found".
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
       # `--build` lets Netlify run the build + apply its Next.js SSR runtime
       # before publishing. netlify-cli ships two bins (netlify, ntl) — name one.
       - name: Deploy to Netlify
