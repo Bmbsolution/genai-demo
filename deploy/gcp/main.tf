@@ -79,7 +79,9 @@ resource "google_sql_user" "user" {
 
 resource "google_secret_manager_secret" "jwt" {
   secret_id  = "gatherly-jwt-secret"
-  replication { auto {} }
+  replication {
+    auto {}
+  }
   depends_on = [google_project_service.apis]
 }
 
@@ -90,7 +92,9 @@ resource "google_secret_manager_secret_version" "jwt" {
 
 resource "google_secret_manager_secret" "database_url" {
   secret_id  = "gatherly-database-url"
-  replication { auto {} }
+  replication {
+    auto {}
+  }
   depends_on = [google_project_service.apis]
 }
 
