@@ -3,6 +3,8 @@
 
 locals {
   apis = [
+    "cloudresourcemanager.googleapis.com", # must be on before TF can manage other services
+    "iam.googleapis.com",                  # service-account creation
     "run.googleapis.com",
     "sqladmin.googleapis.com",
     "secretmanager.googleapis.com",
