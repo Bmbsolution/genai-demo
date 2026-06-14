@@ -30,7 +30,7 @@ const COLUMNS = [
 export function MarketingFooter() {
   return (
     <footer className="border-t border-border/70 bg-muted/30">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-12 sm:grid-cols-2 md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 py-12 sm:grid-cols-2 md:grid-cols-4">
         <div className="space-y-3">
           <Link href="/" className="flex items-center gap-2.5">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
@@ -61,7 +61,7 @@ export function MarketingFooter() {
         ))}
       </div>
       <div className="border-t border-border/70">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-5 text-xs text-muted-foreground sm:flex-row">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 sm:px-6 py-5 text-xs text-muted-foreground sm:flex-row">
           <p>© 2026 Gatherly. All rights reserved.</p>
           <p>Made for people who bring people together.</p>
         </div>

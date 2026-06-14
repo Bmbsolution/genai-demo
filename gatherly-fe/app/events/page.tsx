@@ -37,8 +37,8 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen">
       <AppHeader />
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="mb-6 flex items-end justify-between gap-4">
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>

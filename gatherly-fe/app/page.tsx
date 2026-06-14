@@ -125,13 +125,13 @@ const PRO_FEATURES = [
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background font-sans">
+    <div className="min-h-screen overflow-x-hidden bg-background font-sans">
       <ScrollProgress />
       <MarketingNav />
 
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-border/60 bg-muted/20">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:py-24">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 py-16 lg:grid-cols-2 lg:py-24">
           <div className="animate-fade-up">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-muted-foreground shadow-soft">
               <span className="h-1.5 w-1.5 rounded-full bg-brand" /> Gatherly 2.0 is live
@@ -187,7 +187,7 @@ export default function LandingPage() {
 
       {/* ── Stats banner ─────────────────────────────────────── */}
       <section className="border-b border-border/60 bg-card">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 divide-y divide-border/60 px-6 py-10 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 divide-y divide-border/60 px-4 sm:px-6 py-10 sm:grid-cols-4 sm:divide-x sm:divide-y-0">
           {STATS.map((s, i) => (
             <Reveal key={s.label} delay={i * 80} className="px-2 py-3 text-center sm:py-0">
               <Counter
@@ -205,7 +205,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features ─────────────────────────────────────────── */}
-      <section id="features" className="mx-auto max-w-6xl px-6 py-20 lg:py-28">
+      <section id="features" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 lg:py-28">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Everything you need to fill the room
@@ -237,7 +237,7 @@ export default function LandingPage() {
 
       {/* ── How it works ─────────────────────────────────────── */}
       <section id="how" className="border-y border-border/60 bg-muted/20">
-        <div className="mx-auto max-w-6xl px-6 py-20 lg:py-28">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-20 lg:py-28">
           <Reveal className="mx-auto max-w-2xl text-center">
             <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Live in three steps
@@ -269,7 +269,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Photo band ───────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-6 py-20 lg:py-28">
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-20 lg:py-28">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <Reveal variant="left" className="overflow-hidden rounded-2xl border border-border/60 shadow-lift">
             <Parallax speed={0.08}>
@@ -314,7 +314,7 @@ export default function LandingPage() {
 
       {/* ── Testimonial (dark) ───────────────────────────────── */}
       <section className="bg-navy">
-        <div className="mx-auto max-w-3xl px-6 py-20 text-center lg:py-28">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-20 text-center lg:py-28">
           <Reveal>
             <Quote className="mx-auto h-9 w-9 text-brand" />
             <p className="mt-6 font-display text-2xl font-semibold leading-snug tracking-tight text-white sm:text-3xl">
@@ -340,7 +340,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Pricing ──────────────────────────────────────────── */}
-      <section id="pricing" className="mx-auto max-w-6xl px-6 py-20 lg:py-28">
+      <section id="pricing" className="mx-auto max-w-6xl px-4 sm:px-6 py-20 lg:py-28">
         <Reveal className="mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Start free. Upgrade when you grow.
@@ -400,7 +400,7 @@ export default function LandingPage() {
 
       {/* ── FAQ ──────────────────────────────────────────────── */}
       <section id="faq" className="border-y border-border/60 bg-muted/20">
-        <div className="mx-auto max-w-3xl px-6 py-20 lg:py-28">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-20 lg:py-28">
           <Reveal>
             <h2 className="text-center font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               Questions, answered
@@ -426,7 +426,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Final CTA ────────────────────────────────────────── */}
-      <section className="mx-auto max-w-6xl px-6 py-20 lg:py-24">
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-20 lg:py-24">
         <Reveal className="overflow-hidden rounded-2xl bg-navy px-8 py-16 text-center">
           <h2 className="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Your next event deserves a better RSVP.

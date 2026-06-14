@@ -123,7 +123,7 @@ export default function AccountPage() {
   return (
     <div className="min-h-screen">
       <AppHeader />
-      <main className="mx-auto max-w-2xl space-y-6 px-6 py-8">
+      <main className="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6">
         <div className="animate-fade-up">
           <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
