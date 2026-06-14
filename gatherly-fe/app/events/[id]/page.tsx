@@ -161,7 +161,7 @@ export default function EventDetailPage() {
   return (
     <div className="min-h-screen">
       <AppHeader />
-      <main className="mx-auto max-w-5xl space-y-8 px-6 py-8">
+      <main className="mx-auto max-w-5xl space-y-8 px-4 py-8 sm:px-6">
         <Link
           href="/events"
           className="inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -309,10 +309,16 @@ export default function EventDetailPage() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>{t("detail.guests.name")}</TableHead>
-                          <TableHead>{t("detail.guests.email")}</TableHead>
+                          <TableHead className="hidden md:table-cell">
+                            {t("detail.guests.email")}
+                          </TableHead>
                           <TableHead>{t("detail.guests.rsvp")}</TableHead>
-                          <TableHead>{t("detail.guests.plusOne")}</TableHead>
-                          <TableHead>{t("detail.guests.dietary")}</TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            {t("detail.guests.plusOne")}
+                          </TableHead>
+                          <TableHead className="hidden lg:table-cell">
+                            {t("detail.guests.dietary")}
+                          </TableHead>
                           <TableHead>{t("detail.guests.checkedIn")}</TableHead>
                           <TableHead className="text-right">{t("detail.guests.invite")}</TableHead>
                         </TableRow>
@@ -320,15 +326,22 @@ export default function EventDetailPage() {
                       <TableBody>
                         {visibleRows.map((guest) => (
                           <TableRow key={guest.id}>
-                            <TableCell className="font-medium">{guest.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{guest.email}</TableCell>
+                            <TableCell className="font-medium">
+                              {guest.name}
+                              <span className="block truncate text-xs font-normal text-muted-foreground md:hidden">
+                                {guest.email}
+                              </span>
+                            </TableCell>
+                            <TableCell className="hidden text-muted-foreground md:table-cell">
+                              {guest.email}
+                            </TableCell>
                             <TableCell>
                               <RsvpBadge status={guest.rsvp_status} />
                             </TableCell>
-                            <TableCell className="tabular-nums">
+                            <TableCell className="hidden tabular-nums sm:table-cell">
                               {guest.plus_one ? "+1" : "—"}
                             </TableCell>
-                            <TableCell className="max-w-[12rem] truncate text-muted-foreground">
+                            <TableCell className="hidden max-w-[12rem] truncate text-muted-foreground lg:table-cell">
                               {guest.dietary_notes ?? "—"}
                             </TableCell>
                             <TableCell>

@@ -100,7 +100,7 @@ export function CreateEventDialog() {
             <Label htmlFor="title">{t("events.dialog.name")}</Label>
             <Input id="title" placeholder="Team Offsite 2026" {...register("title")} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="starts_at">{t("events.dialog.startsAt")}</Label>
               <Input id="starts_at" type="datetime-local" {...register("starts_at")} />
@@ -110,7 +110,7 @@ export function CreateEventDialog() {
               <Input id="ends_at" type="datetime-local" {...register("ends_at")} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="location">{t("events.dialog.location")}</Label>
               <Input id="location" placeholder="Mont-Tremblant" {...register("location")} />
@@ -129,7 +129,7 @@ export function CreateEventDialog() {
             <Label htmlFor="cover_image_url">{t("events.dialog.coverUrl")}</Label>
             <Input id="cover_image_url" placeholder="https://…" {...register("cover_image_url")} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>{t("events.dialog.visibility")}</Label>
               <Select value={visibility} onValueChange={setVisibility}>
