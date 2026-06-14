@@ -9,6 +9,11 @@
 
 [build]
   command = "pnpm build"
+  # Frontend-only deploys: this repo is a monorepo (gatherly-fe + gatherly-be).
+  # With the Netlify base directory set to `gatherly-fe`, this ignore command runs
+  # from there and cancels the build when the pushed commit changed nothing under
+  # it — so backend-only merges never rebuild the site. Exit 0 = skip build.
+  ignore = "git diff --quiet HEAD^ HEAD -- ."
 
 [build.environment]
   NODE_VERSION = "20"
