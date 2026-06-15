@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Tutoriel — Orchestrer l'intelligence</title>
+<style>
+@page { size: A4; margin: 22mm 18mm; }
+:root {
+  --ink: #1a1a1a;
+  --muted: #555;
+  --rule: #d8d4cc;
+  --accent: #b85a2e;
+  --bg-soft: #f7f4ee;
+  --code-bg: #f0ecdf;
+}
+* { box-sizing: border-box; }
+html { font-family: 'Iowan Old Style', 'Hoefler Text', Cambria, 'Times New Roman', serif; color: var(--ink); }
+body { max-width: 760px; margin: 0 auto; padding: 0 8px; font-size: 11.5pt; line-height: 1.55; }
+h1 { font-size: 28pt; line-height: 1.1; margin: 0 0 4mm; letter-spacing: -0.5px; page-break-after: avoid; }
+h1 + p em { color: var(--muted); font-size: 13pt; }
+h2 { font-size: 18pt; margin-top: 14mm; margin-bottom: 4mm; padding-bottom: 2mm; border-bottom: 2px solid var(--accent); color: #2a2a2a; page-break-after: avoid; }
+h3 { font-size: 13.5pt; margin-top: 8mm; margin-bottom: 2mm; color: #333; page-break-after: avoid; }
+h4 { font-size: 11.5pt; margin-top: 5mm; margin-bottom: 1.5mm; color: #444; font-style: italic; page-break-after: avoid; }
+p { margin: 0 0 3mm; text-align: justify; hyphens: auto; }
+strong { color: #111; }
+em { color: #2a2a2a; }
+a { color: var(--accent); text-decoration: none; }
+ul, ol { margin: 0 0 4mm 6mm; padding: 0; }
+li { margin-bottom: 1.5mm; }
+hr { border: 0; border-top: 1px dashed var(--rule); margin: 8mm 0; }
+table { width: 100%; border-collapse: collapse; margin: 4mm 0; font-size: 10.5pt; page-break-inside: avoid; }
+th { background: var(--bg-soft); padding: 2mm 3mm; text-align: left; border-bottom: 2px solid var(--accent); font-weight: 600; }
+td { padding: 2mm 3mm; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:nth-child(even) td { background: #fbfaf6; }
+code { font-family: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, monospace; background: var(--code-bg); padding: 0.5mm 1.5mm; border-radius: 2px; font-size: 9.5pt; color: #5a3a1a; }
+pre { background: #1d1c19; color: #f6efe1; padding: 4mm; border-radius: 3px; overflow-x: auto; font-size: 9pt; line-height: 1.35; page-break-inside: avoid; box-shadow: inset 0 0 0 1px #2a2925; }
+pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+blockquote { margin: 4mm 0; padding: 3mm 5mm; background: var(--bg-soft); border-left: 4px solid var(--accent); border-radius: 0 3px 3px 0; font-style: italic; page-break-inside: avoid; }
+blockquote p { margin: 0; }
+blockquote strong { font-style: normal; color: var(--accent); }
+.cover { text-align: center; padding: 25mm 0 15mm; border-bottom: 1px solid var(--rule); margin-bottom: 8mm; }
+.cover h1 { font-size: 32pt; margin-bottom: 4mm; line-height: 1.15; }
+.cover .subtitle { font-style: italic; color: var(--muted); font-size: 13pt; margin: 0 0 8mm; line-height: 1.4; }
+.cover .meta { font-size: 11pt; color: var(--muted); }
+.toc { background: var(--bg-soft); padding: 6mm 8mm; border-radius: 3px; margin: 8mm 0 12mm; page-break-after: always; }
+.toc > .toctitle { font-size: 16pt; font-weight: 600; margin: 0 0 4mm; color: var(--accent); }
+.toc ul { list-style: none; margin-left: 0; }
+.toc li { margin-bottom: 2mm; }
+.toc > ul > li { font-weight: 600; }
+.toc > ul > li > ul { font-weight: normal; margin-top: 1mm; margin-left: 6mm; font-size: 10.5pt; }
+.toc a { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>Orchestrer l'intelligence</h1>
+  <div class="subtitle">Le guide complet pour débutants absolus —<br/>
+  comprendre comment plusieurs IA travaillent ensemble pour construire un vrai logiciel</div>
+  <div class="meta">Compagnon du talk · Montréal · 18 juin 2026<br/>Faïçal Sawadogo · Moussa Balla</div>
+</div>
+
+<nav class="toc"><div class="toctitle">Sommaire</div><ul><li><a href="#avant-propos">Avant-propos</a></li><li><a href="#chapitre-0-cinq-mots-a-comprendre-avant-de-commencer">Chapitre 0 — Cinq mots à comprendre avant de commencer</a></li><li><a href="#chapitre-1-la-grande-metaphore-une-entreprise-miniature">Chapitre 1 — La grande métaphore : une entreprise miniature</a></li><li><a href="#chapitre-2-vibe-coding-vs-vibe-engineering">Chapitre 2 — Vibe coding vs vibe engineering</a></li><li><a href="#chapitre-3-agent-generaliste-vs-specialiste">Chapitre 3 — Agent généraliste vs spécialiste</a></li><li><a href="#chapitre-4-comment-claude-lit-ton-projet">Chapitre 4 — Comment Claude lit ton projet</a></li><li><a href="#chapitre-5-anatomie-dun-skill-decorticage-ligne-par-ligne">Chapitre 5 — Anatomie d&rsquo;un skill : décorticage ligne par ligne</a></li><li><a href="#chapitre-6-cycle-de-vie-dun-agent-forke">Chapitre 6 — Cycle de vie d&rsquo;un agent forké</a></li><li><a href="#chapitre-7-skill-atomique-vs-orchestrateur">Chapitre 7 — Skill atomique vs orchestrateur</a></li><li><a href="#chapitre-8-decorticage-dun-workflow-reel">Chapitre 8 — Décorticage d&rsquo;un workflow réel</a></li><li><a href="#chapitre-9-le-piege-du-mega-agent">Chapitre 9 — Le piège du mega-agent</a></li><li><a href="#chapitre-10-comment-lorchestrateur-decide-de-lordre-et-quand-rappeler-un-skill">Chapitre 10 — Comment l&rsquo;orchestrateur décide de l&rsquo;ordre et quand rappeler un skill</a></li><li><a href="#chapitre-11-ou-vit-la-memoire">Chapitre 11 — Où vit la mémoire</a></li><li><a href="#chapitre-12-les-gates-en-detail">Chapitre 12 — Les gates en détail</a></li><li><a href="#chapitre-13-les-8-regles-dor-pour-orchestrer-un-workflow-multi-agents">Chapitre 13 — Les 8 règles d&rsquo;or pour orchestrer un workflow multi-agents</a></li><li><a href="#chapitre-14-demo-servicecat-decodee">Chapitre 14 — Démo ServiceCat décodée</a></li><li><a href="#chapitre-15-demarrer-lundi-matin">Chapitre 15 — Démarrer lundi matin</a></li><li><a href="#glossaire-enrichi">Glossaire enrichi</a></li><li><a href="#annexe-pour-aller-plus-loin">Annexe — Pour aller plus loin</a></li></ul></nav>
+<main>
+<h1 id="orchestrer-lintelligence-le-guide-complet-pour-debutants-absolus">Orchestrer l&rsquo;intelligence — Le guide complet pour débutants absolus</h1>
+<p><em>Un tutoriel pour comprendre comment plusieurs IA travaillent ensemble pour construire un vrai logiciel</em></p>
+<p><em>Ancré sur ServiceCat, le projet de démonstration du talk de Moussa Balla — Montréal, 18 juin 2026</em></p>
+<hr />
+<h2 id="avant-propos">Avant-propos</h2>
+<p>Bonjour. Si tu lis ces lignes, c&rsquo;est probablement que tu as entendu parler d&rsquo;IA, d&rsquo;agents, ou de Claude Code, et que tu te demandes ce qui se passe vraiment derrière les mots.</p>
+<p>Ce guide est écrit pour TOI. Pas pour un développeur. Pas pour un expert. Pour quelqu&rsquo;un qui n&rsquo;a JAMAIS touché à l&rsquo;intelligence artificielle de façon sérieuse.</p>
+<p>À la fin de ce guide, tu vas comprendre :</p>
+<ul>
+<li>Ce qu&rsquo;est un <em>agent</em> IA (un assistant logiciel qui agit, pas qui répond).</li>
+<li>Pourquoi on en utilise plusieurs en même temps au lieu d&rsquo;un seul gros.</li>
+<li>Comment ils se parlent, se passent le travail, et savent quand s&rsquo;arrêter.</li>
+<li>Comment fonctionne <em>ServiceCat</em>, le projet que Moussa va montrer en démo le 18 juin 2026 à Montréal.</li>
+</ul>
+<p>Le ton sera celui d&rsquo;un grand frère ou d&rsquo;une grande sœur qui t&rsquo;explique le fonctionnement d&rsquo;un atelier de jouets. Phrases courtes. Beaucoup d&rsquo;exemples. Aucun jargon non expliqué.</p>
+<p>Tu peux le lire dans l&rsquo;ordre ou sauter d&rsquo;un chapitre à l&rsquo;autre. Mais si c&rsquo;est la première fois, lis-le dans l&rsquo;ordre. Chaque chapitre prépare le suivant.</p>
+<p>Prêt ? On commence.</p>
+<hr />
+<h2 id="chapitre-0-cinq-mots-a-comprendre-avant-de-commencer">Chapitre 0 — Cinq mots à comprendre avant de commencer</h2>
+<p>Avant tout, posons cinq mots de base. Ces cinq mots vont revenir partout. Si tu les comprends, tu comprends 80% du reste.</p>
+<h3 id="1-ia-intelligence-artificielle">1. IA (Intelligence Artificielle)</h3>
+<p>Une <em>IA</em> est un programme informatique qui imite certains comportements humains : lire, écrire, raisonner, traduire, coder. Ce n&rsquo;est pas une personne. C&rsquo;est un logiciel très avancé qui a appris à partir de milliards de textes.</p>
+<p><strong>Exemple :</strong> Claude est une IA. ChatGPT est une IA. Ce sont des programmes, pas des cerveaux.</p>
+<h3 id="2-modele">2. Modèle</h3>
+<p>Un <em>modèle</em> est la &ldquo;version&rdquo; précise d&rsquo;une IA. C&rsquo;est comme une voiture : il existe la marque (Claude) et le modèle (Opus 4.7). Le modèle décide la taille du cerveau, la vitesse, et la quantité d&rsquo;information qu&rsquo;il peut traiter à la fois.</p>
+<p><strong>Exemple :</strong> Claude Opus 4.7 1M est un modèle. Le &ldquo;1M&rdquo; veut dire qu&rsquo;il peut lire jusqu&rsquo;à un million de <em>tokens</em> à la fois (on définit <em>token</em> juste en dessous).</p>
+<h3 id="3-prompt">3. Prompt</h3>
+<p>Un <em>prompt</em> est le message que tu envoies à l&rsquo;IA. C&rsquo;est ta question, ta demande, ton instruction. C&rsquo;est exactement comme parler à un assistant : tu dis ce que tu veux, il fait.</p>
+<p><strong>Exemple :</strong> &ldquo;Écris-moi une fonction qui calcule la moyenne&rdquo; est un prompt.</p>
+<h3 id="4-token">4. Token</h3>
+<p>Un <em>token</em> est l&rsquo;unité de mesure de texte que l&rsquo;IA voit. Pour faire simple : un token, c&rsquo;est environ trois quarts de mot français. La phrase &ldquo;Bonjour, comment vas-tu ?&rdquo; fait à peu près 6 tokens.</p>
+<p>Pourquoi c&rsquo;est important ? Parce que les IA ont une limite : elles ne peuvent traiter qu&rsquo;un certain nombre de tokens à la fois. C&rsquo;est leur fenêtre de vision.</p>
+<p><strong>Exemple :</strong> Claude Opus 4.7 1M peut traiter 1 million de tokens. Soit environ 750 000 mots français. Soit l&rsquo;équivalent de 5 ou 6 livres entiers.</p>
+<h3 id="5-contexte">5. Contexte</h3>
+<p>Le <em>contexte</em> est tout ce que l&rsquo;IA &ldquo;voit&rdquo; en même temps quand elle te répond : ta question, l&rsquo;historique de la conversation, les fichiers qu&rsquo;on lui a montrés, les instructions qu&rsquo;on lui a données.</p>
+<p>C&rsquo;est comme la mémoire de travail d&rsquo;un humain. Au-delà d&rsquo;une certaine quantité, l&rsquo;IA &ldquo;oublie&rdquo; ce qui est trop loin en arrière.</p>
+<p><strong>Exemple :</strong> Quand tu parles à Claude et que tu lui montres un fichier, ce fichier entre dans son contexte. Si tu lui donnes 10 fichiers très gros, son contexte se remplit, et il devient plus lent ou confus.</p>
+<blockquote>
+<p><strong>À retenir :</strong> une IA = un programme. Un modèle = sa version. Un prompt = ta question. Un token = un petit bout de texte. Un contexte = sa mémoire de travail immédiate.</p>
+</blockquote>
+<p>Avec ces cinq mots, on peut maintenant commencer pour de vrai.</p>
+<hr />
+<h2 id="chapitre-1-la-grande-metaphore-une-entreprise-miniature">Chapitre 1 — La grande métaphore : une entreprise miniature</h2>
+<p>Imagine un atelier de jouets en bois. Pas une usine. Un atelier de quartier.</p>
+<p>Dans cet atelier, il y a :</p>
+<ul>
+<li><strong>Un chef d&rsquo;atelier</strong>. C&rsquo;est lui qui reçoit les commandes des clients. Il ne fabrique rien lui-même. Il décide qui fait quoi, dans quel ordre, et il vérifie que tout est fini avant de livrer.</li>
+<li><strong>Des artisans spécialisés</strong>. L&rsquo;un coupe le bois. L&rsquo;un ponce. L&rsquo;un peint. L&rsquo;un assemble. L&rsquo;un emballe. Chacun connaît une seule chose, mais il la fait très bien.</li>
+<li><strong>Un livre de règles de la maison</strong>. Accroché au mur. Il dit &ldquo;ici on ne travaille jamais sans gants&rdquo;, &ldquo;ici on signe chaque jouet&rdquo;, &ldquo;ici on jette les chutes dans la bonne poubelle&rdquo;. Tout le monde connaît ce livre.</li>
+<li><strong>Des points de contrôle</strong>. Avant de passer un jouet de l&rsquo;atelier de peinture à l&rsquo;atelier d&rsquo;emballage, quelqu&rsquo;un vérifie qu&rsquo;il est bien sec, qu&rsquo;il n&rsquo;y a pas de traces. Si oui, on passe. Si non, retour à la peinture.</li>
+</ul>
+<p>Maintenant, traduisons cet atelier en termes d&rsquo;IA.</p>
+<table>
+<thead>
+<tr>
+<th>Atelier de jouets</th>
+<th>Monde de Claude Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Le chef d&rsquo;atelier</td>
+<td>L&rsquo;<em>orchestrateur</em> (l&rsquo;agent principal qui coordonne)</td>
+</tr>
+<tr>
+<td>Les artisans spécialisés</td>
+<td>Les <em>skills</em> (compétences spécifiques)</td>
+</tr>
+<tr>
+<td>Le livre de règles de la maison</td>
+<td>Le fichier <code>CLAUDE.md</code> (les règles du projet)</td>
+</tr>
+<tr>
+<td>Les sous-traitants ponctuels</td>
+<td>Les <em>sous-agents</em> (instances IA temporaires)</td>
+</tr>
+<tr>
+<td>Les points de contrôle</td>
+<td>Les <em>gates</em> (barrières de qualité)</td>
+</tr>
+</tbody>
+</table>
+<p>Voici un schéma simplifié de ce qui se passe quand tu demandes &ldquo;ajoute une fonctionnalité à mon site&rdquo; :</p>
+<pre><code>                    TOI (l'humain)
+                         |
+                         | &quot;Ajoute le partage de scorecards&quot;
+                         v
+              +-------------------------+
+              |    L'ORCHESTRATEUR      |
+              |  (chef d'atelier)       |
+              +-------------------------+
+                /        |        \
+               v         v         v
+        [Skill A]    [Skill B]   [Skill C]
+        plan-feature explore   new-endpoint
+        (artisan 1) (artisan 2) (artisan 3)
+               |         |         |
+               +---------+---------+
+                         |
+                    GATE (contrôle)
+                         |
+                    +----+----+
+                    |         |
+                  OK ? -- NON --&gt; on recommence
+                    |
+                   OUI
+                    |
+                    v
+              Livraison (PR)
+</code></pre>
+<blockquote>
+<p><strong>À retenir :</strong> Une équipe d&rsquo;IA, c&rsquo;est exactement comme un atelier humain. Un chef qui coordonne, des spécialistes qui exécutent, des règles communes, et des contrôles de qualité entre les étapes.</p>
+</blockquote>
+<p>Le reste du guide va te détailler chaque morceau.</p>
+<hr />
+<h2 id="chapitre-2-vibe-coding-vs-vibe-engineering">Chapitre 2 — Vibe coding vs vibe engineering</h2>
+<p>Avant d&rsquo;aller plus loin, il faut comprendre l&rsquo;évolution des cinq dernières années. C&rsquo;est ce que Moussa montre dans les slides 3 à 7 de son talk.</p>
+<h3 id="levolution-en-quatre-temps">L&rsquo;évolution en quatre temps</h3>
+<p><strong>Temps 1 — L&rsquo;autocomplete (2020-2022).</strong> L&rsquo;IA propose la fin de ta phrase pendant que tu écris du code. Comme l&rsquo;autocomplete du téléphone. Tu restes le pilote, l&rsquo;IA est juste un soutien clavier.</p>
+<p><strong>Temps 2 — La conversation (2022-2023).</strong> L&rsquo;IA répond à des questions dans un <em>chat</em>. &ldquo;Comment je fais ça ?&rdquo; &ldquo;Voilà le code.&rdquo; Tu copies, tu colles, tu adaptes. L&rsquo;IA ne touche pas à tes fichiers.</p>
+<p><strong>Temps 3 — L&rsquo;agent (2023-2025).</strong> L&rsquo;IA peut LIRE tes fichiers, les MODIFIER, LANCER des commandes. Elle ne se contente plus de proposer du texte : elle AGIT. C&rsquo;est un grand saut. On dit qu&rsquo;elle est <em>agentique</em>.</p>
+<p><strong>Temps 4 — L&rsquo;orchestration (2025+).</strong> Plusieurs agents IA travaillent ensemble. Un agent dirige, d&rsquo;autres exécutent. Chacun a un rôle précis. C&rsquo;est ce qu&rsquo;on appelle l&rsquo;<em>orchestration multi-agents</em>. C&rsquo;est le sujet de ce guide.</p>
+<h3 id="vibe-coding-vs-vibe-engineering">Vibe coding vs vibe engineering</h3>
+<p>Moussa utilise deux expressions importantes dans son talk.</p>
+<p>Le <em>vibe coding</em> (mot anglais qui signifie littéralement &ldquo;coder à l&rsquo;instinct&rdquo;) : tu demandes une fonctionnalité à une IA, tu prends ce qu&rsquo;elle produit, tu testes, tu pries pour que ça marche. C&rsquo;est rapide. C&rsquo;est fragile. C&rsquo;est imprévisible.</p>
+<p>Le <em>vibe engineering</em> (ingénierie à l&rsquo;instinct, mais avec un cadre) : tu construis une vraie équipe d&rsquo;IA avec des rôles, des règles, des points de contrôle. Tu pilotes plusieurs agents. Tu gardes les bonnes pratiques d&rsquo;ingénierie : tests, revues, traçabilité.</p>
+<table>
+<thead>
+<tr>
+<th>Vibe coding</th>
+<th>Vibe engineering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Un seul agent, fait tout</td>
+<td>Plusieurs agents, chacun son rôle</td>
+</tr>
+<tr>
+<td>Pas de plan formel</td>
+<td>Plan obligatoire avant code</td>
+</tr>
+<tr>
+<td>Pas de critère d&rsquo;acceptation</td>
+<td>6 critères à valider (AC-1 à AC-6)</td>
+</tr>
+<tr>
+<td>Pas de revue automatique</td>
+<td>Revue + audit sécurité systématiques</td>
+</tr>
+<tr>
+<td>Tu pries que ça marche</td>
+<td>Tu sais que ça marche</td>
+</tr>
+<tr>
+<td>Rapide à démarrer, lent à corriger</td>
+<td>Plus structuré, beaucoup plus fiable</td>
+</tr>
+</tbody>
+</table>
+<h3 id="same-models-different-system">Same models, different system</h3>
+<p>La slide 7 du talk donne une phrase clé : <em>same models, different system</em> (les mêmes modèles, mais un système différent).</p>
+<p>Cela veut dire quoi ? Que la magie n&rsquo;est PAS dans le modèle d&rsquo;IA. Ce n&rsquo;est pas parce que tu utilises Claude Opus 4.7 plutôt que Claude Sonnet 4 que tu vas réussir. La magie est dans le SYSTÈME que tu construis autour du modèle : les skills, les règles, les gates, l&rsquo;orchestration.</p>
+<p>Tu peux faire du vibe coding avec Opus 4.7 (très bon modèle) et obtenir un résultat médiocre. Tu peux faire du vibe engineering avec Sonnet 4 (modèle plus modeste) et obtenir un résultat solide. Le système gagne sur le modèle.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Le vibe engineering, c&rsquo;est encadrer l&rsquo;IA pour la rendre fiable. Ce n&rsquo;est pas le modèle qui décide. C&rsquo;est l&rsquo;organisation autour du modèle.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-3-agent-generaliste-vs-specialiste">Chapitre 3 — Agent généraliste vs spécialiste</h2>
+<p>Imagine que tu vas à l&rsquo;hôpital pour une douleur au genou.</p>
+<p><strong>Cas 1 :</strong> Tu vois UN médecin généraliste. Il connaît un peu tout : le cœur, les poumons, la peau, les os. Il fait son possible. Il pose des questions, il tâte, il propose. Mais il n&rsquo;a pas fait dix ans d&rsquo;études sur les genoux. Il pourrait passer à côté de quelque chose.</p>
+<p><strong>Cas 2 :</strong> Tu vois D&rsquo;ABORD un généraliste pour le diagnostic global. Puis il t&rsquo;envoie chez un orthopédiste (spécialiste des os). L&rsquo;orthopédiste t&rsquo;envoie chez un radiologue (spécialiste des images). Le radiologue te renvoie à l&rsquo;orthopédiste avec les résultats. L&rsquo;orthopédiste te renvoie chez un kinésithérapeute (spécialiste de la rééducation).</p>
+<p>Dans le cas 2, chaque professionnel sait UNE chose, mais il la sait à fond. Et un coordinateur (souvent le généraliste) organise leur enchaînement.</p>
+<p>C&rsquo;est exactement la différence entre un <em>agent généraliste</em> et une équipe d&rsquo;<em>agents spécialistes</em>.</p>
+<h3 id="pourquoi-des-specialistes">Pourquoi des spécialistes ?</h3>
+<p>Un agent généraliste qui essaie de tout faire :</p>
+<ul>
+<li>Doit garder en tête toutes les règles de tous les domaines en même temps.</li>
+<li>A un contexte qui se remplit vite (tous les fichiers qu&rsquo;il regarde restent en mémoire).</li>
+<li>Mélange les phases : il commence à coder avant d&rsquo;avoir fini de planifier.</li>
+<li>Donne souvent des résultats moyens : pas de spécialisation profonde.</li>
+</ul>
+<p>Un agent spécialiste :</p>
+<ul>
+<li>Connaît UNE chose à fond.</li>
+<li>Démarre avec un contexte propre pour chaque mission.</li>
+<li>Ne se laisse pas distraire.</li>
+<li>Donne des résultats nets sur sa spécialité.</li>
+</ul>
+<h3 id="exemple-chiffre">Exemple chiffré</h3>
+<p>Sur ServiceCat, ajouter une fonctionnalité moyenne (la <em>feature</em> F-12, qui ajoute le versionnement des scorecards) coûte :</p>
+<ul>
+<li>Avec UN gros agent qui fait tout : environ <strong>960 000 tokens</strong>.</li>
+<li>Avec UNE équipe de spécialistes orchestrés : environ <strong>120 000 tokens</strong>.</li>
+</ul>
+<p>C&rsquo;est un facteur <strong>8 fois moins</strong>. Tu dépenses 8 fois moins d&rsquo;argent en appels d&rsquo;API. Le résultat est plus fiable. On verra pourquoi en détail au chapitre 9.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Un seul agent qui fait tout = un médecin qui pratique toutes les spécialités. Plusieurs agents spécialistes coordonnés = un vrai hôpital. Le deuxième modèle gagne presque toujours.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-4-comment-claude-lit-ton-projet">Chapitre 4 — Comment Claude lit ton projet</h2>
+<p>C&rsquo;est un chapitre essentiel. Trop souvent, les débutants ne comprennent pas COMMENT Claude prend connaissance d&rsquo;un projet. Une fois que tu comprends ce mécanisme, tu peux organiser ton projet intelligemment.</p>
+<h3 id="deux-types-de-fichiers">Deux types de fichiers</h3>
+<p>Dans le monde de Claude Code, il existe deux familles de fichiers :</p>
+<p><strong>Famille 1 — Les fichiers à nom RÉSERVÉ.</strong> Leur nom est imposé par le système. Si tu changes leur nom, Claude ne les trouve plus. Le système les cherche par leur nom exact.</p>
+<ul>
+<li><code>CLAUDE.md</code> (les règles globales du projet)</li>
+<li><code>settings.json</code> (les réglages techniques de la session)</li>
+<li><code>SKILL.md</code> (le contenu de chaque skill, dans son dossier)</li>
+<li><code>.mcp.json</code> (les outils externes branchés)</li>
+<li><code>.claudeignore</code> (la liste des fichiers à ignorer)</li>
+</ul>
+<p><strong>Famille 2 — Les fichiers à NOM LIBRE.</strong> Tu peux les appeler comme tu veux. Tant qu&rsquo;on y fait référence correctement, tout fonctionne.</p>
+<ul>
+<li><code>WORKFLOW.md</code> (peut s&rsquo;appeler <code>toto.md</code>, <code>README.md</code>, <code>process.md</code>, peu importe)</li>
+<li>La documentation dans <code>docs/</code></li>
+<li>Les guides d&rsquo;onboarding</li>
+<li>Les notes d&rsquo;équipe</li>
+</ul>
+<blockquote>
+<p><strong>Exemple concret :</strong> Sur ServiceCat, il y a un fichier <code>WORKFLOW.md</code> qui décrit comment l&rsquo;équipe utilise Claude Code. Si demain on le renomme <code>EQUIPE.md</code>, il faut juste mettre à jour les liens dans <code>CLAUDE.md</code> qui pointaient vers lui. Aucun problème technique.</p>
+</blockquote>
+<h3 id="deux-types-de-chargement">Deux types de chargement</h3>
+<p>C&rsquo;est l&rsquo;autre point critique à comprendre. Tous les fichiers ne sont pas lus de la même façon.</p>
+<p><strong>Type 1 — Chargement AUTOMATIQUE au démarrage de la session.</strong> Quand tu lances Claude Code, certains fichiers sont lus immédiatement. Leur contenu entre dans le contexte de la session. Claude les a &ldquo;en tête&rdquo; dès la première question.</p>
+<ul>
+<li><code>CLAUDE.md</code> (tout son contenu)</li>
+<li><code>settings.json</code> (tous les réglages)</li>
+<li>Les <em>frontmatters</em> (en-têtes) des <code>SKILL.md</code> (uniquement les 3-5 premières lignes)</li>
+<li><code>.mcp.json</code> (configuration des outils)</li>
+<li><code>.claudeignore</code> (liste d&rsquo;exclusions)</li>
+</ul>
+<p><strong>Type 2 — Lecture À LA DEMANDE.</strong> Ces fichiers ne sont JAMAIS lus au démarrage. Ils sont lus seulement quand quelqu&rsquo;un (toi ou un agent) en a besoin.</p>
+<ul>
+<li><code>WORKFLOW.md</code> (lu si tu poses une question dessus)</li>
+<li><code>README.md</code> (lu si pertinent)</li>
+<li>Le CORPS des <code>SKILL.md</code> (lu seulement quand le skill est invoqué)</li>
+<li>Tous les fichiers de code (<code>.py</code>, <code>.tsx</code>, etc.)</li>
+<li>Les fichiers de documentation dans <code>docs/</code></li>
+</ul>
+<blockquote>
+<p><strong>Pourquoi cette distinction est importante ?</strong> Parce que le contexte est limité. Si Claude chargeait TOUT au démarrage, sa fenêtre serait pleine avant même que tu poses ta première question.</p>
+</blockquote>
+<h3 id="tableau-recapitulatif">Tableau récapitulatif</h3>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th>Nom imposé ?</th>
+<th>Lu automatiquement ?</th>
+<th>Quand est-il lu ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CLAUDE.md</code></td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Au démarrage</td>
+</tr>
+<tr>
+<td><code>settings.json</code></td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Au démarrage</td>
+</tr>
+<tr>
+<td><code>SKILL.md</code> (frontmatter)</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Au démarrage (en-tête seulement)</td>
+</tr>
+<tr>
+<td><code>SKILL.md</code> (corps)</td>
+<td>Oui</td>
+<td>Non</td>
+<td>Quand le skill est invoqué</td>
+</tr>
+<tr>
+<td><code>.mcp.json</code></td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Au démarrage</td>
+</tr>
+<tr>
+<td><code>.claudeignore</code></td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Au démarrage</td>
+</tr>
+<tr>
+<td><code>WORKFLOW.md</code></td>
+<td>Non</td>
+<td>Non</td>
+<td>À la demande</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Non (mais utile)</td>
+<td>Non</td>
+<td>À la demande</td>
+</tr>
+<tr>
+<td>Fichiers de code</td>
+<td>Non</td>
+<td>Non</td>
+<td>À la demande</td>
+</tr>
+<tr>
+<td>Documentation <code>docs/</code></td>
+<td>Non</td>
+<td>Non</td>
+<td>À la demande</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pourquoi-cest-genial">Pourquoi c&rsquo;est génial</h3>
+<p>Cette séparation permet une chose précieuse : l&rsquo;équipe peut avoir BEAUCOUP de skills, BEAUCOUP de documentation, mais Claude ne paye au démarrage que pour les en-têtes. Il sait que les compétences existent (il a lu leur frontmatter) mais il ne charge le détail que quand il en a besoin.</p>
+<p>C&rsquo;est comme une bibliothèque : tu as 10 000 livres sur les étagères, mais tu ne lis que ceux que tu prends. Le catalogue (frontmatter) te dit ce qui existe. Le contenu (corps) reste sur l&rsquo;étagère jusqu&rsquo;à ce que tu le sortes.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Les fichiers à nom réservé sont les piliers. Ils sont auto-chargés. Tout le reste est lu à la demande. Cette séparation permet à Claude de connaître l&rsquo;inventaire sans lire toute la bibliothèque.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-5-anatomie-dun-skill-decorticage-ligne-par-ligne">Chapitre 5 — Anatomie d&rsquo;un skill : décorticage ligne par ligne</h2>
+<p>Un <em>skill</em> (compétence) est l&rsquo;unité de base d&rsquo;un système Claude Code. C&rsquo;est un dossier qui contient un fichier <code>SKILL.md</code>. Ce fichier décrit ce que le skill sait faire et comment il le fait.</p>
+<p>Sur ServiceCat, il existe 18 skills à ce jour. Tu vas tous les voir dans la liste plus bas. Mais d&rsquo;abord, on va en décortiquer UN, ligne par ligne, pour que tu comprennes la structure.</p>
+<p>Le skill choisi : <code>audit-security</code>. C&rsquo;est celui qui vérifie qu&rsquo;on n&rsquo;a pas oublié de protections de sécurité avant d&rsquo;envoyer du code en production. Son fichier complet est dans <code>/Users/moussab/Github/genai-demo/.claude/skills/audit-security/SKILL.md</code>.</p>
+<h3 id="le-frontmatter">Le frontmatter</h3>
+<p>Les 5 premières lignes du fichier ressemblent à ceci :</p>
+<pre><code>---
+name: audit-security
+description: Scan code for security violations S1-S8 (auth, tenant isolation, RBAC, rate limiting, audit logging, raw SQL, secrets, HTTP timeouts). Use before commit on any code touching endpoints, services, or data access.
+allowed-tools: Read, Grep, Glob
+---
+</code></pre>
+<p>C&rsquo;est le <em>frontmatter</em> (en-tête de fichier en anglais). C&rsquo;est la carte d&rsquo;identité du skill. Comme l&rsquo;étiquette d&rsquo;un médicament.</p>
+<p>Décortiquons ligne par ligne.</p>
+<p><strong><code>name: audit-security</code></strong></p>
+<p>Le nom de la compétence. C&rsquo;est aussi le nom que tu tapes pour l&rsquo;invoquer (avec un slash devant) : <code>/audit-security</code>.</p>
+<p><strong><code>description: Scan code for security violations S1-S8 ...</code></strong></p>
+<p>La description courte. C&rsquo;est la phrase la plus importante du fichier. Pourquoi ? Parce que c&rsquo;est ce que l&rsquo;orchestrateur lit pour décider SI ce skill est utile pour la tâche en cours.</p>
+<p>Imagine le chef d&rsquo;atelier qui regarde l&rsquo;étagère des artisans. Chaque artisan a une petite pancarte au-dessus de sa tête : &ldquo;moi je peins&rdquo;, &ldquo;moi je ponce&rdquo;, &ldquo;moi j&rsquo;emballe&rdquo;. Le chef lit les pancartes et choisit qui appeler. La description, c&rsquo;est la pancarte.</p>
+<p><strong><code>allowed-tools: Read, Grep, Glob</code></strong></p>
+<p>La liste des outils que l&rsquo;artisan a le droit d&rsquo;utiliser. Ici, le skill a le droit de LIRE des fichiers (<code>Read</code>), de CHERCHER du texte dedans (<code>Grep</code>), et de LISTER des fichiers (<code>Glob</code>). Il n&rsquo;a PAS le droit d&rsquo;écrire ou de modifier.</p>
+<p>C&rsquo;est une protection : on confie un travail à un agent, et on limite ce qu&rsquo;il peut faire. Comme donner un trousseau de clés à un employé : il a les clés du bureau, mais pas celles du coffre-fort.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Un skill = un contrat. Trois champs minimum dans son en-tête : son nom, sa description, ses outils autorisés. Ces trois lignes sont auto-chargées au démarrage de la session.</p>
+</blockquote>
+<h3 id="le-corps-du-skill">Le corps du skill</h3>
+<p>Après le frontmatter vient le CORPS du <code>SKILL.md</code>. C&rsquo;est là que sont les instructions détaillées pour l&rsquo;agent. Pour <code>audit-security</code>, le corps contient :</p>
+<ul>
+<li>Une explication de la mission (&ldquo;Tu es un auditeur de sécurité strict, tu signales sans réparer&rdquo;).</li>
+<li>La liste des 8 règles de sécurité à vérifier (S1 à S8).</li>
+<li>La procédure étape par étape.</li>
+<li>Le format exact du rapport à produire.</li>
+<li>La liste des choses interdites.</li>
+</ul>
+<p>Voici un extrait de la procédure :</p>
+<pre><code>1. Determine scope. Default: changed files vs the trunk
+2. For each file, scan against ALL rules.
+3. Classify each finding by severity (CRITICAL/HIGH/MEDIUM/LOW)
+4. Output a structured report.
+</code></pre>
+<p>Et un extrait de la table des règles :</p>
+<pre><code>| S1 | Authentication     | Chaque route non publique a Depends(get_current_user) |
+| S2 | Tenant isolation   | Chaque requête multi-tenant filtre par workspace_id   |
+| S3 | RBAC               | Chaque mutation a require_capability(...)             |
+| S4 | Rate limiting      | Chaque mutation a Depends(rate_limit(...))            |
+| S5 | Audit logging      | Chaque mutation a Depends(audit_action(...))          |
+| S6 | No raw SQL         | Pas de SQL formaté avec interpolation de chaîne       |
+| S7 | Secrets hygiene    | Pas de clé API en dur, pas de .env commité            |
+| S8 | HTTP hygiene       | Tous les appels externes ont un timeout explicite     |
+</code></pre>
+<blockquote>
+<p><strong>Pourquoi c&rsquo;est pédagogique :</strong> la première ligne du tableau (S1) signifie &ldquo;vérifie que chaque porte de l&rsquo;application demande à l&rsquo;utilisateur qui il est avant de le laisser entrer&rdquo;. La deuxième ligne (S2) signifie &ldquo;vérifie que les données d&rsquo;une équipe ne se mélangent jamais avec celles d&rsquo;une autre&rdquo;. Et ainsi de suite.</p>
+</blockquote>
+<p>Le corps va aussi jusqu&rsquo;à donner le format exact du rapport :</p>
+<pre><code>/audit-security report — 8 files scanned
+
+CLEAN: 5 files
+VIOLATIONS: 3 files
+
+CRITICAL (1)
+─────────────
+S2 — Tenant isolation missing
+  finding_repository.py:54
+  Code: return await self.db.execute(...)
+  Issue: Query does not filter by workspace_id
+  Fix: Add .where(Finding.workspace_id == ws.id)
+</code></pre>
+<p>Le skill ne renvoie pas un texte vague. Il renvoie un rapport STRUCTURÉ, lisible, avec les fichiers, les lignes, le code en cause, et la correction suggérée.</p>
+<h3 id="le-prompt-daujourdhui-est-le-skill-de-demain">Le prompt d&rsquo;aujourd&rsquo;hui est le skill de demain</h3>
+<p>Tu vois ce qui se passe ? Le <code>SKILL.md</code>, c&rsquo;est juste un GROS prompt qu&rsquo;on a écrit une fois pour toutes. Au lieu de réécrire &ldquo;vérifie ces 8 règles, classifie par sévérité, formate ainsi&hellip;&rdquo; à chaque conversation, on l&rsquo;écrit UNE FOIS dans un fichier, et on l&rsquo;invoque avec une seule commande : <code>/audit-security</code>.</p>
+<p>Le skill est donc une cristallisation d&rsquo;un savoir-faire. Le prompt qu&rsquo;on tapait hier devient le skill de demain. Chaque skill bien écrit, c&rsquo;est une heure de prompt-engineering qu&rsquo;on n&rsquo;aura plus à refaire.</p>
+<h3 id="les-18-skills-de-servicecat">Les 18 skills de ServiceCat</h3>
+<p>Voici la liste complète des skills actuellement présents dans <code>/Users/moussab/Github/genai-demo/.claude/skills/</code>. Chacun fait UNE chose.</p>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Description en une phrase</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>notify</code></td>
+<td>Envoie des messages sur Slack pour prévenir d&rsquo;une nouvelle importante.</td>
+</tr>
+<tr>
+<td><code>devops</code></td>
+<td>Surveille la chaîne de production et dit où ça casse.</td>
+</tr>
+<tr>
+<td><code>commit-sc</code></td>
+<td>Sauvegarde les modifications dans Git avec un message formaté.</td>
+</tr>
+<tr>
+<td><code>new-endpoint</code></td>
+<td>Crée une nouvelle porte d&rsquo;entrée web sécurisée avec tous les verrous.</td>
+</tr>
+<tr>
+<td><code>work-issues</code></td>
+<td>Robot autonome qui prend les tâches une par une et les résout.</td>
+</tr>
+<tr>
+<td><code>explore-codebase</code></td>
+<td>Lit le code sans le modifier pour comprendre comment il marche.</td>
+</tr>
+<tr>
+<td><code>plan-feature</code></td>
+<td>Dessine le plan exact d&rsquo;une fonctionnalité avec les critères de succès.</td>
+</tr>
+<tr>
+<td><code>audit-security</code></td>
+<td>Inspecte le code pour trouver les failles de sécurité.</td>
+</tr>
+<tr>
+<td><code>triage</code></td>
+<td>Classe les problèmes par urgence et crée des tickets.</td>
+</tr>
+<tr>
+<td><code>review-pr</code></td>
+<td>Vérifie les changements d&rsquo;un collègue avant publication.</td>
+</tr>
+<tr>
+<td><code>implement</code></td>
+<td>Pilote toutes les étapes d&rsquo;une fonctionnalité du plan au test.</td>
+</tr>
+<tr>
+<td><code>write-docs</code></td>
+<td>Écrit la documentation pour que les autres comprennent.</td>
+</tr>
+<tr>
+<td><code>frontend-design</code></td>
+<td>Crée les beaux écrans et boutons que l&rsquo;utilisateur voit.</td>
+</tr>
+<tr>
+<td><code>audit-service</code></td>
+<td>Vérifie si un service respecte tous les critères de qualité.</td>
+</tr>
+<tr>
+<td><code>work-findings</code></td>
+<td>Robot qui répare les problèmes trouvés par les audits.</td>
+</tr>
+<tr>
+<td><code>simplify</code></td>
+<td>Nettoie le code récent pour éviter les répétitions.</td>
+</tr>
+<tr>
+<td><code>create-pr</code></td>
+<td>Envoie le code et crée la demande de fusion documentée.</td>
+</tr>
+<tr>
+<td><code>new-scorecard</code></td>
+<td>Crée un nouveau type d&rsquo;audit personnalisé.</td>
+</tr>
+</tbody>
+</table>
+<p>Chaque ligne de ce tableau correspond à un fichier <code>SKILL.md</code> dans son propre dossier. Tous ont la même structure : frontmatter + corps détaillé.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Un skill est une compétence figée dans un fichier. Le frontmatter dit qui il est. Le corps dit comment il travaille. Un projet sérieux a des dizaines de skills, chacun spécialisé sur une seule chose.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-6-cycle-de-vie-dun-agent-forke">Chapitre 6 — Cycle de vie d&rsquo;un agent forké</h2>
+<p>Ce chapitre est crucial. Si tu comprends ce qui suit, tu as compris le mécanisme de fond de l&rsquo;orchestration multi-agents.</p>
+<h3 id="quest-ce-quun-fork">Qu&rsquo;est-ce qu&rsquo;un fork ?</h3>
+<p>Le mot <em>fork</em> (en anglais : fourchette, mais surtout &ldquo;embranchement&rdquo;) désigne le fait de créer une copie indépendante d&rsquo;un agent IA. C&rsquo;est comme cloner un employé pour une mission précise, en lui donnant une ardoise propre.</p>
+<p>Quand tu tapes <code>/audit-security</code> dans Claude Code, il ne se passe PAS ce que la plupart des gens imaginent. Il ne se passe pas &ldquo;l&rsquo;agent principal lit le skill et l&rsquo;exécute&rdquo;. Il se passe une chose plus subtile et plus puissante.</p>
+<h3 id="les-5-etapes-du-cycle-de-vie">Les 5 étapes du cycle de vie</h3>
+<p>Voici ce qui arrive, étape par étape, quand un skill est invoqué.</p>
+<p><strong>Étape 1 — Reconnaissance de la commande.</strong> L&rsquo;agent principal (l&rsquo;orchestrateur, ou TOI si tu tapes la commande directement) voit <code>/audit-security</code>. Il comprend que c&rsquo;est une invocation de skill.</p>
+<p><strong>Étape 2 — Lecture du frontmatter (déjà fait au démarrage).</strong> Le frontmatter a déjà été chargé au démarrage de la session. L&rsquo;orchestrateur sait donc déjà que ce skill existe, ce qu&rsquo;il fait, et quels outils il peut utiliser.</p>
+<p><strong>Étape 3 — Fork d&rsquo;une sous-session avec contexte VIDE.</strong> C&rsquo;est l&rsquo;étape magique. Le système crée un nouvel agent IA. Cet agent démarre avec :
+- Le corps du <code>SKILL.md</code> (qu&rsquo;il lit pour la première fois).
+- Les arguments éventuels que tu as passés (par exemple <code>/audit-security src/</code>).
+- Un contexte de session VIDE par ailleurs.</p>
+<p>L&rsquo;agent forké ne sait rien de tes conversations précédentes. Il ne sait pas qui est l&rsquo;humain. Il ne sait pas ce que tu as fait avant. Il a une mission, des instructions, des outils. C&rsquo;est tout.</p>
+<p><strong>Étape 4 — Exécution.</strong> L&rsquo;agent forké exécute sa mission. Il lit des fichiers, fait des recherches, raisonne. Tout ce qu&rsquo;il lit reste DANS SON contexte à lui, pas dans celui de l&rsquo;orchestrateur. Il peut lire 40 000 tokens de code sans polluer la session principale.</p>
+<p><strong>Étape 5 — Rapport + mort.</strong> L&rsquo;agent forké renvoie un rapport bref (1 000 à 3 000 tokens en général) à l&rsquo;orchestrateur. Puis il MEURT. Son contexte est jeté. Tout ce qu&rsquo;il a lu disparaît. Il ne reste que le rapport.</p>
+<h3 id="schema-du-cycle-de-vie">Schéma du cycle de vie</h3>
+<pre><code>TOI: /audit-security
+        |
+        v
+[ORCHESTRATEUR] reconnait la commande
+        |
+        v
+   FORK une sous-session
+        |
+        v
+[AGENT FORKÉ] né, contexte vide
+   - lit le SKILL.md (instructions)
+   - lit 8 fichiers de code (40 000 tokens)
+   - raisonne, classifie, écrit le rapport
+        |
+        v
+   renvoie le rapport (1 200 tokens)
+        |
+        v
+[AGENT FORKÉ] meurt, contexte détruit
+        |
+        v
+[ORCHESTRATEUR] reçoit le rapport
+   (n'a pas vu les 40 000 tokens de code)
+</code></pre>
+<h3 id="pourquoi-cest-genial_1">Pourquoi c&rsquo;est génial</h3>
+<p>Cette mécanique sauve la fenêtre de contexte. L&rsquo;orchestrateur n&rsquo;a pas à porter le poids de tout ce que ses sous-agents lisent. Il reçoit juste les conclusions.</p>
+<p>Reprenons l&rsquo;exemple. L&rsquo;agent <code>audit-security</code> peut lire 40 000 tokens de code. Il produit un rapport de 1 200 tokens. L&rsquo;orchestrateur ne voit jamais les 40 000 tokens. Il voit juste le rapport.</p>
+<p>Si on n&rsquo;avait pas le fork, un agent unique aurait dû tout charger dans son contexte. Après quelques skills appelés, sa fenêtre serait pleine. Le système deviendrait lent. Les erreurs s&rsquo;accumuleraient.</p>
+<h3 id="consequence-pratique-chaque-rappel-un-agent-neuf">Conséquence pratique : chaque rappel = un agent neuf</h3>
+<p>C&rsquo;est la règle d&rsquo;or. Si tu rappelles <code>/audit-security</code> une deuxième fois (par exemple parce que la première a trouvé des problèmes, tu les as corrigés, et tu veux revérifier), tu obtiens un agent NEUF. Pas le même agent. Pas un agent qui se souvient.</p>
+<p>Ce nouvel agent ne sait pas qu&rsquo;il est le numéro 2. Il ne sait pas ce que l&rsquo;agent précédent a dit. Il refait son travail depuis zéro. La coordination ne vit pas chez les sous-agents. Elle vit chez l&rsquo;orchestrateur.</p>
+<p>C&rsquo;est comme appeler deux fois SOS-Plombier. La deuxième fois, ils t&rsquo;envoient peut-être un plombier différent. Le nouveau plombier ne sait pas ce que le premier a fait. Il doit te poser les mêmes questions. Sauf si TU lui racontes l&rsquo;historique. Ici, c&rsquo;est l&rsquo;orchestrateur qui joue le rôle du &ldquo;TU&rdquo;.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Chaque invocation de skill = un sous-agent neuf, contexte vide, qui exécute sa mission puis meurt. Tout ce que le sous-agent lit reste chez lui. Seul son rapport remonte. Cela protège la fenêtre de contexte de l&rsquo;orchestrateur.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-7-skill-atomique-vs-orchestrateur">Chapitre 7 — Skill atomique vs orchestrateur</h2>
+<p>Un point qui fait souvent buguer les débutants : un skill <em>orchestrateur</em> est-il une chose DIFFÉRENTE d&rsquo;un skill <em>atomique</em> (qui fait une seule tâche) ?</p>
+<p>Réponse : <strong>NON</strong>. C&rsquo;est la même boîte. C&rsquo;est le même format de fichier. C&rsquo;est le même mécanisme de fork. La différence est UNIQUEMENT dans le contenu du corps du <code>SKILL.md</code>.</p>
+<h3 id="skill-atomique">Skill atomique</h3>
+<p>Un skill atomique fait UNE chose. Il a son frontmatter, son corps avec instructions précises, et il s&rsquo;exécute en autonomie complète.</p>
+<p>Exemples : <code>notify</code>, <code>commit-sc</code>, <code>audit-security</code>, <code>plan-feature</code>, <code>simplify</code>.</p>
+<p>Le corps du SKILL.md contient des instructions style &ldquo;fais ceci, vérifie cela, produis ce rapport&rdquo;. Il n&rsquo;invoque jamais d&rsquo;autres skills.</p>
+<h3 id="skill-orchestrateur">Skill orchestrateur</h3>
+<p>Un skill orchestrateur a EXACTEMENT le même format de fichier. Le frontmatter est similaire. Les <code>allowed-tools</code> peuvent être plus larges (souvent <code>Read, Write, Edit, Bash, Grep, Glob</code>).</p>
+<p>La différence se trouve dans le CORPS du SKILL.md. L&rsquo;orchestrateur a, dans son corps, des lignes qui disent &ldquo;Maintenant, lance <code>/autre-skill</code>&rdquo;, &ldquo;Maintenant, lance <code>/encore-un-autre</code>&rdquo;. C&rsquo;est une chaîne de commandes.</p>
+<p>Exemples sur ServiceCat : <code>implement</code>, <code>work-issues</code>, <code>work-findings</code>.</p>
+<h3 id="tableau-comparatif">Tableau comparatif</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Skill atomique</th>
+<th>Skill orchestrateur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format de fichier</td>
+<td><code>SKILL.md</code></td>
+<td><code>SKILL.md</code></td>
+</tr>
+<tr>
+<td>Frontmatter</td>
+<td>Oui</td>
+<td>Oui</td>
+</tr>
+<tr>
+<td>Corps avec instructions</td>
+<td>Oui</td>
+<td>Oui</td>
+</tr>
+<tr>
+<td>Appelle d&rsquo;autres skills ?</td>
+<td>Non</td>
+<td>Oui (c&rsquo;est sa raison d&rsquo;être)</td>
+</tr>
+<tr>
+<td>Combien de sous-agents forkés ?</td>
+<td>1 (lui-même)</td>
+<td>Plusieurs (un par sous-skill appelé)</td>
+</tr>
+<tr>
+<td>Exemple</td>
+<td><code>audit-security</code></td>
+<td><code>implement</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="la-magie-est-dans-le-corps-pas-dans-la-nature">La magie est dans le corps, pas dans la nature</h3>
+<p>C&rsquo;est important de bien comprendre : un orchestrateur n&rsquo;est PAS un agent spécial avec des super-pouvoirs. C&rsquo;est un skill comme les autres. Mais son corps a été écrit pour qu&rsquo;il &ldquo;tape&rdquo; des slash-commands, et donc forke d&rsquo;autres sous-agents.</p>
+<p>Techniquement, l&rsquo;orchestrateur est juste un agent forké qui sait taper des slash-commands.</p>
+<h3 id="metaphore">Métaphore</h3>
+<p>Reviens à l&rsquo;atelier de jouets. Tu as deux types d&rsquo;artisans.</p>
+<ul>
+<li>L&rsquo;artisan <strong>atomique</strong> sait peindre. Il prend un jouet, il le peint, il le rend.</li>
+<li>L&rsquo;artisan <strong>orchestrateur</strong> sait coordonner. Il prend une commande, il envoie le jouet chez le coupeur, puis chez le ponçage, puis chez le peintre, puis chez l&rsquo;emballeur. Lui-même ne touche pas au jouet. Mais il SAIT taper sur l&rsquo;épaule des autres pour leur dire &ldquo;à ton tour&rdquo;.</li>
+</ul>
+<p>Les deux ont le même contrat de travail (même format). Mais leur job décrit dans leur contrat est différent.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Atomique vs orchestrateur, c&rsquo;est une différence de mission, pas de nature. Même fichier, même mécanisme. La différence est dans ce que le corps du SKILL.md INSTRUIT de faire.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-8-decorticage-dun-workflow-reel">Chapitre 8 — Décorticage d&rsquo;un workflow réel</h2>
+<p>On va maintenant prendre le skill orchestrateur le plus important de ServiceCat, <code>implement</code>, et regarder son corps pour comprendre comment il enchaîne ses sous-agents.</p>
+<p>Le fichier complet est dans <code>/Users/moussab/Github/genai-demo/.claude/skills/implement/SKILL.md</code>.</p>
+<h3 id="le-frontmatter_1">Le frontmatter</h3>
+<pre><code>---
+name: implement
+description: Full REPL loop orchestrator. Runs plan → explore → implement → test → review → audit → commit → PR for a feature request.
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob
+---
+</code></pre>
+<p>Note les outils : Read, Write, Edit, Bash, Grep, Glob. C&rsquo;est plus large que <code>audit-security</code>. Pourquoi ? Parce qu&rsquo;un orchestrateur doit pouvoir lancer des commandes (donc <code>Bash</code>), modifier des fichiers (donc <code>Write</code> et <code>Edit</code>), pas juste lire.</p>
+<p>La description annonce déjà la chaîne : plan → explore → implement → test → review → audit → commit → PR. Huit étapes.</p>
+<h3 id="le-corps-en-4-phases">Le corps en 4 phases</h3>
+<p>Le corps de <code>implement</code> est organisé en 4 phases. Voyons-les.</p>
+<p><strong>Phase 0 — Plan.</strong> Le corps dit explicitement &ldquo;Run <code>/plan-feature</code> with the user&rsquo;s request&rdquo;. L&rsquo;orchestrateur APPELLE le skill atomique <code>plan-feature</code>. Ce skill produit un plan avec 6 critères d&rsquo;acceptation (AC-1 à AC-6).</p>
+<p>Si le plan touche plus de 5 fichiers ou 200 lignes, l&rsquo;orchestrateur pause et demande confirmation à l&rsquo;humain. C&rsquo;est un mécanisme de sécurité.</p>
+<p><strong>Phase 1 — Per Step.</strong> Pour chaque étape du plan, l&rsquo;orchestrateur enchaîne 7 sous-étapes :</p>
+<pre><code>1. /explore-codebase     (sous-agent A — lit le code existant)
+2. Implement             (sous-agent B — crée le code, peut être /new-endpoint, /new-scorecard ou /frontend-design)
+3. make lint &amp;&amp; make test (commande directe, pas un skill)
+4. Inner Fix Loop si erreur (3 tentatives max)
+5. /simplify             (sous-agent C — nettoie le code)
+6. /audit-security       (sous-agent D — vérifie la sécurité)
+7. /commit-sc            (sous-agent E — sauvegarde dans Git)
+</code></pre>
+<p>Chacun de ces 7 appels forke un sous-agent neuf. Le contexte de chaque sous-agent reste chez lui.</p>
+<p><strong>Phase 2 — Acceptance Gate.</strong> L&rsquo;orchestrateur vérifie que les 6 critères d&rsquo;acceptation passent. Pas &ldquo;je pense&rdquo;, VRAIMENT en lançant les tests. Si un critère échoue, retour à la phase 1.</p>
+<p><strong>Phase 3 — PR.</strong> L&rsquo;orchestrateur appelle :</p>
+<pre><code>1. /review-pr   (sous-agent — chasse les bugs)
+2. /create-pr   (sous-agent — crée la pull request)
+3. /devops watch (sous-agent — surveille CI)
+4. Si CI rouge, route vers la bonne phase
+</code></pre>
+<h3 id="arbre-des-invocations">Arbre des invocations</h3>
+<p>Voici l&rsquo;arbre complet des sous-agents qu&rsquo;un seul appel de <code>/implement</code> peut générer pour une feature à 3 étapes :</p>
+<pre><code>/implement (orchestrateur principal)
+   |
+   ├── /plan-feature (sous-agent: génère le plan AC-1..AC-6)
+   |
+   ├── ÉTAPE 1/3
+   |     ├── /explore-codebase (sous-agent A1)
+   |     ├── /new-endpoint     (sous-agent B1)
+   |     ├── /simplify         (sous-agent C1)
+   |     ├── /audit-security   (sous-agent D1)
+   |     └── /commit-sc        (sous-agent E1)
+   |
+   ├── ÉTAPE 2/3
+   |     ├── /explore-codebase (sous-agent A2)
+   |     ├── /frontend-design  (sous-agent B2)
+   |     ├── /simplify         (sous-agent C2)
+   |     ├── /audit-security   (sous-agent D2)
+   |     └── /commit-sc        (sous-agent E2)
+   |
+   ├── ÉTAPE 3/3
+   |     ├── /explore-codebase (sous-agent A3)
+   |     ├── /new-scorecard    (sous-agent B3)
+   |     ├── /simplify         (sous-agent C3)
+   |     ├── /audit-security   (sous-agent D3)
+   |     └── /commit-sc        (sous-agent E3)
+   |
+   ├── /review-pr  (sous-agent F)
+   ├── /create-pr  (sous-agent G)
+   └── /devops watch (sous-agent H)
+</code></pre>
+<p>Pour une feature à 3 étapes, on a forké <strong>17 sous-agents</strong> (1 plan + 5×3 par étape + 3 finaux = 1 + 15 + 3 = 19, en fait — on a un peu arrondi pour la clarté). Chacun avec son contexte propre, sa mission, sa mort à la fin.</p>
+<h3 id="le-format-de-sortie">Le format de sortie</h3>
+<p><code>implement</code> doit aussi communiquer son avancement. Le corps du SKILL.md dit :</p>
+<pre><code>After each step, output one line:
+[F-12 step 3/7] ✅ Implemented POST /scorecards/{id}/versions (commit a1b2c3d)
+</code></pre>
+<p>Et à la fin :</p>
+<pre><code>F-12 — Add scorecard versioning with comparison view
+  ✅ Plan generated (AC-1..AC-6 set)
+  ✅ 7 steps implemented
+  ✅ All ACs pass
+  ✅ Reviewed: 0 critical, 0 high
+  ✅ PR opened: &lt;link&gt;
+  ✅ CI: green
+
+Ready for human review.
+</code></pre>
+<p>C&rsquo;est l&rsquo;orchestrateur qui consolide. Les sous-agents ne le savent pas. Eux ont fait leur petite mission et sont morts. Le résumé est construit côté orchestrateur, à partir des rapports qu&rsquo;il a reçus.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Un orchestrateur, c&rsquo;est un skill dont le corps est un menu d&rsquo;invocations d&rsquo;autres skills. Il ne fait pas le travail. Il dirige. Et chaque invocation génère un nouveau sous-agent qui démarre vierge, fait sa mission, meurt.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-9-le-piege-du-mega-agent">Chapitre 9 — Le piège du mega-agent</h2>
+<p>Maintenant que tu comprends bien le modèle orchestré, voyons l&rsquo;alternative : tout faire dans UN seul gros agent. Spoiler : c&rsquo;est très tentant, et c&rsquo;est presque toujours une mauvaise idée.</p>
+<h3 id="le-scenario">Le scénario</h3>
+<p>Imagine que tu n&rsquo;utilises pas de skills. Tu ouvres Claude Code, tu tapes :</p>
+<blockquote>
+<p>&ldquo;Ajoute le versionnement des scorecards à ServiceCat. Fais le plan, lis le code, crée le code backend, crée l&rsquo;écran frontend, lance les tests, fais une review de sécurité, et fais le commit.&rdquo;</p>
+</blockquote>
+<p>L&rsquo;agent va essayer de tout faire dans la même conversation. Le même contexte de session enfle.</p>
+<h3 id="les-7-problemes-du-mega-agent">Les 7 problèmes du mega-agent</h3>
+<p><strong>Problème 1 — La facture explose.</strong> Tu paies à chaque tour de conversation, et le prix dépend du nombre de tokens dans le contexte. Plus le contexte grossit, plus chaque réponse coûte cher. Sur la feature F-12 de ServiceCat, ça donne <strong>~960 000 tokens</strong> en mega-agent contre <strong>~120 000 tokens</strong> en orchestration. Facteur 8.</p>
+<p><strong>Problème 2 — Le drift.</strong> Au bout de quelques heures de discussion, l&rsquo;agent oublie les règles posées au début. Il commence à enfreindre <code>CLAUDE.md</code> sans le faire exprès. Plus la conversation est longue, plus il dérive.</p>
+<p><strong>Problème 3 — La contamination des phases.</strong> Avant de finir de planifier, il commence à coder. Avant de finir de coder, il commence à tester. Tout se mélange dans son contexte. Les conclusions de l&rsquo;étape précédente influencent (parfois faussement) l&rsquo;étape suivante.</p>
+<p><strong>Problème 4 — Les gates symboliques.</strong> Tu lui demandes &ldquo;fais aussi un audit de sécurité&rdquo;. Il dit &ldquo;OK, j&rsquo;ai audité, tout est OK&rdquo;. Mais en fait, dans le même contexte que celui qui a écrit le code, il ne voit pas ses propres erreurs. C&rsquo;est comme demander à quelqu&rsquo;un de corriger son propre devoir : il ne voit pas ses fautes.</p>
+<p><strong>Problème 5 — Pas de parallélisme.</strong> Un mega-agent ne peut pas faire deux choses en même temps. Avec une orchestration, on pourrait forker deux sous-agents simultanés (par exemple un qui audite, un qui écrit la doc).</p>
+<p><strong>Problème 6 — Aucun garde-fou outils.</strong> Le mega-agent a accès à TOUS les outils. Il peut tout lire, tout écrire, tout supprimer. Une erreur peut faire des dégâts. Avec les skills, chaque sous-agent n&rsquo;a que les outils dont il a besoin.</p>
+<p><strong>Problème 7 — Débuggage cauchemardesque.</strong> Si quelque chose va mal, tu dois relire des heures de conversation pour trouver où ça a dérapé. Avec l&rsquo;orchestration, chaque sous-agent a un rapport court. Tu sais exactement quel rapport est en cause.</p>
+<h3 id="tableau-comparatif-chiffre">Tableau comparatif chiffré</h3>
+<p>Pour la feature F-12 (versionnement des scorecards) sur ServiceCat :</p>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Mega-agent</th>
+<th>Orchestration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tokens totaux consommés</td>
+<td>~960 000</td>
+<td>~120 000</td>
+</tr>
+<tr>
+<td>Coût relatif</td>
+<td>x8</td>
+<td>x1</td>
+</tr>
+<tr>
+<td>Nombre de sous-agents</td>
+<td>0 (un seul gros)</td>
+<td>~19</td>
+</tr>
+<tr>
+<td>Contexte de l&rsquo;orchestrateur en fin</td>
+<td>Plein, ~750 000 tokens</td>
+<td>Léger, ~25 000 tokens</td>
+</tr>
+<tr>
+<td>Fiabilité du résultat</td>
+<td>Variable</td>
+<td>Élevée (gates intégrés)</td>
+</tr>
+<tr>
+<td>Audit de sécurité séparé</td>
+<td>Non (auto-audit douteux)</td>
+<td>Oui (sous-agent neuf)</td>
+</tr>
+<tr>
+<td>Reprise si erreur</td>
+<td>Repartir de zéro</td>
+<td>Reprendre à l&rsquo;étape concernée</td>
+</tr>
+</tbody>
+</table>
+<h3 id="metaphore-le-chef-qui-cuisine-seul-pour-50">Métaphore : le chef qui cuisine seul pour 50</h3>
+<p>Imagine un restaurant qui doit servir 50 couverts un samedi soir. Tu as deux options.</p>
+<p><strong>Option mega-agent :</strong> UN SEUL chef qui fait tout. Il coupe les légumes, sauce la viande, cuit les pâtes, dresse les assiettes, fait le service, encaisse. Il est très bon partout. Mais il est seul. Au bout de 2h, il est cramé. Il fait des erreurs. Il oublie une commande. Il sert un plat froid.</p>
+<p><strong>Option orchestration :</strong> UNE BRIGADE. Un chef qui coordonne. Un commis aux légumes. Un saucier. Un cuisinier des pâtes. Un dresseur. Un serveur. Une caissière. Chacun fait UNE chose, à fond. Le chef regarde le service, donne les signaux, vérifie chaque assiette avant la sortie.</p>
+<p>La brigade gagne. Tout le temps. Pour les mêmes raisons : spécialisation, parallélisme, points de contrôle, fatigue répartie.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Un seul gros agent qui fait tout = un chef seul pour 50 couverts. C&rsquo;est tentant, c&rsquo;est plus simple à mettre en place, mais c&rsquo;est plus cher, plus lent, moins fiable. L&rsquo;orchestration est l&rsquo;analogue d&rsquo;une brigade de cuisine professionnelle.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-10-comment-lorchestrateur-decide-de-lordre-et-quand-rappeler-un-skill">Chapitre 10 — Comment l&rsquo;orchestrateur décide de l&rsquo;ordre et quand rappeler un skill</h2>
+<p>Tu comprends que l&rsquo;orchestrateur appelle des skills. Mais COMMENT décide-t-il dans quel ordre ? Et QUAND décide-t-il de rappeler un skill une deuxième fois ?</p>
+<h3 id="les-3-sources-de-lordre">Les 3 sources de l&rsquo;ordre</h3>
+<p>L&rsquo;ordre d&rsquo;enchaînement des skills vient de TROIS sources qui se combinent.</p>
+<p><strong>Source 1 — La section <code>## Process</code> figée du SKILL.md.</strong> Quand tu écris un orchestrateur, tu fixes l&rsquo;ordre dans son corps. Par exemple, le corps de <code>implement</code> dit littéralement : &ldquo;Phase 0 : <code>/plan-feature</code>. Phase 1 : pour chaque étape, <code>/explore-codebase</code> puis Implement puis tests puis <code>/simplify</code> puis <code>/audit-security</code> puis <code>/commit-sc</code>.&rdquo; Cet ordre est écrit dans le marbre du fichier. Il ne change pas.</p>
+<p><strong>Source 2 — Le plan dynamique de <code>/plan-feature</code>.</strong> Quand l&rsquo;orchestrateur appelle <code>plan-feature</code>, il reçoit en retour une liste d&rsquo;étapes spécifiques à la feature demandée. Par exemple, pour F-12 : &ldquo;étape 1 : créer la migration BD ; étape 2 : ajouter l&rsquo;endpoint ; étape 3 : ajouter l&rsquo;écran&rdquo;. La liste a 3 entrées cette fois, peut-être 7 la fois suivante. L&rsquo;orchestrateur boucle dessus.</p>
+<p><strong>Source 3 — Les branches déclenchées par les gates rouges.</strong> Si une gate échoue, l&rsquo;orchestrateur prend un détour. Par exemple : tests rouges → retour étape 4 (Inner Fix Loop), audit rouge → retour étape 2 (re-coder), CI rouge → routage automatique vers la phase qui correspond au type d&rsquo;erreur.</p>
+<p>L&rsquo;ordre final est donc : SOURCE 1 (le squelette figé) appliqué SUR SOURCE 2 (les étapes du plan), avec SOURCE 3 (les boucles correctives) qui s&rsquo;active quand quelque chose casse.</p>
+<h3 id="les-5-scenarios-de-rappel-dun-skill">Les 5 scénarios de rappel d&rsquo;un skill</h3>
+<p>Pendant un seul <code>/implement</code>, le même skill peut être appelé plusieurs fois. Voici les 5 scénarios.</p>
+<p><strong>Scénario 1 — Boucle &ldquo;for each step&rdquo;.</strong> L&rsquo;orchestrateur fait une étape à la fois. À chaque étape, il appelle <code>/explore-codebase</code>. Si le plan a 5 étapes, il appelle <code>/explore-codebase</code> 5 fois. À chaque appel, un sous-agent neuf.</p>
+<p><strong>Scénario 2 — Inner Fix Loop.</strong> Si les tests rouges après une implémentation, l&rsquo;orchestrateur essaie de corriger. Première tentative : il analyse l&rsquo;erreur, propose une correction, relance les tests. Si rouge encore, deuxième tentative. Troisième tentative. Maximum 3. Au-delà, il s&rsquo;arrête et appelle l&rsquo;humain.</p>
+<p><strong>Scénario 3 — Audit rouge → re-audit.</strong> <code>/audit-security</code> trouve des problèmes. L&rsquo;orchestrateur les corrige. Il rappelle <code>/audit-security</code>. Mais c&rsquo;est un sous-agent NEUF. Il refait tout l&rsquo;audit depuis zéro. Il ne sait pas ce qu&rsquo;il a dit la fois précédente.</p>
+<p><strong>Scénario 4 — CI rouge → routage.</strong> La PR est créée, mais la CI échoue. L&rsquo;orchestrateur lit le log de CI. Si l&rsquo;erreur est un lint, il appelle un skill qui corrige le lint. Si c&rsquo;est un test, il appelle un sous-agent qui corrige le test. Si c&rsquo;est un audit, idem. Routage selon le type d&rsquo;erreur.</p>
+<p><strong>Scénario 5 — Auto-triage.</strong> Pendant l&rsquo;exploration, l&rsquo;agent découvre un bug qui n&rsquo;était pas dans la mission. L&rsquo;orchestrateur appelle <code>/triage</code> pour créer un ticket, puis CONTINUE sa mission principale. Le bug est noté pour plus tard.</p>
+<h3 id="chaque-rappel-un-agent-neuf">Chaque rappel = un agent neuf</h3>
+<p>C&rsquo;est la règle d&rsquo;or qu&rsquo;on a déjà vue, mais qui mérite d&rsquo;être martelée : à chaque rappel, un sous-agent NEUF est forké. Il démarre avec un contexte vierge. Il ne sait pas qu&rsquo;il est le numéro 2, 3, ou 17.</p>
+<p>Toute la mémoire de coordination vit dans l&rsquo;orchestrateur, pas chez les sous-agents. C&rsquo;est l&rsquo;orchestrateur qui se souvient de &ldquo;j&rsquo;ai déjà appelé <code>/audit-security</code> trois fois pour cette feature&rdquo;. Les sous-agents, eux, sont des FONCTIONS PURES : on leur donne une entrée, ils produisent une sortie, ils meurent.</p>
+<blockquote>
+<p><strong>À retenir :</strong> L&rsquo;ordre vient du SKILL.md figé + du plan dynamique + des branches de correction. Les rappels sont fréquents (boucle d&rsquo;étapes, fix loop, re-audit, routage CI). Mais chaque rappel = un agent neuf. La mémoire de coordination vit dans l&rsquo;orchestrateur seul.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-11-ou-vit-la-memoire">Chapitre 11 — Où vit la mémoire</h2>
+<p>Voici un chapitre essentiel souvent mal compris : OÙ exactement vit l&rsquo;information dans un système d&rsquo;orchestration ?</p>
+<p>Il y a TROIS lieux distincts. Confondre ces trois lieux, c&rsquo;est ne rien comprendre. Distinguer les trois, c&rsquo;est tout comprendre.</p>
+<h3 id="lieu-1-le-contexte-de-session-la-ram">Lieu 1 — Le contexte de session (la RAM)</h3>
+<p>Le contexte de session, c&rsquo;est la <em>RAM</em> (mémoire vive) de l&rsquo;agent IA. C&rsquo;est ce qu&rsquo;il &ldquo;voit&rdquo; en ce moment. C&rsquo;est sa fenêtre de contexte. C&rsquo;est tout ce qu&rsquo;il peut traiter en une réponse.</p>
+<p>Caractéristiques :
+- Temporaire. Jeté à la fin de la session.
+- Limité (1 million de tokens pour Claude Opus 4.7 1M, ou ~750 000 mots français).
+- Modifiable à chaque tour.</p>
+<p>Quand un sous-agent meurt, sa RAM est libérée. Tout ce qu&rsquo;il avait dedans disparaît, sauf ce qu&rsquo;il a renvoyé en rapport à l&rsquo;orchestrateur.</p>
+<h3 id="lieu-2-le-disque-du-repo-permanent">Lieu 2 — Le disque du repo (permanent)</h3>
+<p>Tout ce qui est écrit dans des fichiers du projet (<code>.py</code>, <code>.md</code>, <code>.json</code>) ou dans la base de données est <em>persistant</em>. Cela survit à la fin de la session.</p>
+<p>Caractéristiques :
+- Permanent.
+- Lisible par tout le monde (humains, agents futurs).
+- Versionné par Git.</p>
+<p>Sur ServiceCat, cela inclut : tout le code, les migrations de BD, les <code>SKILL.md</code>, le <code>CLAUDE.md</code>, les findings écrits en base, les audit logs, les commits Git.</p>
+<h3 id="lieu-3-lauto-memory-inter-sessions">Lieu 3 — L&rsquo;auto-memory inter-sessions</h3>
+<p>Claude maintient une petite mémoire personnelle qui survit entre les sessions. Sur ServiceCat, elle est dans <code>~/.claude/projects/servicecat/memory/</code>.</p>
+<p>Caractéristiques :
+- Très petite (quelques kilo-octets).
+- Stocke des préférences, des erreurs déjà commises, des corrections de l&rsquo;équipe.
+- N&rsquo;est PAS le code du projet. C&rsquo;est l&rsquo;expérience de Claude SUR le projet.</p>
+<p>Exemple : si Claude a commis une erreur (par exemple : &ldquo;j&rsquo;ai oublié d&rsquo;utiliser le helper <code>httpx.AsyncClient</code>&rdquo;), et que l&rsquo;humain l&rsquo;a corrigé, l&rsquo;auto-memory note ça. À la prochaine session, Claude n&rsquo;oubliera plus.</p>
+<h3 id="tableau-recapitulatif_1">Tableau récapitulatif</h3>
+<table>
+<thead>
+<tr>
+<th>Lieu</th>
+<th>Permanent ?</th>
+<th>Taille</th>
+<th>Visible où ?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contexte de session (RAM)</td>
+<td>Non</td>
+<td>Jusqu&rsquo;à 1M tokens</td>
+<td>Dans le tour de conversation en cours</td>
+</tr>
+<tr>
+<td>Disque du repo</td>
+<td>Oui</td>
+<td>Plusieurs Go</td>
+<td>Fichiers, Git, BD</td>
+</tr>
+<tr>
+<td>Auto-memory</td>
+<td>Oui</td>
+<td>Quelques Ko</td>
+<td>Dossier <code>~/.claude/projects/.../memory/</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="comment-le-forking-sauve-la-fenetre-de-contexte">Comment le forking sauve la fenêtre de contexte</h3>
+<p>Reviens à l&rsquo;exemple. L&rsquo;agent <code>audit-security</code> est forké. Il lit 40 000 tokens de code. Tout ça vit dans SA RAM, pas dans celle de l&rsquo;orchestrateur.</p>
+<p>Quand l&rsquo;agent meurt, sa RAM disparaît. Mais il a écrit un rapport de 1 200 tokens. Ces 1 200 tokens, eux, entrent dans la RAM de l&rsquo;orchestrateur.</p>
+<p>Bilan :
+- L&rsquo;orchestrateur &ldquo;voit&rdquo; 1 200 tokens (le rapport).
+- Il ne paye pas pour les 40 000 tokens lus par le sous-agent (sauf pour la facture du sous-agent lui-même, qui est isolée).</p>
+<p>Sans forking, l&rsquo;orchestrateur aurait DÛ lire les 40 000 tokens lui-même, et ils resteraient dans sa RAM jusqu&rsquo;à la fin de la session. Au bout de 3 ou 4 skills, sa RAM serait saturée.</p>
+<h3 id="les-chiffres-concrets-pour-claude-opus-47-1m">Les chiffres concrets pour Claude Opus 4.7 1M</h3>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fenêtre de contexte totale</td>
+<td>1 000 000 tokens</td>
+</tr>
+<tr>
+<td>Coût en tokens d&rsquo;une feature complète ServiceCat</td>
+<td>~37 000 tokens dans la RAM de l&rsquo;orchestrateur</td>
+</tr>
+<tr>
+<td>Coût relatif (% de la fenêtre)</td>
+<td>~3,7%</td>
+</tr>
+<tr>
+<td>Combien de features tient-on dans une session ?</td>
+<td>~25 avant débordement</td>
+</tr>
+</tbody>
+</table>
+<p>Tu vois ? On a énormément de marge. Le système est conçu pour rester très loin de la limite.</p>
+<h3 id="les-3-mecanismes-anti-debordement">Les 3 mécanismes anti-débordement</h3>
+<p>Claude Code combine trois mécanismes pour ne JAMAIS déborder.</p>
+<p><strong>Mécanisme 1 — Forking systématique.</strong> Tout gros travail de lecture est délégué à un sous-agent. Les volumes ne remontent pas à l&rsquo;orchestrateur.</p>
+<p><strong>Mécanisme 2 — Compaction automatique.</strong> Quand la conversation principale devient longue, Claude compacte les vieux messages : il les résume. &ldquo;Tu m&rsquo;as posé 15 questions sur la BD, j&rsquo;ai répondu, voici le résumé : on a clarifié la structure des tables X, Y, Z.&rdquo; Les 15 tours deviennent 1 tour de résumé.</p>
+<p><strong>Mécanisme 3 — Persistance externe.</strong> Au lieu de garder une info dans le contexte, on l&rsquo;écrit dans un fichier ou dans la BD. La prochaine fois qu&rsquo;on en a besoin, on relit le fichier. Le contexte reste propre.</p>
+<h3 id="les-4-cas-pathologiques-qui-font-deborder-quand-meme">Les 4 cas pathologiques qui font déborder quand même</h3>
+<p>Même avec ces protections, on peut déborder. Voici les 4 cas problématiques.</p>
+<p><strong>Cas 1 — Tout-en-un sans fork.</strong> L&rsquo;humain donne une mission énorme à l&rsquo;agent SANS utiliser de skills. L&rsquo;agent doit tout charger dans son seul contexte. Débordement assuré.</p>
+<p><strong>Cas 2 — Logs verbeux non filtrés.</strong> L&rsquo;agent lance une commande qui produit 500 000 lignes de log et il les avale toutes. Le contexte se remplit en une commande.</p>
+<p><strong>Cas 3 — Relectures inutiles de gros fichiers.</strong> L&rsquo;agent relit 10 fois le même fichier de 5 000 lignes. À chaque relecture, ça consomme du contexte.</p>
+<p><strong>Cas 4 — Sessions ouvertes sur plusieurs jours.</strong> L&rsquo;humain garde la même session ouverte pendant 3 jours, avec des centaines de messages. La compaction aide mais ne suffit plus. Mieux vaut tuer la session et en démarrer une neuve, comme le dit la slide 12 du talk : <em>kill the session, keep the skill</em>.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Trois lieux de mémoire. La RAM est temporaire et limitée. Le disque du repo est permanent. L&rsquo;auto-memory survit entre sessions. Le forking sauve la fenêtre. Le but, c&rsquo;est de finir une feature avec une RAM légère.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-12-les-gates-en-detail">Chapitre 12 — Les gates en détail</h2>
+<p>On a parlé de <em>gates</em> (barrières, points de contrôle) plusieurs fois. C&rsquo;est temps de les comprendre à fond. C&rsquo;est probablement le concept le plus important de tout ce guide. La slide 13 du talk en parle.</p>
+<h3 id="definition-simple">Définition simple</h3>
+<p>Une <em>gate</em> (le mot anglais signifie &ldquo;porte&rdquo; ou &ldquo;barrière&rdquo;) est un point de passage obligatoire dans un workflow. Soit on passe, soit on est renvoyé en arrière. Pas de demi-mesure.</p>
+<h3 id="trois-analogies-pour-bien-comprendre">Trois analogies pour bien comprendre</h3>
+<p><strong>Analogie 1 — La douane à l&rsquo;aéroport.</strong> Tu arrives avec ton sac. Tu passes le scanner. Si tout est OK, on te laisse passer. Si on détecte un objet interdit, on t&rsquo;arrête. Tu ne peux pas dire &ldquo;mais s&rsquo;il vous plaît, faites une exception&rdquo;. La gate est binaire : OUI ou NON.</p>
+<p><strong>Analogie 2 — Le contrôle technique de la voiture.</strong> Tu arrives au garage. Le contrôleur vérifie 50 points. Freins, phares, pneus, échappement. À la fin, soit ta voiture est certifiée pour rouler, soit elle ne l&rsquo;est pas. Si elle a un défaut majeur, tu DOIS réparer et REPASSER l&rsquo;inspection. On ne te donne pas le certificat &ldquo;en attendant&rdquo;.</p>
+<p><strong>Analogie 3 — L&rsquo;examen final à l&rsquo;école.</strong> Tu as suivi un cours toute l&rsquo;année. À la fin, il y a un examen. Soit tu as la moyenne et tu passes en année supérieure, soit tu redoubles. L&rsquo;enseignant peut être sympa, mais les règles sont les règles.</p>
+<h3 id="gate-vs-test">Gate vs Test</h3>
+<p>Beaucoup de débutants confondent &ldquo;gate&rdquo; et &ldquo;test&rdquo;. Voyons la différence.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Test</th>
+<th>Gate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quoi ?</td>
+<td>Une vérification de comportement</td>
+<td>Une décision de passage</td>
+</tr>
+<tr>
+<td>Résultat</td>
+<td>Passe ou échoue</td>
+<td>Continue ou retour</td>
+</tr>
+<tr>
+<td>Conséquence d&rsquo;un échec</td>
+<td>Tu apprends qu&rsquo;il y a un problème</td>
+<td>Tu es bloqué tant que ce n&rsquo;est pas corrigé</td>
+</tr>
+<tr>
+<td>Exemple</td>
+<td>&ldquo;Le bouton fait bien telle action&rdquo;</td>
+<td>&ldquo;Pas plus de 0 critiques sécurité&rdquo;</td>
+</tr>
+</tbody>
+</table>
+<p>Une gate utilise souvent des tests pour décider. Mais une gate n&rsquo;est pas un test : c&rsquo;est une décision de TRANSITION entre deux phases du workflow.</p>
+<h3 id="les-6-ac-de-servicecat">Les 6 AC de ServiceCat</h3>
+<p>ServiceCat a 6 critères d&rsquo;acceptation (Acceptance Criteria), notés AC-1 à AC-6. Ces 6 critères ENSEMBLE forment la gate finale d&rsquo;une feature.</p>
+<table>
+<thead>
+<tr>
+<th>Critère</th>
+<th>Catégorie</th>
+<th>Ce qui doit passer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AC-1</strong></td>
+<td>Fonctionnel</td>
+<td>Tous les comportements décrits marchent — happy path + au moins 2 cas limites</td>
+</tr>
+<tr>
+<td><strong>AC-2</strong></td>
+<td>Tests</td>
+<td>Tests unitaires + tests d&rsquo;intégration + tests de sécurité passent avec ≥80% de couverture</td>
+</tr>
+<tr>
+<td><strong>AC-3</strong></td>
+<td>Sécurité</td>
+<td><code>/audit-security</code> clean — les 5 gardes présents, S6-S8 OK</td>
+</tr>
+<tr>
+<td><strong>AC-4</strong></td>
+<td>Qualité</td>
+<td><code>/simplify</code> clean — pas de duplication, pas de patterns enfreints</td>
+</tr>
+<tr>
+<td><strong>AC-5</strong></td>
+<td>Lint &amp; Build</td>
+<td><code>make lint</code> et <code>pnpm build</code> passent sans erreur</td>
+</tr>
+<tr>
+<td><strong>AC-6</strong></td>
+<td>Frontend</td>
+<td>Types générés, hooks via TanStack Query, i18n, dark mode, <code>/frontend-design</code> utilisé</td>
+</tr>
+</tbody>
+</table>
+<p>Si UN seul des 6 échoue, la feature N&rsquo;EST PAS FINIE. L&rsquo;orchestrateur retourne à la phase concernée et corrige.</p>
+<h3 id="exemple-raconte-pas-a-pas">Exemple raconté pas à pas</h3>
+<p>Imaginons que tu as demandé à <code>/implement</code> de &ldquo;ajouter le bouton Partager sur les scorecards&rdquo;. Voici ce qui se passe :</p>
+<ol>
+<li>Plan généré. AC-1 à AC-6 définis.</li>
+<li>Étape 1 : créer l&rsquo;endpoint backend <code>POST /scorecards/{id}/share</code>. Code créé.</li>
+<li><code>/audit-security</code> lancé. Il trouve que la rate-limit manque (S4). <strong>Gate AC-3 : ROUGE.</strong></li>
+<li>L&rsquo;orchestrateur retourne au code. Il ajoute <code>Depends(rate_limit(...))</code>.</li>
+<li><code>/audit-security</code> relancé. Cette fois CLEAN. <strong>Gate AC-3 : VERT.</strong></li>
+<li>Étape 2 : créer l&rsquo;écran. Code créé.</li>
+<li><code>make test</code> lancé. Un test échoue. <strong>Gate AC-2 : ROUGE.</strong></li>
+<li>Inner Fix Loop. Tentative 1 : analyser l&rsquo;erreur, corriger. Tests relancés. VERT. <strong>Gate AC-2 : VERT.</strong></li>
+<li><code>pnpm lint</code> lancé. Une erreur de lint. <strong>Gate AC-5 : ROUGE.</strong></li>
+<li>Corriger. Relancer. <strong>Gate AC-5 : VERT.</strong></li>
+<li>Tous les AC sont VERT.</li>
+<li><code>/create-pr</code> crée la pull request.</li>
+</ol>
+<p>Sans les gates, le PR aurait été créé à l&rsquo;étape 2 avec un trou de sécurité. Avec les gates, on retourne en arrière à chaque problème.</p>
+<h3 id="ce-que-les-gates-ne-sont-pas">Ce que les gates NE SONT PAS</h3>
+<p>Les gates ne sont PAS des suggestions. Elles ne sont PAS des conseils gentils. Elles ne sont PAS contournables.</p>
+<ul>
+<li>Une gate n&rsquo;est pas un avertissement qu&rsquo;on peut ignorer.</li>
+<li>Une gate n&rsquo;accepte pas le compromis &ldquo;je sais que c&rsquo;est un peu cassé, mais on verra plus tard&rdquo;.</li>
+<li>Une gate ne tolère pas &ldquo;ça passera bien comme ça&rdquo;.</li>
+</ul>
+<p>C&rsquo;est tout l&rsquo;intérêt. Sans la rigidité des gates, le système se dégrade. Les gates sont le squelette qui empêche le projet de s&rsquo;effondrer.</p>
+<h3 id="la-regle-des-3-slide-13">La règle des 3 (slide 13)</h3>
+<p>Moussa rappelle trois règles dans son talk :</p>
+<p><strong>Règle 1 — Gate :</strong> chaque transition entre phases est une gate. Pas de &ldquo;et si on passait directement à la PR sans audit ?&rdquo;. Non.</p>
+<p><strong>Règle 2 — Stopping :</strong> après 3 échecs consécutifs dans la même boucle, on s&rsquo;arrête. On appelle l&rsquo;humain. On ne tourne pas en rond.</p>
+<p><strong>Règle 3 — Human sync points :</strong> certaines décisions ne sont JAMAIS automatisées. Le merge en main. La résolution d&rsquo;un conflit de design. Le go-no-go d&rsquo;une feature majeure. Toujours un humain.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Une gate est un point de passage binaire. OUI ou NON, jamais &ldquo;peut-être&rdquo;. Les 6 AC de ServiceCat forment ensemble la gate finale d&rsquo;une feature. Un seul AC rouge = feature pas finie. Sans gates, pas d&rsquo;ingénierie : juste du bricolage.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-13-les-8-regles-dor-pour-orchestrer-un-workflow-multi-agents">Chapitre 13 — Les 8 règles d&rsquo;or pour orchestrer un workflow multi-agents</h2>
+<p>Si tu retiens ces 8 règles, tu sais l&rsquo;essentiel pour démarrer toi-même un système orchestré.</p>
+<h3 id="regle-1-un-skill-une-mission">Règle 1 — Un skill = une mission</h3>
+<p>Chaque skill doit pouvoir s&rsquo;expliquer en une phrase courte. Si tu dois écrire un paragraphe pour décrire ce qu&rsquo;il fait, c&rsquo;est qu&rsquo;il en fait trop. Découpe-le.</p>
+<h3 id="regle-2-frontmatter-clair-corps-detaille">Règle 2 — Frontmatter clair, corps détaillé</h3>
+<p>Le frontmatter doit être court (3 lignes : name, description, allowed-tools). Le corps peut être long (instructions précises, format de sortie, interdits). C&rsquo;est la séparation entre &ldquo;qui suis-je&rdquo; et &ldquo;comment je travaille&rdquo;.</p>
+<h3 id="regle-3-limite-les-outils">Règle 3 — Limite les outils</h3>
+<p>Donne à chaque skill UNIQUEMENT les outils dont il a besoin. <code>audit-security</code> n&rsquo;a que Read, Grep, Glob (lecture seule). C&rsquo;est un garde-fou. Un sous-agent qui n&rsquo;a pas le droit d&rsquo;écrire ne peut pas faire de dégâts.</p>
+<h3 id="regle-4-tout-passage-entre-phases-est-une-gate">Règle 4 — Tout passage entre phases est une gate</h3>
+<p>Pas de &ldquo;j&rsquo;ai fini de coder, je passe directement à la PR&rdquo;. Entre chaque phase : une vérification. Tests verts, audit clean, lint OK. Si rouge : retour en arrière.</p>
+<h3 id="regle-5-inner-fix-loop-limite-a-3-tentatives">Règle 5 — Inner Fix Loop limité à 3 tentatives</h3>
+<p>Si une correction échoue 3 fois, ce n&rsquo;est plus une question de patch local. C&rsquo;est probablement un problème de conception. Stop. Appelle l&rsquo;humain.</p>
+<h3 id="regle-6-la-memoire-de-coordination-vit-dans-lorchestrateur">Règle 6 — La mémoire de coordination vit dans l&rsquo;orchestrateur</h3>
+<p>Les sous-agents sont des fonctions pures. Ils ne se souviennent pas. L&rsquo;orchestrateur seul tient le fil. Si l&rsquo;orchestrateur perd son contexte, le travail est foutu. Donc protège son contexte (= utilise le forking massivement).</p>
+<h3 id="regle-7-persiste-limportant-hors-session">Règle 7 — Persiste l&rsquo;important hors session</h3>
+<p>Tout ce qui doit survivre à la fin de la session DOIT être écrit quelque part : fichier, BD, commit Git, audit log. Le contexte de session est volatile. Le disque est permanent.</p>
+<h3 id="regle-8-jamais-de-merge-sans-humain">Règle 8 — Jamais de merge sans humain</h3>
+<p>Aucune automatisation ne doit décider du passage en production. La PR est créée par l&rsquo;orchestrateur. Le merge est fait par un humain. C&rsquo;est la dernière barrière. Slide 13 du talk : <em>human sync points</em>.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Une mission par skill. Outils limités. Gates obligatoires. Fix loop à 3 tentatives max. Mémoire dans l&rsquo;orchestrateur. Persistance hors session. Humain pour les décisions critiques. Voilà le squelette d&rsquo;un système d&rsquo;orchestration sain.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-14-demo-servicecat-decodee">Chapitre 14 — Démo ServiceCat décodée</h2>
+<p>Le talk de Moussa contient 3 moments de démo (slides 14 à 18). On va les décoder en langage simple.</p>
+<h3 id="moment-1-du-backlog-a-la-pr-slide-15">Moment 1 — Du backlog à la PR (slide 15)</h3>
+<p><strong>Ce que tu vois :</strong> Moussa tape <code>/work-issues</code> dans Claude Code. Quelques minutes plus tard, une pull request apparaît sur GitHub, prête à reviewer.</p>
+<p><strong>Ce qui se passe vraiment sous le capot :</strong></p>
+<ol>
+<li><code>/work-issues</code> est un orchestrateur. Il commence par lister les issues GitHub ouvertes du projet.</li>
+<li>Il sélectionne celle avec la priorité la plus haute (P0 &gt; P1 &gt; P2 &gt; P3).</li>
+<li>Il transforme l&rsquo;issue en feature request et lance <code>/implement</code> dessus.</li>
+<li><code>/implement</code> exécute le cycle complet : plan, explore, code, test, simplify, audit, commit.</li>
+<li>À la fin, <code>/create-pr</code> crée la PR. <code>/devops watch</code> surveille CI.</li>
+<li>Si CI échoue, routage automatique. Sinon, PR prête.</li>
+</ol>
+<p><strong>Combien de sous-agents forkés ?</strong> Entre 15 et 30 selon la taille de l&rsquo;issue.</p>
+<h3 id="moment-2-de-laudit-aux-corrections-slides-16-17">Moment 2 — De l&rsquo;audit aux corrections (slides 16-17)</h3>
+<p><strong>Ce que tu vois :</strong> Moussa tape <code>/audit-service payment-svc</code>. Quelques minutes plus tard, une liste de findings (résultats de l&rsquo;audit) apparaît dans l&rsquo;interface ServiceCat. Puis il tape <code>/work-findings</code>, et des PR commencent à s&rsquo;ouvrir SUR LES AUTRES REPOS pour corriger les problèmes.</p>
+<p><strong>Ce qui se passe vraiment sous le capot :</strong></p>
+<ol>
+<li><code>/audit-service</code> clone le repo du service <code>payment-svc</code>.</li>
+<li>Il fait tourner les 4 scorecards (Security, Observability, Documentation, Reliability) dessus.</li>
+<li>Chaque scorecard produit des <em>findings</em> (problèmes trouvés) avec un champ <code>auto_fixable: true/false</code>.</li>
+<li>Les findings sont enregistrés en BD avec leur sévérité (CRITICAL, HIGH, MEDIUM, LOW).</li>
+<li><code>/work-findings</code> lit la BD, sélectionne les findings auto-fixables, et pour chacun :
+   - Clone le repo source.
+   - Crée une branche.
+   - Applique le fix suggéré dans le finding.
+   - Ouvre une PR sur le repo source.</li>
+</ol>
+<p><strong>Important :</strong> ServiceCat ne modifie jamais directement les repos des services. Il propose toujours via PR. L&rsquo;équipe propriétaire du service décide.</p>
+<h3 id="moment-3-de-la-notification-a-la-resolution-slide-18">Moment 3 — De la notification à la résolution (slide 18)</h3>
+<p><strong>Ce que tu vois :</strong> Une notification Slack arrive à l&rsquo;équipe <code>team-payments</code> : &ldquo;3 nouvelles findings de sévérité HIGH sur payment-svc&rdquo;. Un membre clique sur le lien. ServiceCat ouvre la page du finding avec le fichier en cause, la ligne, la remédiation. Le membre approuve la PR proposée.</p>
+<p><strong>Ce qui se passe vraiment sous le capot :</strong></p>
+<ol>
+<li>Quand un finding HIGH ou CRITICAL est créé, le système trouve l&rsquo;équipe propriétaire via <code>Service.owner_team_id</code>.</li>
+<li>Le skill <code>/notify</code> est invoqué. Il envoie le message Slack au canal de l&rsquo;équipe.</li>
+<li>Le message inclut un lien direct vers la finding dans ServiceCat.</li>
+<li>L&rsquo;humain clique, voit le contexte, et approuve ou rejette.</li>
+</ol>
+<p><strong>Pourquoi c&rsquo;est fort :</strong> la chaîne entière (audit → finding → notification → PR → review humaine) est faite par des agents. L&rsquo;humain n&rsquo;intervient qu&rsquo;à la fin, pour approuver. C&rsquo;est l&rsquo;incarnation parfaite du <em>human sync point</em>.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Les 3 démos montrent une chaîne complète. Du backlog (issues à faire) au code livré (PR mergée), tout est orchestré. L&rsquo;humain intervient à des points choisis (validation, approbation), jamais pour faire le travail répétitif.</p>
+</blockquote>
+<hr />
+<h2 id="chapitre-15-demarrer-lundi-matin">Chapitre 15 — Démarrer lundi matin</h2>
+<p>La slide 19 du talk s&rsquo;appelle <em>Start Monday</em>. On va te dire concrètement comment commencer, dès lundi matin, à mettre en place de l&rsquo;orchestration sur TON projet.</p>
+<h3 id="etape-1-installe-claude-code">Étape 1 — Installe Claude Code</h3>
+<p>Si ce n&rsquo;est pas déjà fait, installe Claude Code via le site officiel. C&rsquo;est l&rsquo;environnement où tu vas faire vivre tes agents.</p>
+<p>Une fois installé, ouvre ton premier projet. Tu vas voir qu&rsquo;il fonctionne déjà sans skills, juste comme un chat.</p>
+<p><strong>Exemple concret :</strong> ouvre Claude Code dans le dossier de ton projet. Tape &ldquo;explique-moi ce que fait ce code&rdquo; en pointant un fichier. Tu verras Claude répondre. C&rsquo;est la base.</p>
+<h3 id="etape-2-cree-ton-claudemd">Étape 2 — Crée ton <code>CLAUDE.md</code></h3>
+<p>Crée un fichier <code>CLAUDE.md</code> à la racine de ton projet. Ce sera ton livre de règles de la maison. Il doit contenir au moins :</p>
+<ul>
+<li>Tech stack (langages, frameworks, BD).</li>
+<li>Conventions de nommage (snake_case, camelCase, etc.).</li>
+<li>Règles de sécurité (les 5 gardes ServiceCat ou les tiennes).</li>
+<li>Critères d&rsquo;acceptation (AC-1 à AC-6 ou les tiens).</li>
+<li>Repository layout (la structure des dossiers).</li>
+</ul>
+<p><strong>Exemple concret :</strong> ouvre <code>/Users/moussab/Github/genai-demo/CLAUDE.md</code> pour voir le <code>CLAUDE.md</code> de ServiceCat. C&rsquo;est un excellent modèle. Adapte-le à ton projet.</p>
+<h3 id="etape-3-ecris-ton-premier-skill-atomique">Étape 3 — Écris ton premier skill atomique</h3>
+<p>Choisis UN problème répétitif que tu rencontres souvent. Par exemple : &ldquo;rédiger des messages de commit clairs&rdquo;. Crée un dossier <code>.claude/skills/commit-clear/</code> avec un fichier <code>SKILL.md</code> dedans.</p>
+<p>Mets-y un frontmatter :</p>
+<pre><code>---
+name: commit-clear
+description: Generates a clean conventional commit message based on staged changes.
+allowed-tools: Bash, Read
+---
+</code></pre>
+<p>Et un corps avec les instructions pour générer le message. Teste avec <code>/commit-clear</code>.</p>
+<p><strong>Exemple concret :</strong> regarde <code>/Users/moussab/Github/genai-demo/.claude/skills/commit-sc/SKILL.md</code> comme inspiration. Adapte au format de ton équipe.</p>
+<h3 id="etape-4-compose-un-orchestrateur-quand-le-besoin-viendra">Étape 4 — Compose un orchestrateur quand le besoin viendra</h3>
+<p>Quand tu as 5-6 skills atomiques qui marchent bien et que tu te retrouves à les enchaîner manuellement à chaque feature, c&rsquo;est le signe : il est temps de créer un orchestrateur.</p>
+<p>Crée un skill orchestrateur (par exemple <code>/feature-flow</code>). Dans son corps, écris littéralement la séquence :</p>
+<pre><code>1. Run /plan-feature
+2. For each step:
+   - Run /explore-codebase
+   - Implement
+   - Run /audit-clean
+   - Run /commit-clear
+3. Run /create-pr
+</code></pre>
+<p><strong>Exemple concret :</strong> ouvre <code>/Users/moussab/Github/genai-demo/.claude/skills/implement/SKILL.md</code> comme modèle d&rsquo;orchestrateur. Adapte selon ton workflow.</p>
+<blockquote>
+<p><strong>À retenir :</strong> Tu n&rsquo;as pas besoin de tout faire en un jour. Démarre par Claude Code. Ajoute un <code>CLAUDE.md</code>. Crée un premier skill atomique. Quand tu en as plusieurs, compose un orchestrateur. C&rsquo;est un parcours en quelques semaines, pas en un soir.</p>
+</blockquote>
+<hr />
+<h2 id="glossaire-enrichi">Glossaire enrichi</h2>
+<p>Voici les 30 termes clés du tutoriel, définis de façon claire.</p>
+<p><strong>Agent IA :</strong> Un programme d&rsquo;intelligence artificielle qui agit (lit, écrit, lance des commandes), pas seulement qui répond à des questions.</p>
+<p><strong>Agent forké :</strong> Un sous-agent créé temporairement à partir d&rsquo;un skill, avec un contexte vide. Il vit le temps de sa mission puis meurt.</p>
+<p><strong>Atomique (skill atomique) :</strong> Un skill qui fait une seule chose précise et qui n&rsquo;invoque pas d&rsquo;autres skills.</p>
+<p><strong>Auto-memory :</strong> La mémoire personnelle de Claude sur un projet, stockée dans <code>~/.claude/projects/.../memory/</code>. Survit entre sessions. Très petite.</p>
+<p><strong>CLAUDE.md :</strong> Le fichier racine d&rsquo;un projet Claude Code. Auto-chargé au démarrage. Contient les règles globales.</p>
+<p><strong>Compaction :</strong> Mécanisme qui résume automatiquement les vieux messages d&rsquo;une longue conversation pour libérer du contexte.</p>
+<p><strong>Contexte (de session) :</strong> Ce que l&rsquo;agent IA &ldquo;voit&rdquo; en même temps : ta question, l&rsquo;historique, les fichiers récents. C&rsquo;est sa mémoire de travail immédiate.</p>
+<p><strong>Drift :</strong> Phénomène où un agent perd progressivement de vue les règles initiales au fil d&rsquo;une longue conversation.</p>
+<p><strong>Fenêtre de contexte :</strong> La taille maximale de tokens qu&rsquo;un modèle d&rsquo;IA peut traiter à la fois. 1 million pour Claude Opus 4.7 1M.</p>
+<p><strong>Fork :</strong> Création d&rsquo;une copie indépendante d&rsquo;un agent, avec un contexte vierge, pour exécuter une mission spécifique.</p>
+<p><strong>Frontmatter :</strong> Les premières lignes (entre deux <code>---</code>) d&rsquo;un fichier SKILL.md, qui définissent name, description, et allowed-tools.</p>
+<p><strong>Gate :</strong> Point de passage obligatoire dans un workflow. Binaire : OUI ou NON. Si NON, retour à l&rsquo;étape précédente.</p>
+<p><strong>IA (Intelligence Artificielle) :</strong> Programme qui imite certains comportements humains : lire, écrire, raisonner, coder.</p>
+<p><strong>Inner Fix Loop :</strong> Boucle de correction automatique limitée à 3 tentatives. Au-delà, l&rsquo;orchestrateur arrête et appelle l&rsquo;humain.</p>
+<p><strong>Mega-agent :</strong> Un seul agent qui essaie de tout faire dans une seule conversation. Anti-pattern à éviter.</p>
+<p><strong>Mémoire de coordination :</strong> La mémoire de l&rsquo;avancement d&rsquo;une tâche multi-étapes. Vit chez l&rsquo;orchestrateur, pas chez les sous-agents.</p>
+<p><strong>Modèle :</strong> La version précise d&rsquo;une IA (Claude Opus 4.7, Claude Sonnet 4, etc.). Définit sa taille, sa vitesse, sa fenêtre de contexte.</p>
+<p><strong>Orchestrateur (skill orchestrateur) :</strong> Un skill qui invoque d&rsquo;autres skills. Même format de fichier qu&rsquo;un skill atomique, mais son corps contient des appels à des slash-commands.</p>
+<p><strong>Persistance externe :</strong> Stocker une information hors du contexte de session (fichier, BD, commit Git) pour qu&rsquo;elle survive.</p>
+<p><strong>Prompt :</strong> Le message que tu envoies à l&rsquo;IA. Ta question, ta demande, ton instruction.</p>
+<p><strong>RAM :</strong> Métaphore pour le contexte de session. La mémoire vive, temporaire, jetée à la fin.</p>
+<p><strong>Routage (CI) :</strong> Mécanisme par lequel l&rsquo;orchestrateur, voyant une CI rouge, dirige le fix vers la phase appropriée (lint, test, audit).</p>
+<p><strong>Session :</strong> Une exécution de Claude Code, du lancement à la fermeture. Contexte de session = ce qui vit pendant cette exécution.</p>
+<p><strong>Skill :</strong> Une compétence figée dans un dossier <code>.claude/skills/&lt;nom&gt;/</code>, avec un fichier <code>SKILL.md</code> qui contient ses instructions.</p>
+<p><strong>SKILL.md :</strong> Le fichier qui décrit un skill. Composé d&rsquo;un frontmatter (auto-chargé) et d&rsquo;un corps (lu à l&rsquo;invocation).</p>
+<p><strong>Slash-command :</strong> Une commande tapée avec un <code>/</code> devant (ex: <code>/audit-security</code>). Elle déclenche l&rsquo;invocation d&rsquo;un skill.</p>
+<p><strong>Sous-agent :</strong> Un agent forké, instance temporaire créée pour exécuter un skill puis mourir.</p>
+<p><strong>Token :</strong> Unité de mesure de texte pour les IA. Environ trois quarts de mot français. Une phrase courte = ~10 tokens.</p>
+<p><strong>Vibe coding :</strong> Coder à l&rsquo;instinct avec une IA, sans cadre. Rapide à démarrer, fragile à maintenir.</p>
+<p><strong>Vibe engineering :</strong> Construire avec des IA dans un cadre rigoureux : skills, gates, AC. Plus structuré, beaucoup plus fiable.</p>
+<hr />
+<h2 id="annexe-pour-aller-plus-loin">Annexe — Pour aller plus loin</h2>
+<p>Si tu veux approfondir, voici les fichiers à explorer dans le dépôt ServiceCat :</p>
+<ul>
+<li>
+<p><strong><code>/Users/moussab/Github/genai-demo/CLAUDE.md</code></strong> — Le livre de règles complet du projet. Modèle à étudier pour ton propre <code>CLAUDE.md</code>. Auto-chargé au démarrage de toute session Claude Code dans ce projet.</p>
+</li>
+<li>
+<p><strong><code>/Users/moussab/Github/genai-demo/.claude/skills/</code></strong> — Le dossier qui contient les 18 skills. Chaque sous-dossier contient un <code>SKILL.md</code>. Va voir <code>audit-security/SKILL.md</code> pour un excellent exemple de skill atomique, et <code>implement/SKILL.md</code> pour un excellent exemple de skill orchestrateur.</p>
+</li>
+<li>
+<p><strong><code>/Users/moussab/Github/genai-demo/.claude/settings.json</code></strong> — Les réglages de session pour ce projet. Auto-chargé au démarrage. Définit les permissions, les hooks, les variables d&rsquo;environnement.</p>
+</li>
+<li>
+<p><strong>WORKFLOW.md (ou son équivalent dans le projet)</strong> — La description du processus humain de l&rsquo;équipe : qui fait quoi, quand utiliser quel skill, comment se passer le travail entre humains et agents. Nom libre, lu à la demande.</p>
+</li>
+<li>
+<p><strong>Le talk de Moussa du 18 juin 2026</strong> — Les slides 1 à 19. Chaque slide est explicitement référencée dans ce guide. Une relecture après ce tutoriel devrait être fluide.</p>
+</li>
+<li>
+<p><strong>Pour aller au cœur</strong> — Tu peux ouvrir n&rsquo;importe quel skill et lire son SKILL.md. C&rsquo;est le matériau pédagogique le plus dense. Chaque SKILL.md est une mini-leçon sur comment résoudre UN problème précis avec une IA.</p>
+</li>
+</ul>
+<p>Bon courage. Tu as toutes les clés maintenant. La suite, c&rsquo;est l&rsquo;expérience.</p>
+</main>
+</body>
+</html>
