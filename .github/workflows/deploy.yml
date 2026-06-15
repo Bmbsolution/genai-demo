@@ -1,13 +1,12 @@
 name: Deploy
 
-# Backend CD: on every merge to main that touches gatherly-be, build the image
-# and roll Cloud Run. Infra is provisioned once by Terraform (deploy/gcp); this
-# pipeline only rolls new images.
+# Backend CD: on every merge to main that touches gatherly-be, deploy it to
+# Railway (Dockerfile build, `railway up`). Railway hosts the FastAPI service +
+# managed Postgres — we moved off GCP Cloud Run because the org policy blocked
+# public access (see deploy/CICD.md).
 #
-# The FRONTEND is NOT deployed here. Netlify builds & publishes it directly from
-# GitHub on every push to main (its native Git integration — see deploy/CICD.md).
-# The CLI push-deploy used to hang on GitHub runners during upload; Netlify's own
-# buildbot doesn't, so we let it own the frontend.
+# The FRONTEND is NOT deployed here. Netlify owns it (its env points at the
+# Railway API URL); see deploy/CICD.md.
 on:
   push:
     branches: [main]
@@ -34,7 +33,7 @@ jobs:
             backend:
               - 'gatherly-be/**'
 
-  # --- Backend → GCP Cloud Run -----------------------------------------------
+  # --- Backend → Railway ------------------------------------------------------
   deploy-backend:
     needs: changes
     # push: deploy when gatherly-be changed. dispatch: always (manual roll).
@@ -44,37 +43,23 @@ jobs:
        (github.event_name == 'push' && needs.changes.outputs.backend == 'true'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: read
-      id-token: write # Workload Identity Federation (keyless GCP auth)
-    env:
-      PROJECT: ${{ vars.GCP_PROJECT }}
-      REGION: ${{ vars.GCP_REGION }}
-      SERVICE: gatherly-api
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
-      - id: auth
-        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
-          service_account: ${{ vars.GCP_DEPLOY_SA }}
+          node-version: 20
 
-      - uses: google-github-actions/setup-gcloud@e427ad8a34f8676edf47cf7d7925499adf3eb74f # v2
+      - name: Install Railway CLI
+        run: npm i -g @railway/cli
 
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
-
-      - name: Build & push image
-        run: |
-          IMG="${REGION}-docker.pkg.dev/${PROJECT}/gatherly/gatherly-api"
-          docker build -t "$IMG:${{ github.sha }}" -t "$IMG:latest" gatherly-be
-          docker push "$IMG:${{ github.sha }}"
-          docker push "$IMG:latest"
-
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy "$SERVICE" \
-            --image "${REGION}-docker.pkg.dev/${PROJECT}/gatherly/gatherly-api:${{ github.sha }}" \
-            --region "$REGION" --quiet
-          echo "Deployed: $(gcloud run services describe "$SERVICE" --region "$REGION" --format='value(status.url)')"
+      - name: Deploy gatherly-be to Railway
+        working-directory: gatherly-be
+        env:
+          # Project-scoped token from Railway → project "gatherly" → Settings →
+          # Tokens (scoped to the production environment). Add it as the repo
+          # secret RAILWAY_TOKEN.
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        # --ci streams build logs, waits for the deploy to finish, and exits
+        # non-zero on failure (so a broken deploy fails the job).
+        run: railway up --service gatherly-be --ci
