@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from gatherly.deps import audit_action, get_current_user, get_db, rate_limit, require_capability
 from gatherly.models import User
 from gatherly.rbac import Capability
+from gatherly.repositories.guests import GuestRepository
 from gatherly.schemas.base import DataResponse
 from gatherly.schemas.guest import (
     CheckInRequest,
@@ -54,6 +55,19 @@ async def list_guests(
         status=status,
         query=q,
     )
+    return DataResponse(data=[GuestResponse.model_validate(guest) for guest in guests])
+
+
+@router.get("/{event_id}/guests/summary")
+async def guest_summary(
+    event_id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    _user: Annotated[User, Depends(get_current_user)],
+    _cap: Annotated[None, Depends(_read)],
+    _rl: Annotated[None, Depends(_read_rl)],
+) -> DataResponse[list[GuestResponse]]:
+    """Shareable read-only guest summary for an event."""
+    guests = await GuestRepository(db).list_for_event(event_id)
     return DataResponse(data=[GuestResponse.model_validate(guest) for guest in guests])
 
 
