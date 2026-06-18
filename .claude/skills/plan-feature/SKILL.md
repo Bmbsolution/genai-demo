@@ -27,7 +27,7 @@ You produce a concrete, reviewable plan with explicit acceptance criteria. No co
 2. ...
 
 ## Data Model Changes
-<New tables, columns, or relationships, with migration strategy. "None" if not applicable.>
+<New tables, columns, or relationships (SQLAlchemy models; SQLite create_all — no Alembic). Note if a local DB reset is needed. "None" if not applicable.>
 
 ## API Surface Changes
 <New or modified endpoints, with method/path/request/response shapes. "None" if not applicable.>
@@ -50,10 +50,10 @@ You produce a concrete, reviewable plan with explicit acceptance criteria. No co
 - [ ] Frontend component tests for interactive elements
 
 ### AC-3 — Security
-- [ ] All 5 guards present on every new endpoint
+- [ ] Guards present on every new endpoint (S1/S3/S4/S5 as deps; S2 owner-scoped in the service layer)
 - [ ] `/audit-security` clean
 - [ ] No secrets, tokens, or PII in code or logs
-- [ ] Workspace isolation verified (cross-workspace probe in tests)
+- [ ] Ownership isolation verified (a non-owner probe returns 404 in tests)
 
 ### AC-4 — Quality
 - [ ] `/simplify` clean — no duplication
@@ -62,7 +62,7 @@ You produce a concrete, reviewable plan with explicit acceptance criteria. No co
 - [ ] No orphaned helpers; reuse existing utilities
 
 ### AC-5 — Lint & Build
-- [ ] `make lint` (ruff + mypy) and `make test` (or `make test-cov` for the ≥80% gate) green
+- [ ] `ruff check` + `mypy --strict src` and `pytest` (with coverage for the ≥80% gate) green
 - [ ] `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm test`, and `pnpm build` green
 - [ ] No new ignored warnings
 
@@ -96,5 +96,5 @@ You produce a concrete, reviewable plan with explicit acceptance criteria. No co
 
 - Write code. This is a planning phase.
 - Skip any AC section. All 6 are mandatory.
-- Hand-wave acceptance criteria. "Tests pass" is not an AC; "POST /scorecards/{id}/versions returns 201 with version body, 403 for viewers, 404 for missing scorecard" is an AC.
+- Hand-wave acceptance criteria. "Tests pass" is not an AC; "POST /events/{id}/guests returns 201 with the guest body, 404 for an event the caller doesn't own, 422 for a missing email" is an AC.
 - Plan beyond the requested scope. If the user asks for X, plan X — don't slip in Y as a "while we're here."

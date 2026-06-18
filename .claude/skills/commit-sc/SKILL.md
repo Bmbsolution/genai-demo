@@ -1,6 +1,6 @@
 ---
 name: commit-sc
-description: Commit changes with the dev-servicecat git identity using Conventional Commits format. Use after every atomic step in the REPL loop.
+description: Commit changes with the dev-gatherly git identity using Conventional Commits format. Use after every atomic step in the REPL loop.
 allowed-tools: Bash, Read
 ---
 
@@ -10,7 +10,7 @@ You commit the current staged (or unstaged) changes with the project's git ident
 
 ## Process
 
-1. **Verify identity is set** — `git config user.name` should be `dev-servicecat`. The session-start hook sets this; if missing, set it now.
+1. **Verify identity is set** — `git config user.name` should be `dev-gatherly`. The session-start hook sets this; if missing, set it now.
 2. **Check the diff** — `git diff --staged` (or `git diff` if nothing staged). Refuse to commit empty or accidentally massive diffs (>500 lines without explicit confirmation).
 3. **Determine the commit type** based on the diff:
    - `feat` — new user-facing capability
@@ -22,7 +22,7 @@ You commit the current staged (or unstaged) changes with the project's git ident
    - `perf` — performance improvement
    - `ci` — CI/CD changes
    - `security` — security-related fix or hardening
-4. **Determine the scope** — typically one of: `be`, `fe`, `db`, `infra`, `scorecards`, `findings`, `auth`, `audit`, `docs`.
+4. **Determine the scope** — typically one of: `be`, `fe`, `db`, `infra`, `events`, `guests`, `rsvp`, `billing`, `auth`, `audit`, `docs`.
 5. **Write the message:**
 
 ```
@@ -40,16 +40,17 @@ trailer is optional in this local-only setup (no GitHub remote/issues).
 
 6. **Commit and verify** — commit, then show the resulting hash. The session-start
    hook sets the identity; if it didn't run, pass it explicitly:
-   `git -c user.name='dev-servicecat' -c user.email='dev@servicecat.local' commit -F <msgfile>`.
+   `git -c user.name='dev-gatherly' -c user.email='dev@gatherly.local' commit -F <msgfile>`.
    Use a `-F` message file (or a here-doc) for multi-line bodies.
 
 ## Examples
 
 ```
-feat(be): add scorecard versioning with side-by-side comparison
+feat(events): add event capacity limits with waitlist
 
-Versions are immutable once created. Comparison view shows criterion-level
-deltas across runs, not just total scores. The diff endpoint paginates.
+Hosts can cap an event's headcount. Once full, new RSVPs land on a
+waitlist and are promoted automatically when a guest cancels. The
+guest-list endpoint paginates.
 
 Refs: F-12
 
@@ -57,23 +58,23 @@ Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```
 
 ```
-fix(scorecards): handle repos with no main branch in clone step
+fix(rsvp): handle duplicate RSVP submissions for the same guest
 
-Some legacy services use 'master' or 'develop'. The runner now respects
-the service's configured branch (defaults to 'main' but uses HEAD as
-final fallback).
+A guest hitting the public RSVP link twice previously created two rows.
+The handler now upserts on (event_id, email) and returns the existing
+RSVP unchanged.
 
 Refs: F-08, fixes #143
 ```
 
 ```
-security(be): require admin capability for prod environment promotion
+security(be): require admin capability for event deletion
 
-Promotion to prod was previously gated only by capability scorecard:run,
-which Maintainers have. This adds the explicit env:promote:prod
-capability check and updates the default role bindings.
+Deletion was previously gated only by capability event:write, which
+Hosts have. This adds the explicit event:delete capability check (Admin
+only) and updates the default role bindings.
 
-Refs: F-15, audit finding SC-A-2026-05-12-44
+Refs: F-15, audit finding GA-A-2026-05-12-44
 ```
 
 ## Refusing to commit
@@ -82,7 +83,7 @@ You refuse if:
 
 - `--no-verify` is in the message or any flag
 - The branch is `main` or `master` and the user isn't explicitly overriding
-- Tests are failing locally (run `make test` to check; if it fails, refuse)
+- Tests are failing locally (run the backend test suite to check — `.venv/bin/python -m pytest` on macOS/Linux, since the Makefile is Windows-only; if it fails, refuse)
 - Audit-security has not been run on the changes
 
 ## What you must NOT do
@@ -91,4 +92,4 @@ You refuse if:
 - Force-push.
 - Commit code containing `console.log`, `print()` debug statements, or `TODO: remove before commit`.
 - Commit changes unrelated to the stated work. If the diff includes an unrelated drive-by edit, ask the user to split.
-- Sign the commit as anyone other than `dev-servicecat`.
+- Sign the commit as anyone other than `dev-gatherly`.

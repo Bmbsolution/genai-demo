@@ -22,12 +22,12 @@ export default function EventsPage() {
   const { ready } = useRequireAuth();
   const t = useTranslations("events");
   const tc = useTranslations("common");
-  const workspaceId = useAuthStore((state) => state.workspaceId);
+  const userId = useAuthStore((state) => state.userId);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["events", workspaceId],
+    queryKey: ["events", userId],
     queryFn: () => apiFetch<EventList>("/api/v1/events"),
-    enabled: ready && Boolean(workspaceId),
+    enabled: ready && Boolean(userId),
   });
 
   if (!ready) return null;

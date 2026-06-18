@@ -49,7 +49,6 @@ export default function SignupPage() {
         method: "POST",
         body: values,
         auth: false,
-        workspace: false,
       });
       await complete(tokens);
     } catch (error) {

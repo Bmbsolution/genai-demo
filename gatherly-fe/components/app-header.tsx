@@ -16,7 +16,7 @@ export function AppHeader() {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations();
-  const workspaceName = useAuthStore((state) => state.workspaceName);
+  const displayName = useAuthStore((state) => state.displayName);
   const clear = useAuthStore((state) => state.clear);
 
   const onLogout = () => {
@@ -32,9 +32,9 @@ export function AppHeader() {
             <PartyPopper className="h-[18px] w-[18px] text-primary-foreground" aria-hidden="true" />
           </span>
           <span className="font-display text-lg font-semibold tracking-tight">{t("app.title")}</span>
-          {workspaceName ? (
+          {displayName ? (
             <span className="hidden truncate border-l border-border pl-2.5 text-sm text-muted-foreground sm:inline">
-              {workspaceName}
+              {displayName}
             </span>
           ) : null}
           <nav className="ml-2 flex items-center gap-1 sm:ml-6">
@@ -68,7 +68,7 @@ export function AppHeader() {
                 : "text-muted-foreground hover:border-brand/40 hover:text-brand",
             )}
           >
-            {(workspaceName ?? "·").slice(0, 2).toUpperCase()}
+            {(displayName ?? "·").slice(0, 2).toUpperCase()}
           </Link>
           <Button variant="ghost" size="sm" onClick={onLogout}>
             <LogOut className="h-4 w-4 sm:mr-2" />

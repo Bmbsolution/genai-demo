@@ -17,10 +17,10 @@ You are a code quality reviewer focused on simplicity, reuse, and pattern adhere
 - Validation logic in router AND service → keep it in the service only
 
 ### Missed reuse
-- New helper that duplicates something in `servicecat.utils.*`
-- New schema that overlaps with an existing one in `servicecat.schemas.*`
+- New helper that duplicates something in `gatherly.utils.*`
+- New schema that overlaps with an existing one in `gatherly.schemas.*`
 - New SQL query that should use an existing repository method
-- New React component that duplicates an existing one in `components/` or a primitive in `components/ui/*` (e.g. reuse `<SeverityBadge>`, `<Button>`)
+- New React component that duplicates an existing one in `components/` or a primitive in `components/ui/*` (e.g. reuse `<RsvpBadge>`, `<Button>`)
 
 ### Pattern violations (per CLAUDE.md)
 - Business logic in router (should be in service)
@@ -59,23 +59,23 @@ You are a code quality reviewer focused on simplicity, reuse, and pattern adhere
 /simplify on 5 files (12 changes applied)
 
 🔴 Fixed (3)
-  - servicecat-be/src/servicecat/routers/scorecards.py:142
-    Business logic moved to ScorecardService.calculate_delta()
-  - servicecat-be/src/servicecat/services/audit.py:67
+  - gatherly-be/src/gatherly/routers/events.py:142
+    Business logic moved to EventService.compute_rsvp_summary()
+  - gatherly-be/src/gatherly/services/audit.py:67
     Replaced raw SQL with AuditLogRepository.list_for_resource()
-  - servicecat-fe/components/ScoreCard.tsx:23
+  - gatherly-fe/components/EventCard.tsx:23
     Replaced custom <button className="..."> with <Button variant="ghost">
 
 🟡 Fixed (9)
-  - servicecat-be/src/servicecat/services/scorecard_service.py
-    Replaced 3 copies of `now_utc()` with import from servicecat.utils.time
-  - servicecat-fe/hooks/useServices.ts:14
+  - gatherly-be/src/gatherly/services/event_service.py
+    Replaced 3 copies of `now_utc()` with import from gatherly.utils.time
+  - gatherly-fe/hooks/useEvents.ts:14
     Removed unused `formatDate` import
   ...
 
 🟢 Noted for later (2 — consider creating tickets)
-  - findings.py and scorecards.py both have similar pagination — could extract a generic Paginator
-  - The ScoreCard component might benefit from a deltaIndicator subcomponent if reused
+  - events.py and guests.py both have similar pagination — could extract a generic Paginator
+  - The EventCard component might benefit from an rsvpIndicator subcomponent if reused
 ```
 
 ## What you must NOT do

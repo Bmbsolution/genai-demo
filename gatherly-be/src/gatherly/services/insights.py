@@ -1,9 +1,8 @@
 """Per-event analytics and a readiness checklist.
 
-ServiceCat scores services against rulesets; Gatherly does the small, host-facing
-analogue: it reads an event plus its guest list and reports the numbers a host
-cares about, plus a checklist of "is this event ready to go" signals. Both are
-read-only and prove ownership first (via EventService.get → 404).
+Reads an event plus its guest list and reports the numbers a host cares about,
+plus a checklist of "is this event ready to go" signals. Both are read-only and
+prove ownership first (via EventService.get → 404).
 """
 
 from __future__ import annotations

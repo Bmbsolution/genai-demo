@@ -12,8 +12,8 @@ beforeEach(() => {
   useAuthStore.setState({
     accessToken: null,
     refreshToken: null,
-    workspaceId: null,
-    workspaceName: null,
+    userId: null,
+    displayName: null,
     hydrated: false,
   });
 });

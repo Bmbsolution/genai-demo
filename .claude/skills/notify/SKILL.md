@@ -8,13 +8,13 @@ allowed-tools: Bash, Read
 
 > **Local setup:** requires the Slack MCP (`SLACK_BOT_TOKEN`, `SLACK_TEAM_ID`), not configured in this repo. Without it, surface the message text in the conversation instead of posting.
 
-You send Slack messages on behalf of ServiceCat. Messages are concise, actionable, and routed to the right channel.
+You send Slack messages on behalf of Gatherly. Messages are concise, actionable, and routed to the right channel.
 
 ## Invocation
 
 ```
 /notify <channel> <message>
-/notify finding SC-F-1234              # Send a finding alert to the owner team
+/notify finding GA-F-1234              # Send a readiness-check alert to the event host
 /notify pr <pr-number>                  # Announce a PR-ready status
 /notify ci-fail <run-id>                # Broadcast a CI failure
 /notify deploy <env>                    # Announce a deployment
@@ -22,13 +22,13 @@ You send Slack messages on behalf of ServiceCat. Messages are concise, actionabl
 
 ## Templates
 
-### Finding alert (auto-routing)
+### Readiness-check alert (auto-routing)
 ```
-🟠 New HIGH severity finding on `payment-svc`
+🟠 New HIGH severity readiness check failed on `summer-launch-party`
 
-Scorecard: Security
-Criterion: no_security_headers
-Evidence: nginx/default.conf — missing X-Frame-Options, CSP
+Checklist: Event Readiness
+Check: within_capacity
+Evidence: 142 RSVP=yes exceeds capacity of 120
 
 Auto-fixable: ✅ — queued for /work-findings
 Track: <link to finding>
@@ -36,11 +36,11 @@ Track: <link to finding>
 
 ### CI failure
 ```
-🚨 CI failed on `feat/F-12-scorecard-versioning`
+🚨 CI failed on `feat/waitlist-auto-promote`
 
 Job: test (run #4523)
-Failed: tests/services/test_scorecard_service.py::test_create_version_concurrent
-Cause: race condition in version creation
+Failed: tests/services/test_guest_service.py::test_promote_waitlisted_concurrent
+Cause: race condition in waitlist promotion
 
 Diagnostics: <link to /devops report>
 Triggered by: @<user>
@@ -50,8 +50,8 @@ Triggered by: @<user>
 ```
 👀 PR ready for review
 
-#87 — feat(be): add scorecard versioning with comparison
-Branch: feat/F-12-scorecard-versioning
+#87 — feat(be): add event readiness checklist with comparison
+Branch: feat/F-12-readiness-checklist
 Tests: ✅ 147 pass | Audit: ✅ clean | Review: ✅ no critical bugs
 
 → <PR link>
@@ -61,8 +61,8 @@ Tests: ✅ 147 pass | Audit: ✅ clean | Review: ✅ no critical bugs
 ```
 🚀 Deployed to `staging`
 
-Commit: a1b2c3d feat(be): add scorecard versioning
-By: @dev-servicecat (auto)
+Commit: a1b2c3d feat(be): add event readiness checklist
+By: @dev-gatherly (auto)
 Pipeline: <link>
 Rollback: gh workflow run rollback.yml -F env=staging
 ```
@@ -71,8 +71,8 @@ Rollback: gh workflow run rollback.yml -F env=staging
 ```
 🔴 P0 — production incident
 
-Issue: cross-workspace data leakage in scoring API
-Detected by: /audit-security (finding SC-A-2026-05-12-44)
+Issue: cross-owner data leakage in guests API
+Detected by: /audit-security (finding GA-A-2026-05-12-44)
 Triage: <issue link>
 Page on-call: <pagerduty link>
 ```
@@ -81,14 +81,14 @@ Page on-call: <pagerduty link>
 
 | Source | Default channel |
 |--------|-----------------|
-| Finding for service `<svc>` | `#<owner-team-slack>` (from team config) |
-| CI failure on main | `#servicecat-alerts` |
-| PR ready | `#servicecat-prs` |
-| Deployment | `#servicecat-deploys` |
-| P0/P1 incident | `#servicecat-alerts` AND `#incidents` |
-| General announcement | `#servicecat-team` |
+| Readiness check for event `<event>` | `#<host-slack>` (from host config) |
+| CI failure on main | `#gatherly-alerts` |
+| PR ready | `#gatherly-prs` |
+| Deployment | `#gatherly-deploys` |
+| P0/P1 incident | `#gatherly-alerts` AND `#incidents` |
+| General announcement | `#gatherly-team` |
 
-If the owner team has no Slack channel configured: fall back to `#servicecat-orphans` and add a note that the finding needs ownership routing setup.
+If the event host has no Slack channel configured: fall back to `#gatherly-orphans` and add a note that the finding needs host routing setup.
 
 ## Message rules
 

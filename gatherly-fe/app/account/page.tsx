@@ -57,12 +57,12 @@ export default function AccountPage() {
   const tc = useTranslations("common");
   const router = useRouter();
   const queryClient = useQueryClient();
-  const setWorkspace = useAuthStore((state) => state.setWorkspace);
+  const setUser = useAuthStore((state) => state.setUser);
   const clear = useAuthStore((state) => state.clear);
 
   const me = useQuery({
     queryKey: ["me"],
-    queryFn: () => apiFetch<Data<User>>("/api/v1/auth/me", { workspace: false }).then((r) => r.data),
+    queryFn: () => apiFetch<Data<User>>("/api/v1/auth/me").then((r) => r.data),
     enabled: ready,
   });
 
@@ -91,7 +91,7 @@ export default function AccountPage() {
       }).then((r) => r.data),
     onSuccess: (user) => {
       queryClient.setQueryData(["me"], user);
-      setWorkspace({ id: user.id, name: user.display_name });
+      setUser({ id: user.id, name: user.display_name });
       toast.success(t("saved"));
     },
     onError: () => toast.error(t("saveFailed")),

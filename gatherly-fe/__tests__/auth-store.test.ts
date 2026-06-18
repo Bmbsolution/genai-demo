@@ -5,8 +5,8 @@ import { useAuthStore } from "@/lib/store/auth";
 const EMPTY = {
   accessToken: null,
   refreshToken: null,
-  workspaceId: null,
-  workspaceName: null,
+  userId: null,
+  displayName: null,
   hydrated: false,
 } as const;
 
@@ -22,26 +22,26 @@ describe("useAuthStore", () => {
     expect(useAuthStore.getState().refreshToken).toBe("r");
   });
 
-  it("setWorkspace stores the active workspace", () => {
-    useAuthStore.getState().setWorkspace({ id: "w1", name: "Acme" });
-    expect(useAuthStore.getState().workspaceId).toBe("w1");
-    expect(useAuthStore.getState().workspaceName).toBe("Acme");
+  it("setUser stores the signed-in user", () => {
+    useAuthStore.getState().setUser({ id: "u1", name: "Alice" });
+    expect(useAuthStore.getState().userId).toBe("u1");
+    expect(useAuthStore.getState().displayName).toBe("Alice");
   });
 
   it("clear resets the session but leaves hydrated intact", () => {
     useAuthStore.setState({
       accessToken: "a",
       refreshToken: "r",
-      workspaceId: "w1",
-      workspaceName: "Acme",
+      userId: "u1",
+      displayName: "Alice",
       hydrated: true,
     });
     useAuthStore.getState().clear();
     const state = useAuthStore.getState();
     expect(state.accessToken).toBeNull();
     expect(state.refreshToken).toBeNull();
-    expect(state.workspaceId).toBeNull();
-    expect(state.workspaceName).toBeNull();
+    expect(state.userId).toBeNull();
+    expect(state.displayName).toBeNull();
     // hydrated is per-load runtime state, not reset by clear().
     expect(state.hydrated).toBe(true);
   });
@@ -54,7 +54,7 @@ describe("useAuthStore", () => {
 
   it("persists only the session fields, not hydrated (partialize)", () => {
     useAuthStore.getState().setSession({ accessToken: "a", refreshToken: "r" });
-    useAuthStore.getState().setWorkspace({ id: "w1", name: "Acme" });
+    useAuthStore.getState().setUser({ id: "u1", name: "Alice" });
     useAuthStore.getState().setHydrated();
 
     const raw = localStorage.getItem("gatherly-auth");
@@ -63,8 +63,8 @@ describe("useAuthStore", () => {
     expect(persisted.state).toMatchObject({
       accessToken: "a",
       refreshToken: "r",
-      workspaceId: "w1",
-      workspaceName: "Acme",
+      userId: "u1",
+      displayName: "Alice",
     });
     expect(persisted.state).not.toHaveProperty("hydrated");
   });

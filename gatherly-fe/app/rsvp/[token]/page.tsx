@@ -66,9 +66,7 @@ export default function RsvpPage() {
   const rsvp = useQuery({
     queryKey: ["rsvp", token],
     queryFn: () =>
-      apiFetch<Data<RsvpView>>(`/api/v1/rsvp/${token}`, { auth: false, workspace: false }).then(
-        (res) => res.data,
-      ),
+      apiFetch<Data<RsvpView>>(`/api/v1/rsvp/${token}`, { auth: false }).then((res) => res.data),
     retry: false,
   });
 
@@ -88,7 +86,6 @@ export default function RsvpPage() {
         method: "POST",
         body: { rsvp_status: status, plus_one: plusOne, dietary_notes: dietary.trim() || null },
         auth: false,
-        workspace: false,
       }).then((res) => res.data),
     onSuccess: (data) => {
       queryClient.setQueryData(["rsvp", token], data);

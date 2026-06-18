@@ -74,7 +74,6 @@ export function GoogleSignInButton() {
               method: "POST",
               body: { id_token: response.credential },
               auth: false,
-              workspace: false,
             })
               .then((tokens) => handlers.current.complete(tokens))
               .catch(() => toast.error(handlers.current.tc("error")));

@@ -34,7 +34,7 @@
 
 - **Backend:** FastAPI + Python 3.12 (`gatherly-be/`) — deployed on GCP Cloud Run
 - **Frontend:** Next.js 14 + Tailwind + shadcn/ui (`gatherly-fe/`) — deployed on Netlify
-- **Database:** PostgreSQL with row-level security (Cloud SQL)
+- **Database:** SQLite by default (zero infra); Postgres in production (Cloud SQL). Tenant isolation by owner scoping
 - **Auth:** JWT access/refresh + Google Sign-In
 - **LLM:** Anthropic Claude Sonnet 4.6 (agent-powered event audits)
 - **CI/CD:** GitHub Actions (CI + backend → Cloud Run); Netlify (frontend)
@@ -46,18 +46,21 @@
 ```bash
 git clone https://github.com/Bmbsolution/genai-demo.git gatherly
 cd gatherly
-docker compose up -d                 # Postgres + Redis
 
-# Backend
-cd gatherly-be && make seed && make run &
+# Backend — FastAPI on SQLite, no external infra (port 8002)
+cd gatherly-be
+python3 -m venv .venv && .venv/bin/python -m pip install -e .
+.venv/bin/python -m gatherly.scripts.seed
+.venv/bin/python -m uvicorn gatherly.main:app --port 8002 &
 
-# Frontend
-cd gatherly-fe && pnpm install && pnpm dev &
+# Frontend (port 3000)
+cd ../gatherly-fe && pnpm install && pnpm dev &
 
 claude                               # skills auto-load from .claude/skills/
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000`. Demo host: `host@gatherly.app` / `gatherly-host`.
+(Or just run `/run-app` inside `claude` to launch and drive both.)
 
 ---
 

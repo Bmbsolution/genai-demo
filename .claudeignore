@@ -6,10 +6,6 @@
 *.key
 .claude/settings.local.json
 
-# Ephemeral read-only repo clones produced by scorecard runs — never load into context
-/tmp/servicecat-clones/
-.repo-cache/
-
 # Build output and dependencies — noise
 node_modules/
 .next/

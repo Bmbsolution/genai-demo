@@ -12,13 +12,13 @@ genuinely verify behavior — not tests that merely exercise code for coverage.
 ## Standard (AC-2 from CLAUDE.md)
 - Unit tests for service-layer logic.
 - Router/integration tests for each endpoint: happy path **plus** at least two edge cases.
-- A security test per endpoint: e.g. a viewer gets 403, a cross-workspace request gets 404.
+- A security test per endpoint: e.g. a non-owner gets 404 (ownership, S2), and a host attempting an admin-only action (deleting an event) gets 403 (S3).
 - ≥80% coverage on the new code.
 
 ## How to work
 1. Read the code under test and the nearest existing tests in `gatherly-be/tests/` — match their structure, fixtures, and async style.
 2. Write tests that assert concrete outcomes (status codes, response shape, DB state, raised typed errors) — not just "it didn't throw".
-3. Run them: `cd gatherly-be && make test` (or `pytest <path>`). Iterate until green.
+3. Run them: `cd gatherly-be && .venv/bin/python -m pytest` (the Makefile is Windows-only). Iterate until green.
 4. If a test reveals a real bug in the production code, STOP and report it — do NOT weaken the assertion to make it pass.
 
 ## Output

@@ -20,7 +20,7 @@ export function BillingCard({ enabled }: { enabled: boolean }) {
 
   const billing = useQuery({
     queryKey: ["billing"],
-    queryFn: () => apiFetch<Data<Overview>>("/api/v1/billing", { workspace: false }).then((r) => r.data),
+    queryFn: () => apiFetch<Data<Overview>>("/api/v1/billing").then((r) => r.data),
     enabled,
   });
 
@@ -28,7 +28,6 @@ export function BillingCard({ enabled }: { enabled: boolean }) {
     mutationFn: async () => {
       const checkout = await apiFetch<Data<Checkout>>("/api/v1/billing/checkout", {
         method: "POST",
-        workspace: false,
       });
       // Real Stripe returns a hosted URL to redirect to; the mock provider has
       // us complete the upgrade in-app.
@@ -36,7 +35,7 @@ export function BillingCard({ enabled }: { enabled: boolean }) {
         window.location.href = checkout.data.url;
         return;
       }
-      await apiFetch("/api/v1/billing/upgrade", { method: "POST", workspace: false });
+      await apiFetch("/api/v1/billing/upgrade", { method: "POST" });
     },
     onSuccess: async () => {
       toast.success(t("upgraded"));

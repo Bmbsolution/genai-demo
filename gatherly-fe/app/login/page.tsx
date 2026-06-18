@@ -44,7 +44,6 @@ export default function LoginPage() {
         method: "POST",
         body: values,
         auth: false,
-        workspace: false,
       });
       await complete(tokens);
     } catch {

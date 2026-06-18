@@ -1,8 +1,7 @@
 # Gatherly — frontend
 
-Next.js 14 + Tailwind + shadcn/ui, on the "Instrument" design system shared
-with ServiceCat. The demo app for the talk: plan events, invite guests,
-collect RSVPs.
+Next.js 14 + Tailwind + shadcn/ui, on the "Instrument" design system. The demo
+app for the talk: plan events, invite guests, collect RSVPs.
 
 ## Run
 
