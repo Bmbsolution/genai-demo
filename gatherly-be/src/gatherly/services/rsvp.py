@@ -30,7 +30,7 @@ class RsvpService:
         self._events = EventRepository(db)
         self._email = get_email_sender()
 
-    async def view(self, invite_token: str) -> tuple[Guest, Event]:
+    async def _load(self, invite_token: str) -> tuple[Guest, Event]:
         guest = await self._guests.get_by_token(invite_token)
         if guest is None:
             raise NotFoundError("Invitation not found")
@@ -39,8 +39,22 @@ class RsvpService:
             raise NotFoundError("Invitation not found")
         return guest, event
 
-    async def respond(self, invite_token: str, payload: RsvpUpdateRequest) -> tuple[Guest, Event]:
-        guest, event = await self.view(invite_token)
+    async def _position(self, guest: Guest) -> int | None:
+        """The guest's own waitlist spot, or ``None`` if they're not waitlisted."""
+        if guest.rsvp_status != RsvpStatus.WAITLISTED.value:
+            return None
+        return await self._guests.waitlist_position(guest)
+
+    async def view(self, invite_token: str) -> tuple[Guest, Event, int | None]:
+        guest, event = await self._load(invite_token)
+        return guest, event, await self._position(guest)
+
+    async def respond(
+        self,
+        invite_token: str,
+        payload: RsvpUpdateRequest,
+    ) -> tuple[Guest, Event, int | None]:
+        guest, event = await self._load(invite_token)
         was_attending = guest.rsvp_status == RsvpStatus.YES.value
         status = payload.rsvp_status
 
@@ -61,7 +75,7 @@ class RsvpService:
             await self._promote_from_waitlist(event)
 
         await self._db.refresh(guest)
-        return guest, event
+        return guest, event, await self._position(guest)
 
     async def _promote_from_waitlist(self, event: Event) -> None:
         """Move the longest-waiting guest off the waitlist when a seat frees up.

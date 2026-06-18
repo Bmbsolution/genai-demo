@@ -175,6 +175,7 @@
       "email": "Courriel",
       "emailInvalid": "Saisissez un courriel valide.",
       "rsvp": "Réponse",
+      "waitlistPosition": "n° {position}",
       "plusOne": "+1",
       "dietary": "Régime",
       "checkedIn": "Enregistré·e",
@@ -197,6 +198,7 @@
     "dietaryLabel": "Restrictions alimentaires (facultatif)",
     "addToCalendar": "Ajouter au calendrier",
     "waitlistedNote": "Vous êtes sur la liste d'attente — nous vous préviendrons si une place se libère.",
+    "waitlistedPosition": "Vous êtes en position {position} sur la liste d'attente — nous vous préviendrons si une place se libère.",
     "notFoundTitle": "Invitation introuvable",
     "notFound": "Ce lien d'invitation est invalide ou expiré.",
     "status": {

@@ -74,6 +74,7 @@ export interface components {
       checked_in_at: string | null;
       invite_token: string;
       created_at: string;
+      waitlist_position?: number | null;
     };
     GuestCreateRequest: {
       name: string;
@@ -123,6 +124,7 @@ export interface components {
       rsvp_status: string;
       plus_one: boolean;
       dietary_notes: string | null;
+      waitlist_position?: number | null;
       event: {
         title: string;
         description: string | null;

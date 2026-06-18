@@ -30,6 +30,8 @@ class GuestResponse(GatherlyBaseModel):
     checked_in_at: dt.datetime | None
     invite_token: str
     created_at: dt.datetime
+    # 1-based FIFO spot in the waitlist; ``None`` unless rsvp_status is "waitlisted".
+    waitlist_position: int | None = None
 
 
 class CheckInRequest(GatherlyBaseModel):

@@ -33,6 +33,8 @@ class RsvpView(GatherlyBaseModel):
     rsvp_status: str
     plus_one: bool
     dietary_notes: str | None
+    # The guest's own 1-based waitlist spot; ``None`` unless they're waitlisted.
+    waitlist_position: int | None = None
     event: RsvpEventInfo
 
 
