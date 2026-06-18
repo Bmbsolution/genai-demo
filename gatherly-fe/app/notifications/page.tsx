@@ -152,20 +152,22 @@ export default function NotificationsPage() {
 
         <div className="mb-5 inline-flex rounded-lg border bg-muted/40 p-1">
           {(["all", "unread"] as const).map((value) => (
-            <button
+            <Button
               key={value}
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => setFilter(value)}
               aria-pressed={filter === value}
               className={cn(
-                "rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "h-8 px-3",
                 filter === value
-                  ? "bg-background text-foreground shadow-sm"
+                  ? "bg-background text-foreground shadow-sm hover:bg-background"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               {t(`filter.${value}`)}
-            </button>
+            </Button>
           ))}
         </div>
 
