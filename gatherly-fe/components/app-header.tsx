@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
+import { NotificationBell } from "@/components/notification-bell";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,7 @@ export function AppHeader() {
           </nav>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
+          <NotificationBell />
           <ThemeToggle />
           <Link
             href="/account"
