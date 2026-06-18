@@ -38,4 +38,15 @@ describe("formatRelativeTime", () => {
     const justNow = new Date(NOW.getTime() - 5_000).toISOString();
     expect(formatRelativeTime(justNow)).toBe("5 seconds ago");
   });
+
+  it("reads a timezone-less API timestamp as UTC, not local time", () => {
+    // The backend emits naive UTC strings (no Z). 10 minutes before NOW in UTC
+    // must read as "10 minutes ago" regardless of the runner's local timezone.
+    expect(formatRelativeTime("2026-06-18T11:50:00")).toBe("10 minutes ago");
+  });
+
+  it("respects an explicit timezone offset when present", () => {
+    // NOW is 12:00Z; 10:00 at +00:00 is two hours earlier.
+    expect(formatRelativeTime("2026-06-18T10:00:00+00:00")).toBe("2 hours ago");
+  });
 });
