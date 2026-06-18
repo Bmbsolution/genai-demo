@@ -6,6 +6,7 @@ from gatherly.models.audit import AuditLog
 from gatherly.models.base import Base
 from gatherly.models.event import Event, EventStatus, EventVisibility
 from gatherly.models.guest import Guest, RsvpStatus
+from gatherly.models.notification import Notification, NotificationType
 from gatherly.models.user import User, UserPlan
 
 __all__ = [
@@ -15,6 +16,8 @@ __all__ = [
     "EventStatus",
     "EventVisibility",
     "Guest",
+    "Notification",
+    "NotificationType",
     "RsvpStatus",
     "User",
     "UserPlan",

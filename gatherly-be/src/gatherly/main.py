@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from gatherly.config import get_settings
 from gatherly.db import init_db
 from gatherly.errors import GatherlyError
-from gatherly.routers import auth, billing, events, guests, rsvp
+from gatherly.routers import auth, billing, events, guests, notifications, rsvp
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
@@ -72,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(guests.router)
     app.include_router(rsvp.router)
     app.include_router(billing.router)
+    app.include_router(notifications.router)
     return app
 
 

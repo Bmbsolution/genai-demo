@@ -25,6 +25,8 @@ class Capability(enum.StrEnum):
     EVENT_DELETE = "event:delete"
     GUEST_READ = "guest:read"
     GUEST_WRITE = "guest:write"
+    NOTIFICATION_READ = "notification:read"
+    NOTIFICATION_WRITE = "notification:write"
 
 
 _HOST_CAPS = frozenset(
@@ -33,6 +35,8 @@ _HOST_CAPS = frozenset(
         Capability.EVENT_WRITE,
         Capability.GUEST_READ,
         Capability.GUEST_WRITE,
+        Capability.NOTIFICATION_READ,
+        Capability.NOTIFICATION_WRITE,
     },
 )
 
