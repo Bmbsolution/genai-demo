@@ -16,6 +16,13 @@ user would see something. "The app" is `gatherly-be/` + `gatherly-fe/`.
 - Python 3.12, `pnpm`, `node` on PATH. No Docker required.
 - **The Makefile is Windows-only** (`PY ?= .venv/Scripts/python.exe`). Do NOT
   use `make run`/`make seed` on macOS/Linux — invoke the venv python directly.
+- **Always run with `PYTHONPATH=src`.** The hatchling *editable* install
+  (`pip install -e .`) writes a `.pth` finder that is flaky across processes —
+  `import gatherly` can work in one invocation and fail with
+  `ModuleNotFoundError: No module named 'gatherly'` in the next (e.g. under
+  `uvicorn`). `PYTHONPATH=src` puts `gatherly` on the path deterministically and
+  sidesteps the editable hook entirely. (Tests already work via `pyproject`'s
+  `pythonpath=["src"]`.)
 
 ## Launch
 
@@ -23,11 +30,15 @@ user would see something. "The app" is `gatherly-be/` + `gatherly-fe/`.
 
 ```bash
 cd gatherly-be
-python3 -m venv .venv                       # first time only
-.venv/bin/python -m pip install -q -e .      # first time only
-.venv/bin/python -m gatherly.scripts.seed    # seed demo host + events (idempotent)
-.venv/bin/python -m uvicorn gatherly.main:app --port 8002 > /tmp/gatherly-be.log 2>&1 &
+python3 -m venv .venv                                   # first time only
+.venv/bin/python -m pip install -q -e .                  # first time only (deps; editable hook is unreliable — see below)
+PYTHONPATH=src .venv/bin/python -m gatherly.scripts.seed # seed demo host + events (idempotent)
+PYTHONPATH=src .venv/bin/python -m uvicorn gatherly.main:app --port 8002 > /tmp/gatherly-be.log 2>&1 &
 ```
+
+If you still hit `ModuleNotFoundError: No module named 'gatherly'`, the editable
+install left a stale/duplicate `.pth` — `PYTHONPATH=src` (above) makes it moot,
+but you can also clean `rm -f ".venv/lib/python3.12/site-packages/_editable_impl_gatherly"*` and reinstall.
 
 Smoke-test it's up:
 ```bash
