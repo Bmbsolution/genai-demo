@@ -1,4 +1,4 @@
-# --- Python (servicecat-be) ---
+# --- Python (gatherly-be) ---
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -16,7 +16,7 @@ htmlcov/
 .coverage.*
 coverage.xml
 
-# --- Node / Next.js (servicecat-fe) ---
+# --- Node / Next.js (gatherly-fe) ---
 node_modules/
 .next/
 out/
@@ -29,9 +29,8 @@ out/
 *.key
 .claude/settings.local.json
 
-# --- Ephemeral repo clones (scorecard analysis) ---
-/tmp/servicecat-clones/
-.repo-cache/
+# --- Local database (SQLite demo) ---
+*.db
 
 # --- OS / editor ---
 .DS_Store

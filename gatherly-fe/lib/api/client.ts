@@ -24,8 +24,6 @@ interface RequestOptions {
   body?: unknown;
   /** Attach the Bearer access token (default true). */
   auth?: boolean;
-  /** Attach the X-Workspace-Id header (default true). */
-  workspace?: boolean;
 }
 
 interface ApiErrorBody {
@@ -72,15 +70,13 @@ function ensureFreshToken(): Promise<string | null> {
   return refreshInFlight;
 }
 
-/** Typed fetch wrapper: attaches auth + workspace headers, refreshes on 401, unwraps errors. */
+/** Typed fetch wrapper: attaches the auth header, refreshes on 401, unwraps errors. */
 export async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, auth = true, workspace = true } = options;
+  const { method = "GET", body, auth = true } = options;
 
   const send = (token: string | null): Promise<Response> => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (auth && token) headers.Authorization = `Bearer ${token}`;
-    const { workspaceId } = useAuthStore.getState();
-    if (workspace && workspaceId) headers["X-Workspace-Id"] = workspaceId;
     return fetch(`${API_BASE}${path}`, {
       method,
       headers,

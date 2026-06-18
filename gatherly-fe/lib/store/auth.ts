@@ -4,11 +4,11 @@ import { persist } from "zustand/middleware";
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
-  workspaceId: string | null;
-  workspaceName: string | null;
+  userId: string | null;
+  displayName: string | null;
   hydrated: boolean;
   setSession: (tokens: { accessToken: string; refreshToken: string }) => void;
-  setWorkspace: (workspace: { id: string; name: string }) => void;
+  setUser: (user: { id: string; name: string }) => void;
   setHydrated: () => void;
   clear: () => void;
 }
@@ -16,8 +16,8 @@ interface AuthState {
 const EMPTY = {
   accessToken: null,
   refreshToken: null,
-  workspaceId: null,
-  workspaceName: null,
+  userId: null,
+  displayName: null,
 } as const;
 
 export const useAuthStore = create<AuthState>()(
@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthState>()(
       ...EMPTY,
       hydrated: false,
       setSession: ({ accessToken, refreshToken }) => set({ accessToken, refreshToken }),
-      setWorkspace: ({ id, name }) => set({ workspaceId: id, workspaceName: name }),
+      setUser: ({ id, name }) => set({ userId: id, displayName: name }),
       setHydrated: () => set({ hydrated: true }),
       clear: () => set({ ...EMPTY }),
     }),
@@ -36,8 +36,8 @@ export const useAuthStore = create<AuthState>()(
       partialize: (state) => ({
         accessToken: state.accessToken,
         refreshToken: state.refreshToken,
-        workspaceId: state.workspaceId,
-        workspaceName: state.workspaceName,
+        userId: state.userId,
+        displayName: state.displayName,
       }),
       onRehydrateStorage: () => (state) => state?.setHydrated(),
     },

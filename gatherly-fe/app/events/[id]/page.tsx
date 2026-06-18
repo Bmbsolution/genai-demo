@@ -59,9 +59,9 @@ export default function EventDetailPage() {
   const eventId = params.id;
   const { ready } = useRequireAuth();
   const t = useTranslations();
-  const workspaceId = useAuthStore((state) => state.workspaceId);
+  const userId = useAuthStore((state) => state.userId);
   const queryClient = useQueryClient();
-  const enabled = ready && Boolean(workspaceId);
+  const enabled = ready && Boolean(userId);
 
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("all");
@@ -140,7 +140,6 @@ export default function EventDetailPage() {
       const res = await fetch(`${API_BASE}/api/v1/events/${eventId}/guests/export`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          ...(workspaceId ? { "X-Workspace-Id": workspaceId } : {}),
         },
       });
       if (!res.ok) throw new Error("export failed");

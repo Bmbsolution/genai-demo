@@ -11,9 +11,10 @@ security-rule violations and report them — you do NOT fix code.
 
 ## What you enforce (read CLAUDE.md first)
 
-Every endpoint must carry all 5 dependency guards:
+Every host-facing endpoint must carry the relevant guards. S1/S3/S4/S5 are FastAPI
+dependencies; S2 is enforced in the service/repository layer:
 - **S1 Auth** — non-public routes depend on `get_current_user`.
-- **S2 Tenant isolation** — every multi-tenant query filters by `workspace_id`; a workspace the caller isn't a member of returns 404 (no existence leak).
+- **S2 Ownership** — every host-owned read/write is scoped to the caller's `owner_id` (e.g. `EventRepository.get_for_owner`); a resource the caller doesn't own returns 404 (no existence leak). There is no `workspace_id` and no RLS.
 - **S3 RBAC** — state-changing routes depend on `require_capability(...)` with the correct capability.
 - **S4 Rate limit** — expensive / unbounded endpoints depend on `rate_limit(...)`.
 - **S5 Audit log** — state-changing or PII-access routes depend on `audit_action(...)`.

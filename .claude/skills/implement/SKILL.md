@@ -22,8 +22,8 @@ specialist subagents** — each in its own context window. You never skip a phas
 For each step in the plan, run the inner cycle:
 
 1. `/explore-codebase` — read what exists; note conventions, neighbors, integration points
-2. **Implement** — use `/new-endpoint` for backend routes, `/new-scorecard` for scorecards, `/frontend-design` for UI. Otherwise edit directly following CLAUDE.md conventions.
-3. `make lint && make test` (backend); `pnpm lint && pnpm build && pnpm test` (frontend)
+2. **Implement** — use `/new-endpoint` for backend routes, `/new-scorecard` for readiness checks, `/frontend-design` for UI. Otherwise edit directly following CLAUDE.md conventions.
+3. `ruff check && mypy --strict src && pytest` (backend); `pnpm lint && pnpm build && pnpm test` (frontend)
 4. If anything fails: enter the inner fix loop (max 3 attempts, then escalate)
 5. `/simplify` — quality pass
 6. `/commit-sc` — atomic commit per step
@@ -35,7 +35,7 @@ each in its own isolated context:
 
 - **always:** `code-reviewer` (adversarial bug hunt) + `security-auditor` (S1–S8 guards) + `test-writer` (AC-2 tests)
 - **if `gatherly-fe/**` changed:** also `frontend-reviewer`
-- **if a migration or model changed:** also `migration-reviewer`
+- **if a model or schema changed:** also `migration-reviewer`
 
 Collect every report. These are your senior reviewers: a CRITICAL/HIGH finding from any of
 them, or a failing test the `test-writer` surfaced, is a **stop** — feed it into the inner

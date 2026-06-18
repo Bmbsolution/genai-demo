@@ -21,11 +21,11 @@ You are a thorough code reviewer hunting for real bugs. You produce a report ran
 ## Categories of bugs to hunt
 
 ### Critical
-- Race conditions on shared state (Redis counters, in-memory caches)
+- Race conditions on shared state (in-memory rate-limit counters, caches)
 - Unbounded loops or recursion
 - N+1 queries on hot paths
 - Missing transactions on multi-table writes
-- Cross-tenant data leakage (verify S2 even if `/audit-security` passed)
+- Cross-owner data leakage (verify S2 owner_id scoping even if `/audit-security` passed)
 - Resource leaks (open connections, file handles, goroutines/tasks)
 - Deadlock potential
 
@@ -66,7 +66,7 @@ You are a thorough code reviewer hunting for real bugs. You produce a report ran
 ## Report format
 
 ```
-PR Review — F-12: Add scorecard versioning with comparison
+PR Review — F-12: Add event editing from the detail page
 
 Files changed: 11
 Net lines: +487 / -23
@@ -74,35 +74,33 @@ Tests: ✅ pass locally
 
 CRITICAL (1)
 ─────────────
-🐛 Race condition in version creation
-  servicecat-be/src/servicecat/services/scorecard_runner.py:142-167
-  Issue: create_version() reads max(version_number) then writes version_number+1.
-         Two concurrent calls with the same scorecard_id will produce duplicate
-         version numbers.
-  Repro: Hit POST /scorecards/{id}/versions twice in parallel.
-  Fix:   Use a unique constraint on (scorecard_id, version_number) and retry on
-         IntegrityError, OR use an atomic SELECT FOR UPDATE.
+🐛 Race condition in guest count update
+  gatherly-be/src/gatherly/services/event_service.py:142-167
+  Issue: update_guest_count() reads current count then writes count+1.
+         Two concurrent RSVPs for the same event will lose one increment.
+  Repro: Hit POST /events/{id}/guests twice in parallel.
+  Fix:   Use an atomic UPDATE ... SET count = count + 1, OR a SELECT FOR UPDATE.
 
 HIGH (2)
 ─────────────
-🐛 Comparison endpoint loads all scores in memory
-  servicecat-be/src/servicecat/routers/scorecard_runs.py:223
-  Issue: For a scorecard with 50 services x 200 runs = 10K rows, this OOMs.
-  Fix:   Use cursor pagination or limit to 2 specific runs at a time.
+🐛 Guest list endpoint loads all guests in memory
+  gatherly-be/src/gatherly/routers/events.py:223
+  Issue: For an event with 10K guests, this OOMs.
+  Fix:   Use cursor pagination or limit the page size.
 
-🐛 Frontend doesn't handle empty score history
-  servicecat-fe/components/ScoreComparisonView.tsx:34
-  Issue: Crashes with "Cannot read property 'value' of undefined" when a service
-         has no score yet for a comparison version.
-  Fix:   Check for undefined and render an empty cell with "—" instead.
+🐛 Frontend doesn't handle an event with no guests yet
+  gatherly-fe/components/GuestListView.tsx:34
+  Issue: Crashes with "Cannot read property 'status' of undefined" when an event
+         has no RSVPs yet.
+  Fix:   Check for undefined and render an empty state instead.
 
 MEDIUM (3)
 ─────────────
-🐛 Test gap: cross-workspace probe missing
-  tests/routers/test_scorecards.py
-  Issue: No test verifies that a user from workspace A cannot trigger a version
-         creation on workspace B's scorecard.
-  Fix:   Add test_other_workspace_returns_404.
+🐛 Test gap: cross-owner probe missing
+  tests/routers/test_events.py
+  Issue: No test verifies that host A cannot edit host B's event
+         (expects 404 S2_NOT_OWNER).
+  Fix:   Add test_other_owner_returns_404.
   ...
 
 LOW (1)
@@ -124,7 +122,7 @@ Recommended next step:
 ## On a clean PR
 
 ```
-PR Review — F-12: Add scorecard versioning with comparison
+PR Review — F-12: Add event editing from the detail page
 
 Files changed: 11
 Net lines: +487 / -23
@@ -135,7 +133,7 @@ CRITICAL (0) | HIGH (0) | MEDIUM (0) | LOW (0)
 No bugs found. Solid PR.
 
 Suggestions for follow-up tickets (optional, non-blocking):
-- Consider extracting the score formatting helper if it gets reused
+- Consider extracting the date formatting helper if it gets reused
 ```
 
 ## What you must NOT do

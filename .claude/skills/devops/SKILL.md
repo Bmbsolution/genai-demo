@@ -6,7 +6,7 @@ allowed-tools: Bash, Read, Grep
 
 # /devops
 
-> **Local setup:** requires GitHub Actions CI + `gh` CLI — not configured in this local-only repo. There's no remote pipeline to watch; run `make lint && make test` and `pnpm lint && pnpm test && pnpm build` locally instead.
+> **Local setup:** requires GitHub Actions CI + `gh` CLI. There's no remote pipeline to watch locally; run `ruff check && mypy --strict src && pytest` (backend) and `pnpm lint && pnpm test && pnpm build` (frontend) instead.
 
 You watch pipelines. When they fail, you read the logs, identify the root cause, and route the fix to the right phase of the workflow. You don't blindly retry.
 
@@ -39,14 +39,14 @@ You watch pipelines. When they fail, you read the logs, identify the root cause,
    - `lint` — formatting or linting violation → fix and re-push
    - `type` — mypy or tsc error → likely a missing type or signature mismatch
    - `build` — compilation/build failure → dependency or import issue
-   - `migration` — Alembic migration failed → schema or data issue
+   - `schema` — a model/schema change broke `create_all` or the seed → DB or model issue
    - `audit` — `/audit-security` found violation in CI → needs proper fix, not bypass
    - `flaky` — known intermittent test → annotate, don't auto-retry blindly
    - `infra` — runner OOM, network, disk → escalate, not a code issue
 3. **Propose the fix**
    - For `test`/`type`/`build`: suggest the specific change
    - For `lint`: usually safe to apply auto-fix (`ruff format`, `pnpm lint --fix`) and re-push
-   - For `migration`: investigate before changing anything in prod-bound migrations
+   - For `schema`: investigate the model change; a local DB reset (`rm gatherly.db` + reseed) may be needed
    - For `audit`: NEVER bypass. Fix the underlying violation.
    - For `flaky`: open a P3 ticket; do not auto-retry more than once
    - For `infra`: re-run once. If it persists, escalate to humans.
@@ -58,7 +58,7 @@ You watch pipelines. When they fail, you read the logs, identify the root cause,
 
 ### Pipeline succeeded
 ```
-✅ Pipeline run #4521 — branch feat/F-12-scorecard-versioning
+✅ Pipeline run #4521 — branch feat/waitlist-auto-promote
   Lint:    ✅ 12s
   Test:    ✅ 2m 34s (147 tests)
   Build:   ✅ 1m 02s
@@ -70,26 +70,26 @@ Ready for human review.
 
 ### Pipeline failed
 ```
-❌ Pipeline run #4523 — branch feat/F-12-scorecard-versioning
+❌ Pipeline run #4523 — branch feat/waitlist-auto-promote
   Lint:    ✅
-  Test:    ❌ FAILED (test_create_version_concurrent)
+  Test:    ❌ FAILED (test_promote_waitlisted_concurrent)
   Build:   ⏭ skipped
   Audit:   ⏭ skipped
 
 Failure category: test (race condition revealed)
 
 Failed test:
-  tests/services/test_scorecard_service.py::test_create_version_concurrent
+  tests/services/test_guest_service.py::test_promote_waitlisted_concurrent
 
 Failure excerpt:
-  AssertionError: expected version_number=2, got 1
-  Two parallel calls to create_version() produced same version number due to
+  AssertionError: expected 1 promoted guest, got 2
+  Two parallel cancellations both promoted the same waitlisted guest due to a
   read-then-write race.
 
 Diagnosis:
   This is the bug /review-pr flagged as CRITICAL on this branch.
-  The fix should be: add unique constraint (scorecard_id, version_number)
-  and retry on IntegrityError.
+  The fix should be: lock the waitlist row (SELECT ... FOR UPDATE) or retry on
+  a uniqueness conflict when promoting.
 
 Recommended next:
   /implement fix the race condition flagged in /review-pr CRITICAL #1

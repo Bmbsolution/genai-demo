@@ -47,22 +47,21 @@ Refs F-<feature-id>
 
 ```bash
 # Backend
-cd servicecat-be
-make migrate
+cd gatherly-be
 make dev
 
 # Frontend (in another terminal)
-cd servicecat-fe
+cd gatherly-fe
 pnpm dev
 ```
 
 Then:
 1. Log in as `admin@acme.dev` (password: `dev`)
-2. Navigate to /scorecards
-3. Click on the "Production Readiness" scorecard
-4. Click "Create new version"
-5. Modify a criterion's threshold and save
-6. Click "Compare versions" — verify the diff view shows the change
+2. Navigate to /events
+3. Click on an event to open its detail page
+4. Click "Edit event"
+5. Modify the event title and save
+6. Verify the updated title shows on the event detail page
 
 ## Acceptance Criteria
 
@@ -77,11 +76,11 @@ Then:
 
 <screenshots of new UI in light AND dark mode if frontend changed>
 
-## Migrations
+## Schema changes
 
-<List any new migrations and whether they're safe to run on prod (idempotent? long-running? downtime?)>
+<List any DB schema changes (Gatherly uses SQLite, no Alembic migrations) and whether they're backward-compatible with existing data.>
 
-- `20260512_1430_add_scorecard_versions.py` — adds two tables, idempotent, no data migration. Safe to run live.
+- Added `events.location` column — nullable, backward-compatible with existing rows.
 
 ## Follow-up
 
@@ -102,10 +101,10 @@ You refuse if:
 ## Output format
 
 ```
-✅ PR created: https://github.com/<org>/servicecat/pull/87
+✅ PR created: https://github.com/<org>/gatherly/pull/87
 
-Title: feat(be): add scorecard versioning with side-by-side comparison
-Branch: feat/F-12-scorecard-versioning → main
+Title: feat(be): add event editing from the detail page
+Branch: feat/F-12-event-editing → main
 Files: 11 changed, +487 / -23
 Tests: 12 new, all green
 Reviewers: @platform-team

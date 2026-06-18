@@ -9,13 +9,13 @@ event-RSVP app). 20-minute slot, deck: `orchestrer-intelligence-gatherly.pptx`.
 
 ---
 
-## 0. Why Gatherly (not ServiceCat)
+## 0. Why Gatherly
 
 The demo app is **Gatherly** — plan events, invite guests, collect RSVPs —
 because a mixed (non-technical + technical) room grasps it in one sentence and
-the stakes are visceral: *"a guest could see another guest's email."* Same
-engineering rigor as ServiceCat (the 5 guards, tests, the loop), relatable
-domain. Zero external infra (SQLite), so it runs with one command on stage.
+the stakes are visceral: *"a guest could see another guest's email."* Real
+engineering rigor (the 5 guards, tests, the loop), relatable domain. Zero
+external infra (SQLite), so it runs with one command on stage.
 
 ---
 
@@ -29,9 +29,9 @@ domain. Zero external infra (SQLite), so it runs with one command on stage.
 ## 2. Bring-up (T-10 min, from repo root)
 
 ```bash
-# Backend on :8002 (SQLite, seeded). Uses the shared ServiceCat venv.
-cd gatherly-be && PYTHONPATH=src ../servicecat-be/.venv/Scripts/python.exe -m gatherly.scripts.seed
-PYTHONPATH=src ../servicecat-be/.venv/Scripts/python.exe -m uvicorn gatherly.main:app --port 8002 &
+# Backend on :8002 (SQLite, seeded). Uses gatherly-be's own venv.
+cd gatherly-be && .venv/bin/python -m gatherly.scripts.seed
+.venv/bin/python -m uvicorn gatherly.main:app --port 8002 &
 
 # Frontend on :3002 (.env.local already points NEXT_PUBLIC_API_URL at :8002).
 cd ../gatherly-fe && pnpm dev -p 3002
@@ -75,7 +75,7 @@ privacy leak.** Pre-staged on a branch.
 
 ```bash
 git checkout demo/guest-privacy-bug      # ownership check dropped from the guest list
-cd gatherly-be && PYTHONPATH=src ../servicecat-be/.venv/Scripts/python.exe -m pytest tests/test_guest_isolation.py
+cd gatherly-be && .venv/bin/python -m pytest tests/test_guest_isolation.py
 # -> test_other_host_cannot_read_guest_list FAILS: 200 instead of 404 (a guest leak)
 ```
 Let the inner fix loop restore the ownership check, re-run → green. Then:
@@ -98,7 +98,7 @@ events — missing locations, capacity waitlists, unsent reminders. Result:
 
 ```bash
 git checkout main && git reset --hard <known-good-commit>
-cd gatherly-be && rm -f gatherly.db && PYTHONPATH=src ../servicecat-be/.venv/Scripts/python.exe -m gatherly.scripts.seed
+cd gatherly-be && rm -f gatherly.db && .venv/bin/python -m gatherly.scripts.seed
 ```
 
 ## 7. Fallback cheat sheet

@@ -1,8 +1,8 @@
 """In-memory refresh-token revocation store (single-process demo).
 
-ServiceCat backs this with Redis; Gatherly keeps it in-process to stay
-zero-infra. Same contract: ``revoke_once`` is the atomic check-and-set that
-makes refresh-token rotation safe against replay.
+Gatherly keeps this in-process to stay zero-infra (back it with Redis or another
+shared store when running more than one process). ``revoke_once`` is the atomic
+check-and-set that makes refresh-token rotation safe against replay.
 """
 
 from __future__ import annotations

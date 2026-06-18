@@ -32,7 +32,7 @@ You autonomously clear the backlog. You pick the top-priority open issue, drive 
    - LIMIT 1
 
 2. Claim the issue
-   - Assign to dev-servicecat
+   - Assign to dev-gatherly
    - Add label 'in-progress'
    - Comment: "Picked up by /work-issues at <timestamp>"
 

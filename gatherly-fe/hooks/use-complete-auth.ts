@@ -16,12 +16,12 @@ type User = components["schemas"]["UserResponse"];
 export function useCompleteAuth(): (tokens: TokenPair, redirectTo?: string) => Promise<void> {
   const router = useRouter();
   const setSession = useAuthStore((state) => state.setSession);
-  const setWorkspace = useAuthStore((state) => state.setWorkspace);
+  const setUser = useAuthStore((state) => state.setUser);
 
   return async (tokens, redirectTo = "/events") => {
     setSession({ accessToken: tokens.access_token, refreshToken: tokens.refresh_token });
-    const me = await apiFetch<Data<User>>("/api/v1/auth/me", { workspace: false });
-    setWorkspace({ id: me.data.id, name: me.data.display_name });
+    const me = await apiFetch<Data<User>>("/api/v1/auth/me");
+    setUser({ id: me.data.id, name: me.data.display_name });
     router.push(redirectTo);
   };
 }

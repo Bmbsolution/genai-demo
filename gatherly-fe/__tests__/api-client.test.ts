@@ -28,8 +28,6 @@ beforeEach(() => {
   useAuthStore.setState({
     accessToken: "at",
     refreshToken: "rt",
-    workspaceId: "ws1",
-    workspaceName: "Acme",
     hydrated: true,
   });
   fetchMock = vi.fn();
@@ -41,7 +39,7 @@ afterEach(() => {
 });
 
 describe("apiFetch", () => {
-  it("attaches the bearer token + workspace header and returns parsed JSON", async () => {
+  it("attaches the bearer token and returns parsed JSON", async () => {
     fetchMock.mockResolvedValue(res(200, { data: { id: "1" } }));
 
     const result = await apiFetch<{ data: { id: string } }>("/api/v1/events");
@@ -50,7 +48,6 @@ describe("apiFetch", () => {
     expect(fetchMock.mock.calls[0][0]).toBe(`${BASE}/api/v1/events`);
     const headers = headersOf(0);
     expect(headers.Authorization).toBe("Bearer at");
-    expect(headers["X-Workspace-Id"]).toBe("ws1");
   });
 
   it("unwraps the error envelope into a typed ApiError on non-401 failures", async () => {

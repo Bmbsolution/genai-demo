@@ -10,13 +10,10 @@
       "Bash(pytest:*)",
       "Bash(ruff:*)",
       "Bash(mypy:*)",
-      "Bash(alembic:*)",
-      "Bash(docker compose:*)",
       "Bash(curl:*)",
       "Bash(jq:*)",
       "Bash(gh:*)",
       "Bash(rg:*)",
-      "Bash(redis-cli:*)",
       "Read(./)",
       "Write(./)",
       "Edit(./)",
@@ -45,7 +42,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "git config user.name 'dev-servicecat' && git config user.email 'dev@servicecat.local'"
+            "command": "git config user.name 'dev-gatherly' && git config user.email 'dev@gatherly.local'"
           }
         ]
       }

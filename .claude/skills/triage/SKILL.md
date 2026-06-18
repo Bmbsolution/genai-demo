@@ -32,7 +32,7 @@ You convert raw inputs (bug descriptions, audit findings, feature ideas) into we
 4. **Identify the owner team** — from the affected area or service. If none, leave unassigned and add `needs-owner` label.
 5. **Create the issue** using `gh issue create` with the structured body below
 6. **Add to the project board** — column "Backlog" by default, "Ready" if priority is P0 or P1
-7. **Notify** if P0/P1 — auto-trigger `/notify` to Slack `#servicecat-alerts`
+7. **Notify** if P0/P1 — auto-trigger `/notify` to Slack `#gatherly-alerts`
 
 ## Issue body template
 

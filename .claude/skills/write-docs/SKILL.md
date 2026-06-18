@@ -13,17 +13,17 @@ You produce well-structured, accurate documentation grounded in the actual codeb
 ## Invocation
 
 ```
-/write-docs runbook for payment-svc
-/write-docs architecture for the scorecard subsystem
+/write-docs runbook for the gatherly-be API
+/write-docs architecture for the RSVP subsystem
 /write-docs onboarding guide for new backend engineers
-/write-docs feature doc for F-12 scorecard versioning  --output=drive
+/write-docs feature doc for F-12 event editing          --output=drive
 /write-docs feature doc for F-12                        --output=local
 ```
 
 ## Output destinations
 
 - `--output=local` (default) — writes markdown to `docs/<filename>.md` in the repo
-- `--output=drive` — uses the Google Drive MCP to create a Google Doc in the team's "ServiceCat / Docs" folder
+- `--output=drive` — uses the Google Drive MCP to create a Google Doc in the team's "Gatherly / Docs" folder
 - `--output=both` — writes locally AND publishes to Drive, with the Drive link added to the markdown header
 
 ## Document templates
@@ -107,12 +107,12 @@ You produce well-structured, accurate documentation grounded in the actual codeb
 5. **Add diagrams** as Mermaid blocks where they help.
 6. **Submit per the chosen output**:
    - Local: write to `docs/<name>.md`, run `/commit-sc docs(...)`
-   - Drive: use the Google Drive MCP to create the Google Doc, set sharing to "ServiceCat team — comment"
+   - Drive: use the Google Drive MCP to create the Google Doc, set sharing to "Gatherly team — comment"
 7. **Output the link or path** to the user
 
 ## Quality bar
 
-- **Concrete over abstract** — "POST /scorecards/{id}/runs returns 202 with run_id" not "the runs API can be triggered"
+- **Concrete over abstract** — "POST /api/v1/events/{id}/guests returns 201 with guest_id" not "the guest API can be called"
 - **Verifiable** — link to code, not to memory
 - **Testable** — anyone reading should be able to perform the actions described
 - **Up-to-date date stamp** — always include "Last updated"
