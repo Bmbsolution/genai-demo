@@ -17,11 +17,10 @@ export default defineConfig({
       reporter: ["text", "json-summary"],
       // The modules added/changed this session — AC-2 targets these.
       include: [
-        "lib/api/client.ts",
-        "lib/store/auth.ts",
-        "hooks/use-require-auth.ts",
-        "components/severity-badge.tsx",
-        "components/findings-table.tsx",
+        "lib/format-date.ts",
+        "hooks/use-notifications.ts",
+        "components/notification-bell.tsx",
+        "app/notifications/page.tsx",
       ],
     },
   },

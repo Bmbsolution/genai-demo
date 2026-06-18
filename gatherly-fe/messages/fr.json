@@ -211,5 +211,23 @@
     "loading": "Chargement…",
     "error": "Une erreur est survenue.",
     "retry": "Réessayer"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "L'activité de vos événements — réponses, arrivées et alertes de préparation.",
+    "bell": "Notifications",
+    "bellWithCount": "Notifications, {count, plural, one {# non lue} other {# non lues}}",
+    "unread": "Non lue",
+    "markRead": "Marquer comme lue",
+    "markAllRead": "Tout marquer comme lu",
+    "loadMore": "Afficher plus",
+    "viewEvent": "Voir l'événement",
+    "empty": "Vous êtes à jour — aucune notification pour l'instant.",
+    "emptyUnread": "Rien de non lu. Vous êtes à jour.",
+    "loadError": "Impossible de charger vos notifications.",
+    "filter": {
+      "all": "Toutes",
+      "unread": "Non lues"
+    }
   }
 }

@@ -211,5 +211,23 @@
     "loading": "Loading…",
     "error": "Something went wrong.",
     "retry": "Try again"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Activity across your events — RSVPs, check-ins, and readiness alerts.",
+    "bell": "Notifications",
+    "bellWithCount": "Notifications, {count, plural, one {# unread} other {# unread}}",
+    "unread": "Unread",
+    "markRead": "Mark read",
+    "markAllRead": "Mark all read",
+    "loadMore": "Load more",
+    "viewEvent": "View event",
+    "empty": "You're all caught up — no notifications yet.",
+    "emptyUnread": "Nothing unread. You're all caught up.",
+    "loadError": "Couldn't load your notifications.",
+    "filter": {
+      "all": "All",
+      "unread": "Unread"
+    }
   }
 }

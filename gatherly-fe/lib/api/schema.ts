@@ -137,5 +137,25 @@ export interface components {
       plus_one?: boolean;
       dietary_notes?: string | null;
     };
+    NotificationResponse: {
+      id: string;
+      owner_id: string;
+      type: string;
+      title: string;
+      body: string | null;
+      event_id: string | null;
+      read_at: string | null;
+      created_at: string;
+    };
+    NotificationListResponse: {
+      data: components["schemas"]["NotificationResponse"][];
+      meta: PageMeta;
+    };
+    UnreadCountResponse: {
+      unread: number;
+    };
+    MarkAllReadResponse: {
+      marked: number;
+    };
   };
 }
