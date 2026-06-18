@@ -41,7 +41,9 @@ describe("useNotifications", () => {
     const { result } = renderHook(() => useNotifications(), { wrapper: wrapper(freshClient()) });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(mockFetch).toHaveBeenCalledWith("/api/v1/notifications?unread_only=false&limit=50");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/v1/notifications?unread_only=false&limit=50&offset=0",
+    );
   });
 
   it("passes unread_only=true when filtering to unread", async () => {
@@ -51,7 +53,28 @@ describe("useNotifications", () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(mockFetch).toHaveBeenCalledWith("/api/v1/notifications?unread_only=true&limit=50");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/v1/notifications?unread_only=true&limit=50&offset=0",
+    );
+  });
+
+  it("offers another page and advances the offset while more remain", async () => {
+    const page = (count: number, total: number) => ({
+      data: Array.from({ length: count }, (_, i) => ({ id: `n${i}` })),
+      meta: { limit: 50, offset: 0, total },
+    });
+    mockFetch.mockResolvedValueOnce(page(50, 60)).mockResolvedValueOnce(page(10, 60));
+    const { result } = renderHook(() => useNotifications(), { wrapper: wrapper(freshClient()) });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.hasNextPage).toBe(true);
+
+    await result.current.fetchNextPage();
+
+    await waitFor(() => expect(result.current.hasNextPage).toBe(false));
+    expect(mockFetch).toHaveBeenLastCalledWith(
+      "/api/v1/notifications?unread_only=false&limit=50&offset=50",
+    );
   });
 
   it("stays disabled when there is no signed-in user", () => {

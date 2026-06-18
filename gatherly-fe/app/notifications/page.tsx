@@ -117,16 +117,17 @@ export default function NotificationsPage() {
   const tc = useTranslations("common");
   const [filter, setFilter] = useState<Filter>("all");
 
-  const { data, isLoading, isError } = useNotifications({
-    unreadOnly: filter === "unread",
-    enabled: ready,
-  });
+  const { data, isLoading, isError, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useNotifications({
+      unreadOnly: filter === "unread",
+      enabled: ready,
+    });
   const markRead = useMarkNotificationRead();
   const markAll = useMarkAllNotificationsRead();
 
   if (!ready) return null;
 
-  const notifications = data?.data ?? [];
+  const notifications = data?.pages.flatMap((page) => page.data) ?? [];
   const hasUnread = notifications.some((item) => item.read_at === null);
 
   return (
@@ -194,6 +195,19 @@ export default function NotificationsPage() {
               </li>
             ))}
           </ul>
+        ) : null}
+
+        {hasNextPage ? (
+          <div className="mt-5 flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              {isFetchingNextPage ? tc("loading") : t("loadMore")}
+            </Button>
+          </div>
         ) : null}
       </main>
     </div>

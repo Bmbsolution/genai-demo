@@ -1,6 +1,11 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { apiFetch, type Data } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
@@ -14,18 +19,29 @@ type MarkAllRead = components["schemas"]["MarkAllReadResponse"];
 /** Root query key for everything notification-related, scoped to the signed-in host. */
 const notificationsKey = (userId: string | null) => ["notifications", userId] as const;
 
-/** Paginated notification list, optionally filtered to unread only. */
+const PAGE_SIZE = 50;
+
+/**
+ * The host's notification list, optionally filtered to unread only. Paginated
+ * with offset so an active host can page past the most recent {@link PAGE_SIZE}
+ * via `fetchNextPage`; `meta.total` drives whether another page exists.
+ */
 export function useNotifications({
   unreadOnly = false,
   enabled = true,
 }: { unreadOnly?: boolean; enabled?: boolean } = {}) {
   const userId = useAuthStore((state) => state.userId);
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: [...notificationsKey(userId), "list", unreadOnly] as const,
-    queryFn: () =>
+    queryFn: ({ pageParam }) =>
       apiFetch<NotificationList>(
-        `/api/v1/notifications?unread_only=${unreadOnly}&limit=50`,
+        `/api/v1/notifications?unread_only=${unreadOnly}&limit=${PAGE_SIZE}&offset=${pageParam}`,
       ),
+    initialPageParam: 0,
+    getNextPageParam: (_lastPage, allPages) => {
+      const loaded = allPages.reduce((count, page) => count + page.data.length, 0);
+      return loaded < allPages[0].meta.total ? loaded : undefined;
+    },
     enabled: enabled && Boolean(userId),
   });
 }

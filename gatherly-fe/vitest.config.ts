@@ -20,6 +20,7 @@ export default defineConfig({
         "lib/format-date.ts",
         "hooks/use-notifications.ts",
         "components/notification-bell.tsx",
+        "app/notifications/page.tsx",
       ],
     },
   },

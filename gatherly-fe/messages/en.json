@@ -1,6 +1,6 @@
 {
   "app": { "title": "Gatherly" },
-  "nav": { "events": "Events", "account": "Account", "notifications": "Notifications", "logout": "Sign out" },
+  "nav": { "events": "Events", "account": "Account", "logout": "Sign out" },
   "theme": { "toggle": "Toggle theme" },
   "login": {
     "title": "Welcome back",
@@ -220,6 +220,7 @@
     "unread": "Unread",
     "markRead": "Mark read",
     "markAllRead": "Mark all read",
+    "loadMore": "Load more",
     "viewEvent": "View event",
     "empty": "You're all caught up — no notifications yet.",
     "emptyUnread": "Nothing unread. You're all caught up.",

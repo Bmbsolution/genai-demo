@@ -1,6 +1,6 @@
 {
   "app": { "title": "Gatherly" },
-  "nav": { "events": "Événements", "account": "Compte", "notifications": "Notifications", "logout": "Se déconnecter" },
+  "nav": { "events": "Événements", "account": "Compte", "logout": "Se déconnecter" },
   "theme": { "toggle": "Changer de thème" },
   "login": {
     "title": "Bon retour",
@@ -220,6 +220,7 @@
     "unread": "Non lue",
     "markRead": "Marquer comme lue",
     "markAllRead": "Tout marquer comme lu",
+    "loadMore": "Afficher plus",
     "viewEvent": "Voir l'événement",
     "empty": "Vous êtes à jour — aucune notification pour l'instant.",
     "emptyUnread": "Rien de non lu. Vous êtes à jour.",
