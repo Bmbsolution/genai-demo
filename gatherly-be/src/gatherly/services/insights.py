@@ -7,6 +7,7 @@ prove ownership first (via EventService.get → 404).
 
 from __future__ import annotations
 
+import datetime as dt
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -109,12 +110,18 @@ class InsightsService:
         healthy_rate = (
             insights.total_guests > 0 and insights.response_rate >= _HEALTHY_RESPONSE_RATE
         )
+        # SQLite returns naive datetimes even for timezone=True columns; treat as UTC.
+        starts_at = event.starts_at
+        if starts_at.tzinfo is None:
+            starts_at = starts_at.replace(tzinfo=dt.UTC)
+        starts_in_future = starts_at > dt.datetime.now(dt.UTC)
         checks = [
             ReadinessCheck("has_guests", insights.total_guests > 0, "high"),
             ReadinessCheck("within_capacity", within_capacity, "high"),
             ReadinessCheck("has_location", bool(event.location), "high"),
             ReadinessCheck("published", event.status == "published", "medium"),
             ReadinessCheck("healthy_response_rate", healthy_rate, "medium"),
+            ReadinessCheck("starts_in_future", starts_in_future, "medium"),
             ReadinessCheck("has_description", bool(event.description), "low"),
             ReadinessCheck("has_cover_image", bool(event.cover_image_url), "low"),
             ReadinessCheck("has_end_time", event.ends_at is not None, "low"),

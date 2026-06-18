@@ -148,6 +148,7 @@
         "has_location": "Lieu défini",
         "published": "Événement publié",
         "healthy_response_rate": "Bon taux de réponse",
+        "starts_in_future": "Heure de début à venir",
         "has_description": "Description ajoutée",
         "has_cover_image": "Image de couverture ajoutée",
         "has_end_time": "Heure de fin définie"
