@@ -148,6 +148,7 @@
         "has_location": "Location set",
         "published": "Event published",
         "healthy_response_rate": "Healthy response rate",
+        "starts_in_future": "Start time is upcoming",
         "has_description": "Description added",
         "has_cover_image": "Cover image added",
         "has_end_time": "End time set"
