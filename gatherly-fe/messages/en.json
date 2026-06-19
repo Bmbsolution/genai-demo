@@ -175,6 +175,7 @@
       "email": "Email",
       "emailInvalid": "Enter a valid email.",
       "rsvp": "RSVP",
+      "waitlistPosition": "#{position}",
       "plusOne": "+1",
       "dietary": "Dietary",
       "checkedIn": "Checked in",
@@ -197,6 +198,7 @@
     "dietaryLabel": "Dietary notes (optional)",
     "addToCalendar": "Add to calendar",
     "waitlistedNote": "You're on the waitlist — we'll let you know if a spot opens up.",
+    "waitlistedPosition": "You're #{position} on the waitlist — we'll let you know if a spot opens up.",
     "notFoundTitle": "Invitation not found",
     "notFound": "This invite link is invalid or has expired.",
     "status": {

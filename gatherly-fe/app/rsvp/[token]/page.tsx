@@ -205,7 +205,9 @@ export default function RsvpPage() {
 
                 {view.rsvp_status === "waitlisted" ? (
                   <p className="rounded-lg border border-brand/30 bg-brand/10 px-3 py-2 text-sm text-brand">
-                    {t("waitlistedNote")}
+                    {view.waitlist_position
+                      ? t("waitlistedPosition", { position: view.waitlist_position })
+                      : t("waitlistedNote")}
                   </p>
                 ) : null}
               </div>

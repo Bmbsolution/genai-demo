@@ -48,13 +48,20 @@ async def list_guests(
     status: Annotated[str | None, Query(max_length=20)] = None,
     q: Annotated[str | None, Query(max_length=200)] = None,
 ) -> DataResponse[list[GuestResponse]]:
-    guests = await GuestService(db).list_for_event(
+    guests, positions = await GuestService(db).list_for_event(
         event_id=event_id,
         owner_id=user.id,
         status=status,
         query=q,
     )
-    return DataResponse(data=[GuestResponse.model_validate(guest) for guest in guests])
+    return DataResponse(
+        data=[
+            GuestResponse.model_validate(guest).model_copy(
+                update={"waitlist_position": positions.get(guest.id)},
+            )
+            for guest in guests
+        ],
+    )
 
 
 @router.post("/{event_id}/guests", status_code=201)

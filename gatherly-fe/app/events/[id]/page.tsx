@@ -335,7 +335,16 @@ export default function EventDetailPage() {
                               {guest.email}
                             </TableCell>
                             <TableCell>
-                              <RsvpBadge status={guest.rsvp_status} />
+                              <div className="flex items-center gap-2">
+                                <RsvpBadge status={guest.rsvp_status} />
+                                {guest.rsvp_status === "waitlisted" && guest.waitlist_position ? (
+                                  <span className="text-xs font-medium tabular-nums text-muted-foreground">
+                                    {t("detail.guests.waitlistPosition", {
+                                      position: guest.waitlist_position,
+                                    })}
+                                  </span>
+                                ) : null}
+                              </div>
                             </TableCell>
                             <TableCell className="hidden tabular-nums sm:table-cell">
                               {guest.plus_one ? "+1" : "—"}

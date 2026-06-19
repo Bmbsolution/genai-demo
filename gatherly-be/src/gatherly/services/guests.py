@@ -81,9 +81,16 @@ class GuestService:
         owner_id: uuid.UUID,
         status: str | None = None,
         query: str | None = None,
-    ) -> Sequence[Guest]:
+    ) -> tuple[Sequence[Guest], dict[uuid.UUID, int]]:
+        """The event's guests (filtered) plus each waitlisted guest's position.
+
+        Positions cover the whole waitlist, not just the filtered page, so a
+        guest's "#3" is stable regardless of the status/search filter applied.
+        """
         await self._events.get(event_id, owner_id)  # 404 if not the owner's event
-        return await self._guests.list_for_event(event_id, status=status, query=query)
+        guests = await self._guests.list_for_event(event_id, status=status, query=query)
+        positions = await self._guests.waitlist_positions(event_id)
+        return guests, positions
 
     async def set_check_in(
         self,

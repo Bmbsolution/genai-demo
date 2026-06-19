@@ -24,12 +24,13 @@ _view_rl = rate_limit(per_minute=60, key="rsvp:view")
 _respond_rl = rate_limit(per_minute=30, key="rsvp:respond")
 
 
-def _to_view(guest: Guest, event: Event) -> RsvpView:
+def _to_view(guest: Guest, event: Event, waitlist_position: int | None) -> RsvpView:
     return RsvpView(
         guest_name=guest.name,
         rsvp_status=guest.rsvp_status,
         plus_one=guest.plus_one,
         dietary_notes=guest.dietary_notes,
+        waitlist_position=waitlist_position,
         event=RsvpEventInfo(
             title=event.title,
             description=event.description,
@@ -47,8 +48,8 @@ async def view_rsvp(
     db: Annotated[AsyncSession, Depends(get_db)],
     _rl: Annotated[None, Depends(_view_rl)],
 ) -> DataResponse[RsvpView]:
-    guest, event = await RsvpService(db).view(invite_token)
-    return DataResponse(data=_to_view(guest, event))
+    guest, event, position = await RsvpService(db).view(invite_token)
+    return DataResponse(data=_to_view(guest, event, position))
 
 
 @router.post("/{invite_token}")
@@ -58,5 +59,5 @@ async def respond_rsvp(
     db: Annotated[AsyncSession, Depends(get_db)],
     _rl: Annotated[None, Depends(_respond_rl)],
 ) -> DataResponse[RsvpView]:
-    guest, event = await RsvpService(db).respond(invite_token, payload)
-    return DataResponse(data=_to_view(guest, event))
+    guest, event, position = await RsvpService(db).respond(invite_token, payload)
+    return DataResponse(data=_to_view(guest, event, position))

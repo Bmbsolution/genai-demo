@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import and_, func, or_, select
 
 from gatherly.models import Guest, RsvpStatus
 
@@ -105,6 +105,45 @@ class GuestRepository:
             .limit(1),
         )
         return result if isinstance(result, Guest) else None
+
+    async def waitlist_positions(self, event_id: uuid.UUID) -> dict[uuid.UUID, int]:
+        """1-based FIFO position of every waitlisted guest on the event.
+
+        Same ordering as :meth:`oldest_waitlisted` (created_at, then id as a
+        stable tie-break), so the guest promoted next is always position 1.
+        """
+        rows = await self._db.scalars(
+            select(Guest.id)
+            .where(
+                Guest.event_id == event_id,
+                Guest.rsvp_status == RsvpStatus.WAITLISTED.value,
+            )
+            .order_by(Guest.created_at.asc(), Guest.id.asc()),
+        )
+        return {guest_id: position for position, guest_id in enumerate(rows.all(), start=1)}
+
+    async def waitlist_position(self, guest: Guest) -> int:
+        """This guest's 1-based spot in their event's waitlist (FIFO).
+
+        Counts the waitlisted guests strictly ahead of ``guest`` and adds one,
+        using the same (created_at, id) order as the promotion query.
+        """
+        ahead = (
+            await self._db.scalar(
+                select(func.count())
+                .select_from(Guest)
+                .where(
+                    Guest.event_id == guest.event_id,
+                    Guest.rsvp_status == RsvpStatus.WAITLISTED.value,
+                    or_(
+                        Guest.created_at < guest.created_at,
+                        and_(Guest.created_at == guest.created_at, Guest.id < guest.id),
+                    ),
+                ),
+            )
+            or 0
+        )
+        return ahead + 1
 
     async def get_by_token(self, invite_token: str) -> Guest | None:
         """Resolve a guest by their per-invite secret (the public RSVP key)."""
